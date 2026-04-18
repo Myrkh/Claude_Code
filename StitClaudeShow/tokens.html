@@ -1,0 +1,1129 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<meta name="description" content="Stit'Claude tokens — OKLCH palette, motion durations and easings, typography scale. The technical spine of the skill." />
+<title>Stit'Claude · Tokens</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="assets/theme.css" />
+
+<style>
+  /* ==========================================================================
+     STIT'CLAUDE · TOKENS PAGE
+     House: Power-Dense × Swiss-Quiet × Industrial-Pro
+     The technical manual: dense, monospace, click-to-copy everywhere.
+     ========================================================================== */
+
+  html { font-optical-sizing: auto; }
+  body { background: var(--bg); min-height: 100dvh; }
+
+  /* ---- Top bar ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    height: 56px;
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    background: color-mix(in oklch, var(--bg) 70%, transparent);
+    border-bottom: 1px solid color-mix(in oklch, var(--fg) 5%, transparent);
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin-inline: auto;
+    height: 100%;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fg-muted);
+    font-size: var(--step--1);
+    transition: color var(--duration-fast);
+  }
+  .back-link:hover { color: var(--fg); }
+  .back-link svg {
+    width: 14px; height: 14px;
+    transition: transform var(--duration-normal) var(--ease-standard);
+  }
+  .back-link:hover svg { transform: translateX(-3px); }
+  .brand-mark {
+    justify-self: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .theme-toggle-btn {
+    width: 34px; height: 34px;
+    display: inline-grid; place-items: center;
+    border-radius: var(--radius-pill);
+    color: var(--fg-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: background var(--duration-fast), color var(--duration-fast);
+  }
+  .theme-toggle-btn:hover { background: var(--surface); color: var(--fg); }
+  .theme-toggle-btn svg { width: 15px; height: 15px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  ::view-transition-old(root) { z-index: 1; }
+  ::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-reveal 820ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes theme-reveal {
+    from { clip-path: circle(0% at var(--cx, 50%) var(--cy, 50%)); }
+    to   { clip-path: circle(150% at var(--cx, 50%) var(--cy, 50%)); }
+  }
+
+  /* ---- Page ---- */
+  main {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 0 var(--gutter) var(--space-24);
+  }
+
+  /* ---- Header ---- */
+  .page-head {
+    padding-block: clamp(4rem, 8vw, 7rem) clamp(2rem, 4vw, 3rem);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--space-16);
+  }
+  .page-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .page-eyebrow::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--border-strong);
+  }
+  .page-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    color: var(--fg);
+    max-width: 14ch;
+    margin-bottom: var(--space-5);
+  }
+  .page-lede {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    line-height: 1.45;
+    color: var(--fg-muted);
+    max-width: 58ch;
+    text-wrap: balance;
+  }
+  .page-lede strong {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--fg);
+    font-size: 0.95em;
+    letter-spacing: -0.005em;
+  }
+
+  /* ---- Sections ---- */
+  section.tk {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--border);
+  }
+  section.tk:first-of-type { border-top: 0; padding-top: 0; }
+  .tk-head {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--space-6);
+    align-items: baseline;
+    margin-bottom: var(--space-8);
+  }
+  .tk-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .tk-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    color: var(--fg);
+    max-width: 22ch;
+  }
+  .tk-caption {
+    grid-column: 2;
+    margin-top: var(--space-3);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--step-0);
+    color: var(--fg-muted);
+    line-height: 1.5;
+    max-width: 56ch;
+    text-wrap: pretty;
+  }
+
+  .tk-body {
+    grid-column: 2;
+  }
+  @media (max-width: 720px) {
+    .tk-head { grid-template-columns: 1fr; gap: var(--space-2); }
+    .tk-caption, .tk-body { grid-column: 1; }
+  }
+
+  /* ---- Copyable token block (generic) ---- */
+  .tok {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+  }
+  .tok:hover {
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+    background: var(--card);
+  }
+  .tok .swatch {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    border: 1px solid color-mix(in oklch, var(--fg) 10%, transparent);
+  }
+  .tok .name {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .tok .value {
+    color: var(--fg-subtle);
+    font-size: var(--step--2);
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+  }
+  .tok .copy-indicator {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+  }
+  .tok:hover .copy-indicator { opacity: 1; }
+  .tok.copied {
+    border-color: var(--accent);
+    background: color-mix(in oklch, var(--accent) 10%, var(--surface));
+  }
+  .tok.copied .copy-indicator {
+    opacity: 1;
+    color: var(--accent);
+  }
+
+  /* ---- Section 01: Colors (OKLCH scale) ---- */
+  .palette-scale {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: var(--space-4);
+    height: 80px;
+  }
+  .palette-scale .step {
+    position: relative;
+    display: grid;
+    place-items: end center;
+    cursor: pointer;
+    padding-bottom: 6px;
+    transition: transform var(--duration-normal) var(--ease-spring-smooth);
+  }
+  .palette-scale .step:hover {
+    transform: translateY(-4px);
+  }
+  .palette-scale .step .n {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: oklch(1 0 0);
+    mix-blend-mode: difference;
+    filter: invert(1);
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+  }
+  .palette-scale .step:hover .n { opacity: 1; }
+
+  .palette-legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 6px;
+  }
+
+  .palette-intro {
+    padding: var(--space-4) var(--space-5);
+    background: var(--surface);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    margin-bottom: var(--space-8);
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    line-height: 1.55;
+    max-width: 58ch;
+  }
+  .palette-intro strong {
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 1px 6px;
+    background: var(--bg);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* ---- Section 02: Motion (durations + easings) ---- */
+  .motion-grid {
+    display: grid;
+    gap: 6px;
+  }
+  .motion-row {
+    display: grid;
+    grid-template-columns: 180px 1fr auto auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard);
+  }
+  .motion-row:hover {
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+    background: var(--card);
+  }
+  .motion-row .name {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .motion-row .demo {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .motion-row .demo-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent);
+  }
+  .motion-row:hover .demo-dot {
+    animation: demo-travel 1.4s var(--demo-ease, linear) infinite alternate;
+    animation-duration: var(--demo-dur, 800ms);
+  }
+  @keyframes demo-travel {
+    from { left: 0; }
+    to   { left: calc(100% - 12px); }
+  }
+  .motion-row .value {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--fg-subtle);
+    letter-spacing: 0.02em;
+    min-width: 150px;
+    text-align: right;
+  }
+  .motion-row .copy-indicator {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity var(--duration-fast);
+  }
+  .motion-row:hover .copy-indicator { opacity: 1; }
+  .motion-row.copied {
+    border-color: var(--accent);
+    background: color-mix(in oklch, var(--accent) 10%, var(--surface));
+  }
+  .motion-row.copied .copy-indicator {
+    opacity: 1;
+    color: var(--accent);
+  }
+
+  /* ---- Section 03: Typography ---- */
+  .type-scale {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .type-row {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: var(--space-5);
+    align-items: baseline;
+    padding: var(--space-3) 0;
+    border-bottom: 1px dashed var(--border);
+    cursor: pointer;
+    transition: background var(--duration-fast);
+  }
+  .type-row:hover {
+    background: color-mix(in oklch, var(--accent) 4%, transparent);
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-top: 0.3em;
+  }
+  .type-row .sample {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--fg);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .type-row .value {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--fg-subtle);
+    letter-spacing: 0.02em;
+    text-align: right;
+    min-width: 190px;
+  }
+  .type-row.copied {
+    background: color-mix(in oklch, var(--accent) 10%, transparent);
+  }
+  .type-row.copied .value {
+    color: var(--accent);
+  }
+
+  /* ---- Section 04: Radii + Spacing ---- */
+  .radii-row, .space-row {
+    display: grid;
+    grid-template-columns: 120px auto 1fr auto auto;
+    gap: var(--space-4);
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    margin-bottom: 6px;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard);
+  }
+  .radii-row:hover, .space-row:hover {
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+    background: var(--card);
+  }
+  .radii-row .name, .space-row .name {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--fg);
+  }
+  .radii-visual, .space-visual {
+    height: 32px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .radii-visual .r-box {
+    height: 32px;
+    width: 32px;
+    background: var(--accent);
+    opacity: 0.85;
+  }
+  .space-visual .s-bar {
+    height: 12px;
+    background: var(--accent);
+    opacity: 0.85;
+    border-radius: 3px;
+  }
+  .radii-row .px, .space-row .px {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--fg-subtle);
+  }
+  .radii-row .value, .space-row .value {
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    color: var(--fg-subtle);
+    min-width: 160px;
+    text-align: right;
+  }
+  .radii-row .copy-indicator, .space-row .copy-indicator {
+    font-size: 9px;
+    opacity: 0;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: opacity var(--duration-fast);
+    color: var(--fg-subtle);
+    font-family: var(--font-mono);
+  }
+  .radii-row:hover .copy-indicator,
+  .space-row:hover .copy-indicator { opacity: 1; }
+  .radii-row.copied, .space-row.copied {
+    border-color: var(--accent);
+    background: color-mix(in oklch, var(--accent) 10%, var(--surface));
+  }
+  .radii-row.copied .copy-indicator,
+  .space-row.copied .copy-indicator {
+    opacity: 1; color: var(--accent);
+  }
+
+  /* ---- Download CTA ---- */
+  .download {
+    margin-top: var(--space-16);
+    padding: var(--space-8);
+    text-align: center;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: color-mix(in oklch, var(--accent) 4%, var(--surface));
+  }
+  .download-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--fg);
+    line-height: 1.2;
+    max-width: 24ch;
+    margin-inline: auto;
+    margin-bottom: var(--space-4);
+    text-wrap: balance;
+  }
+  .download-lede {
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    max-width: 48ch;
+    margin-inline: auto;
+    margin-bottom: var(--space-6);
+    line-height: 1.55;
+  }
+  .download-cmd {
+    display: inline-grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 14px 10px 18px;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-standard);
+  }
+  .download-cmd:hover { border-color: var(--fg-muted); }
+  .download-cmd .prompt { color: var(--accent); }
+  .download-cmd .cmd { color: var(--fg); }
+  .download-cmd .btn-copy {
+    padding: 4px 12px;
+    background: var(--fg);
+    color: var(--bg);
+    border: 0;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: opacity var(--duration-fast);
+  }
+  .download-cmd .btn-copy:hover { opacity: 0.85; }
+  .download-cmd.copied .btn-copy {
+    background: var(--accent);
+  }
+
+  /* ---- Footer ---- */
+  footer.site-foot {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: var(--space-10) var(--gutter);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+  }
+  footer.site-foot em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--fg-muted);
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  footer.site-foot a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast);
+  }
+  footer.site-foot a:hover { color: var(--fg); }
+
+  @supports (animation-timeline: view()) {
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    section.tk, .palette-scale, .motion-row, .type-row, .radii-row, .space-row {
+      animation: fade-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 20%;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="index.html" aria-label="Back to Stit'Claude">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 4 L4 8 L10 12" />
+      </svg>
+      <span>Stit'Claude</span>
+    </a>
+    <span class="brand-mark">Tokens · the system</span>
+    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== HEAD ========== -->
+  <header class="page-head">
+    <div class="page-eyebrow">Tokens · v1 · MMXXVI</div>
+    <h1 class="page-title">The token system.</h1>
+    <p class="page-lede">
+      The technical spine of Stit'Claude. Every color in <strong>OKLCH</strong>, every duration named,
+      every easing explicit. Click any token to copy it to your clipboard.
+      This is what <code>theme.css</code> contains, made human.
+    </p>
+  </header>
+
+  <!-- ========== 01 · COLORS ========== -->
+  <section class="tk">
+    <div class="tk-head">
+      <span class="tk-num">01</span>
+      <h2 class="tk-title">Colors, in <em>OKLCH</em>.</h2>
+    </div>
+    <p class="tk-caption">
+      Two scales: <strong>ink</strong> (neutral warm), <strong>coral</strong> (accent).
+      Twelve steps each, perceptually uniform. Dark mode shifts the same scale &mdash; it doesn't invert it.
+    </p>
+
+    <div class="tk-body">
+      <div class="palette-intro">
+        <strong>OKLCH</strong> is a perceptually uniform color space. Two colors with the same <em>L</em> value read as
+        equally bright to the human eye, regardless of their <em>H</em> (hue). That's why every scale step looks
+        correct even when you swap the hue. Hex and HSL can't do this.
+      </div>
+
+      <!-- INK SCALE -->
+      <h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-3); margin-top: var(--space-4);">Ink scale · 12 steps</h3>
+      <div class="palette-scale" id="ink-scale"></div>
+      <div class="palette-legend" id="ink-legend"></div>
+
+      <!-- CORAL SCALE -->
+      <h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-3); margin-top: var(--space-8);">Coral accent · 6 steps</h3>
+      <div class="palette-scale" id="coral-scale" style="grid-template-columns: repeat(6, 1fr)"></div>
+      <div class="palette-legend" id="coral-legend"></div>
+
+      <!-- SEMANTIC -->
+      <h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-3); margin-top: var(--space-8);">Semantic aliases</h3>
+      <div class="palette-legend" id="semantic-legend"></div>
+    </div>
+  </section>
+
+  <!-- ========== 02 · MOTION ========== -->
+  <section class="tk">
+    <div class="tk-head">
+      <span class="tk-num">02</span>
+      <h2 class="tk-title">Motion has a <em>reason.</em></h2>
+    </div>
+    <p class="tk-caption">
+      Four durations. Seven easings. Every motion in the system cites one of each.
+      Hover any row to preview the curve. <strong>Bouncy</strong> for reward, <strong>snappy</strong> for input, <strong>smooth</strong> for default.
+    </p>
+
+    <div class="tk-body">
+      <h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-3);">Durations</h3>
+      <div class="motion-grid" id="durations"></div>
+
+      <h3 style="font-family: var(--font-mono); font-size: 10px; color: var(--fg-subtle); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: var(--space-3); margin-top: var(--space-8);">Easings</h3>
+      <div class="motion-grid" id="easings"></div>
+    </div>
+  </section>
+
+  <!-- ========== 03 · TYPOGRAPHY ========== -->
+  <section class="tk">
+    <div class="tk-head">
+      <span class="tk-num">03</span>
+      <h2 class="tk-title">Type, in <em>clamps.</em></h2>
+    </div>
+    <p class="tk-caption">
+      A fluid scale from <code>step--2</code> to <code>step-display</code>. Every size is a <code>clamp()</code>
+      with a minimum, a viewport-fluid middle, and a maximum. Never a pixel value hardcoded.
+    </p>
+
+    <div class="tk-body">
+      <div class="type-scale" id="type-scale"></div>
+    </div>
+  </section>
+
+  <!-- ========== 04 · RADII ========== -->
+  <section class="tk">
+    <div class="tk-head">
+      <span class="tk-num">04</span>
+      <h2 class="tk-title"><em>Concentric</em> radii.</h2>
+    </div>
+    <p class="tk-caption">
+      Child radius equals parent radius minus its padding. Five steps from <code>sm</code> to <code>pill</code>.
+      Used correctly, a card at 14&thinsp;px contains items at 10&thinsp;px, which contain icons at 6&thinsp;px. Nested alignment, no maths required.
+    </p>
+
+    <div class="tk-body" id="radii-list"></div>
+  </section>
+
+  <!-- ========== 05 · SPACING ========== -->
+  <section class="tk">
+    <div class="tk-head">
+      <span class="tk-num">05</span>
+      <h2 class="tk-title">Spacing, in <em>fours.</em></h2>
+    </div>
+    <p class="tk-caption">
+      All spacing in multiples of <code>0.25rem</code>. Ten named values from <code>space-1</code> (4px) to <code>space-24</code> (96px).
+      Pixel-precise, token-named. No magic numbers.
+    </p>
+
+    <div class="tk-body" id="space-list"></div>
+  </section>
+
+  <!-- ========== DOWNLOAD ========== -->
+  <section class="download">
+    <h3 class="download-title">Want the whole thing as CSS?</h3>
+    <p class="download-lede">
+      Every token on this page ships as a single <code>theme.css</code> file.
+      Copy, paste, ship. Zero dependencies.
+    </p>
+    <button class="download-cmd" id="dl-cmd" onclick="copyDownload(this)">
+      <span class="prompt">$</span>
+      <span class="cmd">curl -O stitclaude.dev/theme.css</span>
+      <span class="btn-copy">Copy</span>
+    </button>
+  </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="site-foot">
+  <span><em>On ne fait plus de designers comme ça aujourd'hui.</em></span>
+  <span>
+    <a href="index.html">home</a> &nbsp;·&nbsp;
+    <a href="lab.html">lab</a> &nbsp;·&nbsp;
+    <a href="components.html">components</a> &nbsp;·&nbsp;
+    <a href="essays/anatomy-of-a-stitch.html">field notes</a> &nbsp;·&nbsp;
+    v1 · MIT
+  </span>
+</footer>
+
+<script>
+  /* ---- Theme ---- */
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+
+  /* ---- Copy utility ---- */
+  function copyText(text, el) {
+    navigator.clipboard?.writeText(text);
+    el.classList.add('copied');
+    const indicator = el.querySelector('.copy-indicator');
+    const original = indicator?.textContent || '';
+    if (indicator) indicator.textContent = 'copied ✓';
+    setTimeout(() => {
+      el.classList.remove('copied');
+      if (indicator) indicator.textContent = original;
+    }, 1400);
+  }
+  function copyDownload(btn) {
+    const cmd = btn.querySelector('.cmd').textContent;
+    navigator.clipboard?.writeText(cmd);
+    btn.classList.add('copied');
+    const bc = btn.querySelector('.btn-copy');
+    const orig = bc.textContent;
+    bc.textContent = 'Copied';
+    setTimeout(() => { btn.classList.remove('copied'); bc.textContent = orig; }, 1500);
+  }
+
+  /* ---- Build the ink scale ---- */
+  const INK_STEPS = [
+    { name: '--ink-1',  light: 'oklch(0.988 0.006 85)',  dark: 'oklch(0.145 0.012 40)',  role: 'bg' },
+    { name: '--ink-2',  light: 'oklch(0.971 0.010 82)',  dark: 'oklch(0.180 0.013 40)',  role: 'surface' },
+    { name: '--ink-3',  light: 'oklch(0.946 0.014 80)',  dark: 'oklch(0.215 0.014 40)',  role: 'card' },
+    { name: '--ink-4',  light: 'oklch(0.905 0.016 78)',  dark: 'oklch(0.250 0.014 40)',  role: 'card-hover' },
+    { name: '--ink-5',  light: 'oklch(0.860 0.018 75)',  dark: 'oklch(0.295 0.014 40)',  role: 'border' },
+    { name: '--ink-6',  light: 'oklch(0.720 0.014 55)',  dark: 'oklch(0.345 0.013 45)',  role: 'border-strong' },
+    { name: '--ink-7',  light: 'oklch(0.580 0.014 50)',  dark: 'oklch(0.420 0.012 48)',  role: '' },
+    { name: '--ink-8',  light: 'oklch(0.460 0.014 45)',  dark: 'oklch(0.540 0.010 52)',  role: 'fg-faint' },
+    { name: '--ink-9',  light: 'oklch(0.360 0.012 42)',  dark: 'oklch(0.660 0.008 58)',  role: 'fg-subtle' },
+    { name: '--ink-10', light: 'oklch(0.265 0.012 40)',  dark: 'oklch(0.775 0.008 65)',  role: 'fg-muted' },
+    { name: '--ink-11', light: 'oklch(0.195 0.014 38)',  dark: 'oklch(0.875 0.007 70)',  role: 'fg-body' },
+    { name: '--ink-12', light: 'oklch(0.145 0.015 36)',  dark: 'oklch(0.965 0.006 80)',  role: 'fg' },
+  ];
+  const CORAL_STEPS = [
+    { name: '--coral-3',  light: 'oklch(0.965 0.028 35)',   dark: 'oklch(0.265 0.055 35)',   role: 'accent-subtle' },
+    { name: '--coral-6',  light: 'oklch(0.820 0.105 35)',   dark: 'oklch(0.435 0.130 35)',   role: '' },
+    { name: '--coral-8',  light: 'oklch(0.725 0.160 35)',   dark: 'oklch(0.580 0.170 35)',   role: 'ring' },
+    { name: '--coral-9',  light: 'oklch(0.645 0.190 35)',   dark: 'oklch(0.685 0.165 35)',   role: 'accent' },
+    { name: '--coral-10', light: 'oklch(0.580 0.185 33)',   dark: 'oklch(0.745 0.155 35)',   role: 'accent-hover' },
+    { name: '--coral-11', light: 'oklch(0.505 0.160 32)',   dark: 'oklch(0.820 0.120 33)',   role: '' },
+  ];
+  const SEMANTIC = [
+    { name: '--bg',            val: 'ink-1' },
+    { name: '--surface',       val: 'ink-2' },
+    { name: '--card',          val: 'ink-3' },
+    { name: '--fg',            val: 'ink-12' },
+    { name: '--fg-body',       val: 'ink-11' },
+    { name: '--fg-muted',      val: 'ink-10' },
+    { name: '--fg-subtle',     val: 'ink-9' },
+    { name: '--border',        val: 'ink-5' },
+    { name: '--border-strong', val: 'ink-6' },
+    { name: '--accent',        val: 'coral-9' },
+  ];
+
+  function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+
+  function paintPalette() {
+    const inkScale = document.getElementById('ink-scale');
+    const inkLegend = document.getElementById('ink-legend');
+    const coralScale = document.getElementById('coral-scale');
+    const coralLegend = document.getElementById('coral-legend');
+    const semanticLegend = document.getElementById('semantic-legend');
+    if (!inkScale) return;
+
+    inkScale.innerHTML = '';
+    inkLegend.innerHTML = '';
+    coralScale.innerHTML = '';
+    coralLegend.innerHTML = '';
+    semanticLegend.innerHTML = '';
+
+    const mode = isDark() ? 'dark' : 'light';
+
+    INK_STEPS.forEach((s, i) => {
+      const val = s[mode];
+      const step = document.createElement('div');
+      step.className = 'step';
+      step.style.background = val;
+      step.innerHTML = `<span class="n">${String(i + 1).padStart(2, '0')}</span>`;
+      step.addEventListener('click', () => copyText(s.name, step));
+      inkScale.appendChild(step);
+
+      const tok = document.createElement('button');
+      tok.className = 'tok';
+      tok.innerHTML = `
+        <span class="swatch" style="background: ${val}"></span>
+        <span class="name">${s.name}${s.role ? ' <span style="color: var(--fg-subtle); font-size: 10px;">· ' + s.role + '</span>' : ''}</span>
+        <span class="value">${val}</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      tok.type = 'button';
+      tok.addEventListener('click', () => copyText(`var(${s.name})`, tok));
+      inkLegend.appendChild(tok);
+    });
+
+    CORAL_STEPS.forEach((s) => {
+      const val = s[mode];
+      const step = document.createElement('div');
+      step.className = 'step';
+      step.style.background = val;
+      step.addEventListener('click', () => copyText(s.name, step));
+      coralScale.appendChild(step);
+
+      const tok = document.createElement('button');
+      tok.className = 'tok';
+      tok.innerHTML = `
+        <span class="swatch" style="background: ${val}"></span>
+        <span class="name">${s.name}${s.role ? ' <span style="color: var(--fg-subtle); font-size: 10px;">· ' + s.role + '</span>' : ''}</span>
+        <span class="value">${val}</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      tok.type = 'button';
+      tok.addEventListener('click', () => copyText(`var(${s.name})`, tok));
+      coralLegend.appendChild(tok);
+    });
+
+    SEMANTIC.forEach((s) => {
+      const tok = document.createElement('button');
+      tok.className = 'tok';
+      tok.innerHTML = `
+        <span class="swatch" style="background: var(${s.name})"></span>
+        <span class="name">${s.name}</span>
+        <span class="value">var(--${s.val})</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      tok.type = 'button';
+      tok.addEventListener('click', () => copyText(`var(${s.name})`, tok));
+      semanticLegend.appendChild(tok);
+    });
+  }
+  paintPalette();
+
+  /* Observe theme changes to repaint */
+  const themeObs = new MutationObserver(() => paintPalette());
+  themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  /* ---- Motion ---- */
+  const DURATIONS = [
+    { name: '--duration-fast',     val: '120ms', desc: 'micro · hover, press' },
+    { name: '--duration-normal',   val: '200ms', desc: 'default · UI changes' },
+    { name: '--duration-moderate', val: '340ms', desc: 'reveal · section transitions' },
+    { name: '--duration-slow',     val: '520ms', desc: 'theatrical · modals, morphs' },
+  ];
+  const EASINGS = [
+    { name: '--ease-standard',       val: 'cubic-bezier(0.2, 0, 0, 1)',      desc: 'Material standard' },
+    { name: '--ease-decelerate',     val: 'cubic-bezier(0.05, 0.7, 0.1, 1)', desc: 'ease-out, pronounced' },
+    { name: '--ease-accelerate',     val: 'cubic-bezier(0.3, 0, 0.8, 0.15)', desc: 'ease-in, leaving' },
+    { name: '--ease-expo-out',       val: 'cubic-bezier(0.16, 1, 0.3, 1)',   desc: 'theatrical entry' },
+    { name: '--ease-spring-smooth',  val: 'cubic-bezier(0.45, 1.4, 0.55, 1)',desc: 'default spring' },
+    { name: '--ease-spring-snappy',  val: 'cubic-bezier(0.3, 1.6, 0.5, 1)',  desc: 'quick, input' },
+    { name: '--ease-spring-bouncy',  val: 'cubic-bezier(0.25, 1.9, 0.35, 1)',desc: 'reward, celebration' },
+  ];
+
+  function paintMotion() {
+    const dur = document.getElementById('durations');
+    const eas = document.getElementById('easings');
+    if (!dur) return;
+    dur.innerHTML = '';
+    eas.innerHTML = '';
+
+    DURATIONS.forEach((d) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'motion-row';
+      row.style.setProperty('--demo-dur', d.val);
+      row.style.setProperty('--demo-ease', 'linear');
+      row.innerHTML = `
+        <span class="name">${d.name}</span>
+        <span class="demo"><span class="demo-dot"></span></span>
+        <span class="value">${d.val} · <span style="color: var(--fg-faint);">${d.desc}</span></span>
+        <span class="copy-indicator">copy</span>
+      `;
+      row.addEventListener('click', () => copyText(`var(${d.name})`, row));
+      dur.appendChild(row);
+    });
+
+    EASINGS.forEach((e) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'motion-row';
+      row.style.setProperty('--demo-dur', '1200ms');
+      row.style.setProperty('--demo-ease', e.val);
+      row.innerHTML = `
+        <span class="name">${e.name}</span>
+        <span class="demo"><span class="demo-dot"></span></span>
+        <span class="value">${e.desc}</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      row.addEventListener('click', () => copyText(`var(${e.name})`, row));
+      eas.appendChild(row);
+    });
+  }
+  paintMotion();
+
+  /* ---- Typography ---- */
+  const TYPE = [
+    { name: '--step--2', size: '0.8rem',    val: 'clamp(0.75rem, 0.735rem + 0.07vw, 0.80rem)' },
+    { name: '--step--1', size: '0.938rem',  val: 'clamp(0.875rem, 0.85rem + 0.12vw, 0.938rem)' },
+    { name: '--step-0',  size: '1.06rem',   val: 'clamp(1rem, 0.97rem + 0.15vw, 1.0625rem)' },
+    { name: '--step-1',  size: '1.4rem',    val: 'clamp(1.2rem, 1.13rem + 0.35vw, 1.4rem)' },
+    { name: '--step-2',  size: '1.85rem',   val: 'clamp(1.5rem, 1.38rem + 0.60vw, 1.85rem)' },
+    { name: '--step-3',  size: '2.5rem',    val: 'clamp(1.88rem, 1.66rem + 1.10vw, 2.5rem)' },
+    { name: '--step-4',  size: '3.5rem',    val: 'clamp(2.35rem, 1.97rem + 1.90vw, 3.5rem)' },
+    { name: '--step-5',  size: '4.75rem',   val: 'clamp(2.94rem, 2.30rem + 3.20vw, 4.75rem)' },
+  ];
+
+  function paintType() {
+    const wrap = document.getElementById('type-scale');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    TYPE.forEach(t => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'type-row';
+      row.innerHTML = `
+        <span class="label">${t.name}</span>
+        <span class="sample" style="font-size: ${t.size};">The quick brown fox</span>
+        <span class="value">${t.size}</span>
+      `;
+      row.addEventListener('click', () => {
+        navigator.clipboard?.writeText(`var(${t.name})`);
+        row.classList.add('copied');
+        const v = row.querySelector('.value');
+        const orig = v.textContent;
+        v.textContent = 'copied ✓';
+        setTimeout(() => { row.classList.remove('copied'); v.textContent = orig; }, 1400);
+      });
+      wrap.appendChild(row);
+    });
+  }
+  paintType();
+
+  /* ---- Radii ---- */
+  const RADII = [
+    { name: '--radius-sm',   px: '6px'   },
+    { name: '--radius-md',   px: '10px'  },
+    { name: '--radius-lg',   px: '14px'  },
+    { name: '--radius-xl',   px: '20px'  },
+    { name: '--radius-pill', px: '9999px' },
+  ];
+  function paintRadii() {
+    const wrap = document.getElementById('radii-list');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    RADII.forEach(r => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'radii-row';
+      const visualBox = r.px === '9999px' ? `<span class="r-box" style="width: 80px; border-radius: 9999px;"></span>` : `<span class="r-box" style="border-radius: ${r.px}"></span>`;
+      row.innerHTML = `
+        <span class="name">${r.name}</span>
+        <span class="radii-visual">${visualBox}</span>
+        <span class="px">${r.px}</span>
+        <span class="value">var(${r.name})</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      row.addEventListener('click', () => copyText(`var(${r.name})`, row));
+      wrap.appendChild(row);
+    });
+  }
+  paintRadii();
+
+  /* ---- Spacing ---- */
+  const SPACE = [
+    { name: '--space-1',  rem: '0.25rem', px: '4px'  },
+    { name: '--space-2',  rem: '0.5rem',  px: '8px'  },
+    { name: '--space-3',  rem: '0.75rem', px: '12px' },
+    { name: '--space-4',  rem: '1rem',    px: '16px' },
+    { name: '--space-5',  rem: '1.25rem', px: '20px' },
+    { name: '--space-6',  rem: '1.5rem',  px: '24px' },
+    { name: '--space-8',  rem: '2rem',    px: '32px' },
+    { name: '--space-10', rem: '2.5rem',  px: '40px' },
+    { name: '--space-12', rem: '3rem',    px: '48px' },
+    { name: '--space-16', rem: '4rem',    px: '64px' },
+    { name: '--space-20', rem: '5rem',    px: '80px' },
+    { name: '--space-24', rem: '6rem',    px: '96px' },
+  ];
+  function paintSpace() {
+    const wrap = document.getElementById('space-list');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    SPACE.forEach(s => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'space-row';
+      row.innerHTML = `
+        <span class="name">${s.name}</span>
+        <span class="space-visual"><span class="s-bar" style="width: ${s.px};"></span></span>
+        <span class="px">${s.px}</span>
+        <span class="value">${s.rem}</span>
+        <span class="copy-indicator">copy</span>
+      `;
+      row.addEventListener('click', () => copyText(`var(${s.name})`, row));
+      wrap.appendChild(row);
+    });
+  }
+  paintSpace();
+</script>
+
+</body>
+</html>

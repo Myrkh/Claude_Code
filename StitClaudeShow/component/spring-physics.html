@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Spring Physics</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/comp.css" />
+
+<style>
+  .spring-lab-wrap { width: 100%; max-width: 420px; }
+</style>
+</head>
+
+<body class="comp-body">
+
+<header class="comp-topbar">
+  <a class="comp-back" href="../lab.html" aria-label="Back to the lab">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4 L4 8 L10 12" /></svg>
+    <span>Back to the Lab</span>
+  </a>
+  <span class="comp-breadcrumb">
+    Components · <span class="current">Motion &amp; Physics / Spring Physics</span>
+  </span>
+  <button class="theme-toggle-small" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<header class="comp-head">
+  <div class="comp-meta">
+    <span>Motion &amp; Physics</span>
+  </div>
+  <h1 class="comp-title">Spring Physics</h1>
+  <p class="comp-intro">
+    Three springs &mdash; <em>smooth</em>, <em>snappy</em>, <em>bouncy</em> &mdash; approximated as CSS cubic-bezier curves.
+    Not because CSS is better than a real physics engine, but because you don't need one
+    ninety-five&nbsp;% of the time.
+  </p>
+</header>
+
+<nav class="comp-tabs" id="tabs" role="tablist">
+  <div class="comp-tab-indicator" id="tab-indicator"></div>
+  <button class="comp-tab active" data-panel="preview"  role="tab">Preview</button>
+  <button class="comp-tab"        data-panel="code"     role="tab">Code</button>
+  <button class="comp-tab"        data-panel="houses"   role="tab">Houses</button>
+  <button class="comp-tab"        data-panel="antislop" role="tab">Anti-patterns</button>
+</nav>
+
+<section class="panel active" data-panel="preview">
+  <div class="preview">
+    <span class="preview-note">click any button</span>
+    <div class="spring-lab-wrap">
+      <div class="spring-lab">
+        <div class="spring-stage">
+          <div class="spring-ball" id="spring-ball"></div>
+        </div>
+        <div class="spring-controls">
+          <button class="spring-btn" onclick="dropBall('smooth')">
+            <span class="name">Smooth</span>
+            <span class="params">response 0.5 · damping 1.0</span>
+          </button>
+          <button class="spring-btn" onclick="dropBall('snappy')">
+            <span class="name">Snappy</span>
+            <span class="params">response 0.3 · damping 0.85</span>
+          </button>
+          <button class="spring-btn" onclick="dropBall('bouncy')">
+            <span class="name">Bouncy</span>
+            <span class="params">response 0.5 · damping 0.7</span>
+          </button>
+        </div>
+        <div class="spring-caption">SwiftUI-grade springs, in CSS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" data-panel="code">
+  <p class="code-hint">
+    <strong>Drop-in.</strong> Paste into any empty <code>.html</code> file, double-click it, watch the ball fall.
+    Three spring presets covering 95&thinsp;% of UI motion needs.
+  </p>
+  <div class="code-card">
+    <div class="code-head">
+      <div class="path">
+        <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <span>spring-physics.html</span>
+      </div>
+      <button class="code-copy" onclick="copyCode(this)">Copy</button>
+    </div>
+<div class="code-body"><pre><code id="code-block"><span class="c-com">&lt;!-- Stit'Claude · Spring Physics · drop-in, zero deps --&gt;</span>
+
+<span class="c-sel">&lt;style&gt;</span>
+  <span class="c-sel">.stit-spring</span> {
+    <span class="c-val">--fg</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.145 0.015 36</span>);
+    <span class="c-val">--surface</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.946 0.014 80</span>);
+    <span class="c-val">--border</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.860 0.018 75</span>);
+    <span class="c-val">--accent</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.645 0.190 35</span>);
+
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">16px</span>;
+    <span class="c-prop">max-width</span>: <span class="c-num">420px</span>;
+    <span class="c-prop">font-family</span>: <span class="c-str">"Inter"</span>, <span class="c-val">system-ui</span>, <span class="c-val">sans-serif</span>;
+  }
+  <span class="c-sel">.stit-spring__stage</span> {
+    <span class="c-prop">height</span>: <span class="c-num">180px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--surface</span>);
+    <span class="c-prop">border</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">border-radius</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">position</span>: <span class="c-val">relative</span>;
+    <span class="c-prop">overflow</span>: <span class="c-val">hidden</span>;
+  }
+  <span class="c-sel">.stit-spring__ball</span> {
+    <span class="c-prop">position</span>: <span class="c-val">absolute</span>;
+    <span class="c-prop">width</span>: <span class="c-num">24px</span>;
+    <span class="c-prop">height</span>: <span class="c-num">24px</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-num">50%</span>;
+    <span class="c-prop">bottom</span>: <span class="c-num">0</span>;
+    <span class="c-prop">left</span>: <span class="c-num">50%</span>;
+    <span class="c-prop">margin-left</span>: <span class="c-num">-12px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--accent</span>);
+    <span class="c-prop">box-shadow</span>: <span class="c-num">0 0 16px</span> <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>) <span class="c-num">60%</span>, <span class="c-val">transparent</span>);
+  }
+  <span class="c-sel">.stit-spring__ball--smooth</span> { <span class="c-prop">animation</span>: <span class="c-fn">stit-drop</span> <span class="c-num">1.2s</span> <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.45, 1.4, 0.55, 1</span>) <span class="c-val">both</span>; }
+  <span class="c-sel">.stit-spring__ball--snappy</span> { <span class="c-prop">animation</span>: <span class="c-fn">stit-drop</span> <span class="c-num">0.7s</span> <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.3, 1.6, 0.5, 1</span>) <span class="c-val">both</span>; }
+  <span class="c-sel">.stit-spring__ball--bouncy</span> { <span class="c-prop">animation</span>: <span class="c-fn">stit-drop</span> <span class="c-num">1s</span>   <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.25, 1.9, 0.35, 1</span>) <span class="c-val">both</span>; }
+  <span class="c-kw">@keyframes</span> <span class="c-fn">stit-drop</span> {
+    <span class="c-num">0%</span>   { <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">-150px</span>); }
+    <span class="c-num">100%</span> { <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">0</span>); }
+  }
+  <span class="c-sel">.stit-spring__controls</span> {
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">grid-template-columns</span>: <span class="c-fn">repeat</span>(<span class="c-num">3</span>, <span class="c-num">1fr</span>);
+    <span class="c-prop">gap</span>: <span class="c-num">8px</span>;
+  }
+  <span class="c-sel">.stit-spring__btn</span> {
+    <span class="c-prop">padding</span>: <span class="c-num">12px</span>;
+    <span class="c-prop">border</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--surface</span>);
+    <span class="c-prop">border-radius</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">font</span>: <span class="c-val">inherit</span>;
+    <span class="c-prop">cursor</span>: <span class="c-val">pointer</span>;
+    <span class="c-prop">display</span>: <span class="c-val">flex</span>;
+    <span class="c-prop">flex-direction</span>: <span class="c-val">column</span>;
+    <span class="c-prop">align-items</span>: <span class="c-val">flex-start</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">2px</span>;
+    <span class="c-prop">transition</span>: <span class="c-val">all</span> <span class="c-num">120ms</span> <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.2, 0, 0, 1</span>);
+  }
+  <span class="c-sel">.stit-spring__btn:hover</span> {
+    <span class="c-prop">border-color</span>: <span class="c-fn">var</span>(<span class="c-val">--accent</span>);
+    <span class="c-prop">background</span>: <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>) <span class="c-num">8%</span>, <span class="c-fn">var</span>(<span class="c-val">--surface</span>));
+  }
+  <span class="c-sel">.stit-spring__name</span> { <span class="c-prop">font-size</span>: <span class="c-num">14px</span>; <span class="c-prop">font-weight</span>: <span class="c-num">500</span>; <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg</span>); }
+  <span class="c-sel">.stit-spring__params</span> {
+    <span class="c-prop">font-family</span>: <span class="c-str">"JetBrains Mono"</span>, <span class="c-val">ui-monospace</span>, <span class="c-val">monospace</span>;
+    <span class="c-prop">font-size</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">color</span>: <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--fg</span>) <span class="c-num">55%</span>, <span class="c-val">transparent</span>);
+  }
+<span class="c-sel">&lt;/style&gt;</span>
+
+<span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring"</span><span class="c-sel">&gt;</span>
+  <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__stage"</span><span class="c-sel">&gt;</span>
+    <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__ball"</span> <span class="c-prop">id</span>=<span class="c-str">"stit-ball"</span><span class="c-sel">&gt;&lt;/div&gt;</span>
+  <span class="c-sel">&lt;/div&gt;</span>
+  <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__controls"</span><span class="c-sel">&gt;</span>
+    <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__btn"</span> <span class="c-prop">onclick</span>=<span class="c-str">"stitDrop('smooth')"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__name"</span><span class="c-sel">&gt;</span>Smooth<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__params"</span><span class="c-sel">&gt;</span>response 0.5 · damping 1.0<span class="c-sel">&lt;/span&gt;</span>
+    <span class="c-sel">&lt;/button&gt;</span>
+    <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__btn"</span> <span class="c-prop">onclick</span>=<span class="c-str">"stitDrop('snappy')"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__name"</span><span class="c-sel">&gt;</span>Snappy<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__params"</span><span class="c-sel">&gt;</span>response 0.3 · damping 0.85<span class="c-sel">&lt;/span&gt;</span>
+    <span class="c-sel">&lt;/button&gt;</span>
+    <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__btn"</span> <span class="c-prop">onclick</span>=<span class="c-str">"stitDrop('bouncy')"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__name"</span><span class="c-sel">&gt;</span>Bouncy<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"stit-spring__params"</span><span class="c-sel">&gt;</span>response 0.5 · damping 0.7<span class="c-sel">&lt;/span&gt;</span>
+    <span class="c-sel">&lt;/button&gt;</span>
+  <span class="c-sel">&lt;/div&gt;</span>
+<span class="c-sel">&lt;/div&gt;</span>
+
+<span class="c-sel">&lt;script&gt;</span>
+  <span class="c-kw">let</span> stitBallTimeout;
+  <span class="c-kw">function</span> <span class="c-fn">stitDrop</span>(type) {
+    <span class="c-kw">const</span> ball = document.getElementById(<span class="c-str">'stit-ball'</span>);
+    ball.className = <span class="c-str">'stit-spring__ball'</span>;
+    <span class="c-kw">void</span> ball.offsetWidth; <span class="c-com">/* force reflow */</span>
+    ball.classList.add(<span class="c-str">'stit-spring__ball--'</span> + type);
+    <span class="c-fn">clearTimeout</span>(stitBallTimeout);
+    stitBallTimeout = <span class="c-fn">setTimeout</span>(() =&gt; { ball.className = <span class="c-str">'stit-spring__ball'</span>; }, <span class="c-num">1400</span>);
+  }
+<span class="c-sel">&lt;/script&gt;</span>
+</code></pre></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="houses">
+  <div class="houses-grid">
+
+    <article class="house-card">
+      <h3 class="name">Apple-Craft</h3>
+      <p class="why">
+        Every iOS swipe, pull-to-refresh, and sheet transition uses springs.
+        They're the signature of haptic-feeling UI without haptics.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.95 0.012 245)"></span>
+        <span class="sw" style="background: oklch(0.92 0.02 280)"></span>
+        <span class="sw" style="background: oklch(0.62 0.15 145)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Playful-Warm</h3>
+      <p class="why">
+        Bouncy is the default here. A bouncy spring is what makes a stamp feel like a stamp
+        instead of a fade. Restraint comes from picking only one bounce.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.92 0.08 60)"></span>
+        <span class="sw" style="background: oklch(0.65 0.2 20)"></span>
+        <span class="sw" style="background: oklch(0.55 0.15 200)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Industrial-Pro</h3>
+      <p class="why">
+        Only smooth. A bouncing refresh icon in a Bloomberg terminal would be
+        grounds for dismissal. Snap is acceptable on user-triggered feedback.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.17 0.02 260)"></span>
+        <span class="sw" style="background: oklch(0.58 0.14 200)"></span>
+        <span class="sw" style="background: oklch(0.72 0.17 85)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Power-Dense</h3>
+      <p class="why">
+        Snappy only. Power users move fast; any overshoot feels like lag.
+        Duration should be &le;&nbsp;150ms where possible.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.17 0 0)"></span>
+        <span class="sw" style="background: oklch(0.55 0.16 270)"></span>
+        <span class="sw" style="background: oklch(0.85 0 0)"></span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="panel" data-panel="antislop">
+  <div class="antislop-card">
+    <ul class="antislop-list">
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Using one ease everywhere</strong>
+          <p class="detail">
+            <code>ease-in-out</code> for 12 different interactions. Entry gestures
+            should feel different from exit gestures, and different again from
+            feedback gestures.
+          </p>
+          <p class="instead">
+            Instead: name three springs, use them consistently.
+            Smooth for entry, snappy for user input, bouncy for reward only.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Bouncing everything because bounces feel fun</strong>
+          <p class="detail">
+            Every modal bounces in. Every toast bounces. Even the chevron bounces on hover.
+            By the thirtieth bounce of the day, the user wants the app to stop moving.
+          </p>
+          <p class="instead">
+            Instead: reserve bouncy for moments of celebration &mdash;
+            success states, stamps, successful submit. Smooth for everything else.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Tweening with <code>ease-in-out</code> and calling it a spring</strong>
+          <p class="detail">
+            A spring has overshoot. If your curve's Y never exceeds 1, it's not a spring.
+            <code>cubic-bezier(0.2, 0, 0.3, 1)</code> is a decelerate, not a spring.
+          </p>
+          <p class="instead">
+            Instead: use real spring bezier values.
+            <code>cubic-bezier(0.45, 1.4, 0.55, 1)</code> overshoots to 1.4 before settling. That's a spring.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Ignoring <code>prefers-reduced-motion</code></strong>
+          <p class="detail">
+            A bouncing element is a nausea trigger for people with vestibular disorders.
+            Ignoring the reduced-motion preference excludes those users from your product.
+          </p>
+          <p class="instead">
+            Instead: wrap every spring in <code>@media (prefers-reduced-motion: no-preference) { &hellip; }</code>,
+            or provide a reduced alternative that skips the overshoot.
+          </p>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<footer class="comp-principles">
+  <span class="label">Principles</span>
+  <span class="chip">three named springs</span>
+  <span class="chip">overshoot for reward only</span>
+  <span class="chip">duration ≤ 520ms</span>
+  <span class="chip">reduced-motion honored</span>
+  <span class="chip">force-reflow restart trick</span>
+  <span class="chip">no external lib</span>
+</footer>
+
+<script>
+(function initTheme() {
+  let t = 'light';
+  try {
+    const s = localStorage.getItem('stit-lab-theme');
+    if (s === 'light' || s === 'dark') t = s;
+    else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
+function toggleTheme(event) {
+  const cx = event?.clientX ?? window.innerWidth / 2;
+  const cy = event?.clientY ?? window.innerHeight / 2;
+  document.documentElement.style.setProperty('--cx', cx + 'px');
+  document.documentElement.style.setProperty('--cy', cy + 'px');
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  function apply() {
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+  else document.startViewTransition(() => apply());
+}
+
+(function initTabs() {
+  const root = document.getElementById('tabs');
+  if (!root) return;
+  const indicator = document.getElementById('tab-indicator');
+  const tabs = root.querySelectorAll('.comp-tab');
+  const panels = document.querySelectorAll('.panel');
+  function moveIndicator(btn) {
+    const r = btn.getBoundingClientRect();
+    const rootR = root.getBoundingClientRect();
+    indicator.style.width = r.width + 'px';
+    indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+  }
+  function setTab(name) {
+    const btn = root.querySelector(`[data-panel="${name}"]`);
+    if (!btn) return;
+    tabs.forEach(t => t.classList.toggle('active', t === btn));
+    panels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+    moveIndicator(btn);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.panel)));
+  requestAnimationFrame(() => moveIndicator(root.querySelector('.comp-tab.active')));
+  window.addEventListener('resize', () => moveIndicator(root.querySelector('.comp-tab.active')));
+})();
+
+function copyCode(btn) {
+  const code = document.getElementById('code-block');
+  if (!code) return;
+  navigator.clipboard?.writeText(code.textContent);
+  const orig = btn.textContent;
+  btn.classList.add('copied'); btn.textContent = 'Copied';
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+}
+
+/* ======== Spring Physics — specific ======== */
+let ballTimeout;
+function dropBall(type) {
+  const ball = document.getElementById('spring-ball');
+  ball.className = 'spring-ball';
+  void ball.offsetWidth;
+  ball.classList.add('animating-' + type);
+  clearTimeout(ballTimeout);
+  ballTimeout = setTimeout(() => { ball.className = 'spring-ball'; }, 1400);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Houses · Japanese-Ma</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* ==========================================================================
+     HOUSE · JAPANESE-MA · page-specific only
+     ========================================================================== */
+
+  /* Override masthead to take a full viewport for Ma */
+  .masthead { min-height: 85vh; }
+
+  /* Kanji decoration */
+  .kanji {
+    position: absolute;
+    right: 3%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Noto Serif JP", serif;
+    font-weight: 300;
+    font-size: clamp(10rem, 22vw, 22rem);
+    line-height: 1;
+    color: var(--fg);
+    opacity: 0.035;
+    pointer-events: none;
+    user-select: none;
+    z-index: -1;
+  }
+  [data-theme="dark"] .kanji { opacity: 0.055; }
+
+  /* Type specimen */
+  .type-specimen {
+    display: grid;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .type-line {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--space-6);
+    align-items: baseline;
+    padding-bottom: var(--space-4);
+    border-bottom: 1px dashed var(--border);
+  }
+  .type-line:last-child { border-bottom: 0; padding-bottom: 0; }
+  .type-line .tag {
+    font-family: var(--font-mono);
+    font-size: 10px; color: var(--fg-subtle);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding-top: 0.3em;
+  }
+  .type-line .sample.display {
+    font-family: var(--font-serif);
+    font-style: italic; font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--fg);
+  }
+  .type-line .sample.body {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    max-width: 52ch;
+  }
+  .type-line .sample.mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+  .type-line .sample.ratio {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--fg-muted);
+    line-height: 1.4;
+  }
+
+  /* Component showcase (default vs ma) */
+  .showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+  }
+  @media (max-width: 720px) { .showcase { grid-template-columns: 1fr; } }
+  .showcase-card {
+    padding: clamp(3rem, 5vw, 4rem);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    display: grid;
+    place-items: center;
+    min-height: 320px;
+    position: relative;
+  }
+  .showcase-card .tag {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 9px; color: var(--fg-subtle);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 3px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+  .showcase-card.default { opacity: 0.7; }
+
+  /* Ma button (the hero) */
+  .ma-button {
+    font-family: var(--font-serif);
+    font-style: italic; font-weight: 400;
+    font-size: 1.4rem;
+    color: var(--fg);
+    padding: 28px 64px;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    position: relative;
+    letter-spacing: -0.01em;
+    transition: letter-spacing var(--duration-moderate) var(--ease-decelerate);
+  }
+  .ma-button::before {
+    content: '';
+    position: absolute;
+    bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    width: 32px; height: 1px;
+    background: var(--fg);
+    transition: width var(--duration-moderate) var(--ease-decelerate);
+  }
+  .ma-button:hover { letter-spacing: 0.04em; }
+  .ma-button:hover::before { width: 80px; }
+
+  /* Default button (contrast) */
+  .default-button {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: oklch(0.55 0.16 270);
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px oklch(0 0 0 / 0.1);
+  }
+</style>
+
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
+      <span>Stit'Claude</span>
+    </a>
+    <span class="brand-mark">Houses · 06 · Japanese-Ma</span>
+    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ======================== MASTHEAD ======================== -->
+  <section class="masthead">
+    <span class="kanji" aria-hidden="true">間</span>
+    <div class="mast-meta">
+      <span class="num">HOUSE № 06</span>
+      <span class="sep"></span>
+      <span>of eight</span>
+    </div>
+    <h1 class="mast-title">Japanese-<em>Ma.</em></h1>
+    <p class="mast-subtitle">
+      間 &mdash; the space between. The interval, the gap, the pause.
+      Negative space treated not as emptiness, but as material.
+    </p>
+  </section>
+
+  <!-- ======================== QUOTE ======================== -->
+  <section class="quote-block">
+    <blockquote>
+      Emptiness is not <em>nothing.</em> Emptiness is a promise
+      that something meaningful will appear there.
+      <cite>Kenya Hara · <em>White</em> · 2010</cite>
+    </blockquote>
+  </section>
+
+  <!-- ======================== 01 · PALETTE ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">01 · Palette</span>
+      <h2 class="bloc-title">Washed paper, ink-wash, a single vermillion.</h2>
+    </div>
+    <p class="bloc-caption">
+      Ma palettes avoid saturation. Backgrounds lean warm white, text is near-black with a whisper of warmth,
+      and accents are withheld. When an accent appears, it earns its presence by being the only chromatic note
+      on the page.
+    </p>
+    <div class="bloc-body">
+      <div class="palette-row">
+        <div class="swatch" style="background: oklch(0.985 0.006 95); color: oklch(0.2 0.01 40);" data-val="oklch(0.985 0.006 95)"><span class="lbl">paper</span></div>
+        <div class="swatch" style="background: oklch(0.965 0.008 88); color: oklch(0.3 0.01 40);" data-val="oklch(0.965 0.008 88)"><span class="lbl">surface</span></div>
+        <div class="swatch" style="background: oklch(0.895 0.010 82); color: oklch(0.3 0.01 40);" data-val="oklch(0.895 0.010 82)"><span class="lbl">edge</span></div>
+        <div class="swatch" style="background: oklch(0.450 0.014 50); color: oklch(0.95 0.01 85);" data-val="oklch(0.450 0.014 50)"><span class="lbl">sumi-muted</span></div>
+        <div class="swatch" style="background: oklch(0.185 0.012 40); color: oklch(0.95 0.01 85);" data-val="oklch(0.185 0.012 40)"><span class="lbl">sumi-ink</span></div>
+        <div class="swatch" style="background: oklch(0.535 0.162 35); color: oklch(0.98 0.005 85);" data-val="oklch(0.535 0.162 35)"><span class="lbl">shu · vermillion</span></div>
+      </div>
+      <div class="palette-legend">
+        <button class="tok" data-val="oklch(0.985 0.006 95)"><span class="s" style="background: oklch(0.985 0.006 95)"></span><span class="n">--ma-paper</span></button>
+        <button class="tok" data-val="oklch(0.965 0.008 88)"><span class="s" style="background: oklch(0.965 0.008 88)"></span><span class="n">--ma-surface</span></button>
+        <button class="tok" data-val="oklch(0.895 0.010 82)"><span class="s" style="background: oklch(0.895 0.010 82)"></span><span class="n">--ma-edge</span></button>
+        <button class="tok" data-val="oklch(0.450 0.014 50)"><span class="s" style="background: oklch(0.450 0.014 50)"></span><span class="n">--ma-sumi-muted</span></button>
+        <button class="tok" data-val="oklch(0.185 0.012 40)"><span class="s" style="background: oklch(0.185 0.012 40)"></span><span class="n">--ma-sumi-ink</span></button>
+        <button class="tok" data-val="oklch(0.535 0.162 35)"><span class="s" style="background: oklch(0.535 0.162 35)"></span><span class="n">--ma-shu</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 02 · TYPOGRAPHY ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">02 · Typography</span>
+      <h2 class="bloc-title">Serif for body, mono for tags.</h2>
+    </div>
+    <p class="bloc-caption">
+      Ma prefers editorial serif throughout &mdash; Instrument Serif italic for display, again italic for body,
+      and a single mono line for labels. No sans-serif body text. Generous leading: <code>line-height: 1.6</code> minimum.
+      Italic body is rare in the West. It's normal here.
+    </p>
+    <div class="bloc-body">
+      <div class="type-specimen">
+        <div class="type-line">
+          <span class="tag">Display</span>
+          <span class="sample display">Emptiness is not nothing.</span>
+        </div>
+        <div class="type-line">
+          <span class="tag">Body</span>
+          <span class="sample body">
+            The space between elements is not absence. It is a material with weight, with presence.
+            When Kenya Hara designed the Muji identity, he did not design logos. He designed voids.
+          </span>
+        </div>
+        <div class="type-line">
+          <span class="tag">Label</span>
+          <span class="sample mono">№ 01 · Ma · House of space</span>
+        </div>
+        <div class="type-line">
+          <span class="tag">Leading</span>
+          <span class="sample ratio">Line-height minimum 1.6 &nbsp;·&nbsp; Type scale 1.618 (golden)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 03 · MOTION ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">03 · Motion</span>
+      <h2 class="bloc-title">Slow, decelerating, never bouncing.</h2>
+    </div>
+    <p class="bloc-caption">
+      Ma refuses spring overshoot. The motion vocabulary is entirely in the <em>decelerate</em> family &mdash;
+      things enter slowly and arrive with quiet authority. Bouncy easing is as out of place here as neon in a tea room.
+    </p>
+    <div class="bloc-body">
+      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);">
+          <span style="color: var(--accent); margin-right: 16px;">✓</span>
+          <code style="color: var(--fg);">--duration-slow: 520ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">default duration</span>
+        </div>
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);">
+          <span style="color: var(--accent); margin-right: 16px;">✓</span>
+          <code style="color: var(--fg);">--ease-decelerate</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.05, 0.7, 0.1, 1)</span>
+        </div>
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);">
+          <span style="color: var(--accent); margin-right: 16px;">✓</span>
+          <code style="color: var(--fg);">--ease-expo-out</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.16, 1, 0.3, 1)</span>
+        </div>
+        <div style="padding: 12px 16px; background: color-mix(in oklch, var(--accent) 5%, var(--surface)); border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border)); border-radius: var(--radius-sm); color: var(--fg-muted);">
+          <span style="color: var(--accent); margin-right: 16px;">✕</span>
+          <code style="color: var(--fg);">--ease-spring-bouncy</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">never used in Ma</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 04 · COMPONENT SHOWCASE ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">04 · The same button, two voices</span>
+      <h2 class="bloc-title">A default button, and the same gesture in Ma.</h2>
+    </div>
+    <p class="bloc-caption">
+      The left is the default UI button you'll find in every framework &mdash; fill, radius, shadow, weight. The right
+      is the same idea translated into Ma: italic serif, no fill, a single hairline that grows on hover.
+      Both say <em>"submit"</em>. Only one says it quietly.
+    </p>
+    <div class="bloc-body">
+      <div class="showcase">
+        <div class="showcase-card default">
+          <span class="tag">default</span>
+          <button class="default-button">Subscribe now</button>
+        </div>
+        <div class="showcase-card">
+          <span class="tag">ma</span>
+          <button class="ma-button">Begin</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 05 · DO / DONT ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">05 · The trap</span>
+      <h2 class="bloc-title">Do not confuse minimalism with emptiness.</h2>
+    </div>
+    <p class="bloc-caption">
+      Ma is the hardest house to get right because the wrong way looks identical at first glance.
+      Empty is boring. Ma is charged. The difference is invisible except through craft.
+    </p>
+    <div class="bloc-body">
+      <div class="do-dont">
+        <div class="dd-card do">
+          <div class="dd-label">Do</div>
+          <p>Let the page breathe. A single element on a large canvas reads as intentional.</p>
+          <p>The space around the element is part of the composition. Not decoration &mdash; material.</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-label">Don't</div>
+          <p>Center a button on a blank page and call it minimal.</p>
+          <p>Empty is a failure state. Ma is a deliberate placement, with typography, pacing, and alignment doing invisible work.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 06 · CANON ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">06 · In the world</span>
+      <h2 class="bloc-title">Where Ma lives, outside the lab.</h2>
+    </div>
+    <p class="bloc-caption">
+      Reference material. When you're unsure whether you've built Ma or you've built empty, look at these.
+      They are the proof that restraint is not the same as absence.
+    </p>
+    <div class="bloc-body">
+      <div class="canon-grid">
+
+        <article class="canon-card">
+          <div class="era">1980 — ongoing</div>
+          <div class="name">Muji</div>
+          <div class="desc">
+            Kenya Hara's identity work turns the brand into a vessel for its product. No heroic logo,
+            no stock-photo lifestyle. Just white, typography, and silence.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">2011 — 2022</div>
+          <div class="name">Kinfolk magazine</div>
+          <div class="desc">
+            Editorial layout so spacious it was almost parodied. Large margins, single column,
+            images that hover alone on the page. Ma applied to print.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">2008 — ongoing</div>
+          <div class="name">Apple Japan site</div>
+          <div class="desc">
+            The same Apple product pages, but with Japanese typography that asks for more room.
+            You feel the difference in every section break.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">1964</div>
+          <div class="name">Tokyo Olympics identity</div>
+          <div class="desc">
+            Yusaku Kamekura's pictograms. One shape per sport. No context, no chrome. The space
+            around each glyph is what makes them read as a system.
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== HOUSE NAV ======================== -->
+  <nav class="house-nav" aria-label="House navigation">
+    <a class="house-nav-link" href="apple-craft.html">
+      <span class="dir">← Previous · 05</span>
+      <span class="target"><em>Apple-Craft</em></span>
+    </a>
+    <a class="house-nav-link next" href="power-dense.html">
+      <span class="dir">Next · 07 →</span>
+      <span class="target"><em>Power-Dense</em></span>
+    </a>
+  </nav>
+
+</main>
+
+<script>
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+
+  // Copy-on-click for swatches & tokens
+  document.querySelectorAll('[data-val]').forEach(el => {
+    el.addEventListener('click', () => {
+      const v = el.getAttribute('data-val');
+      navigator.clipboard?.writeText(v);
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1200);
+    });
+  });
+</script>
+
+</body>
+</html>

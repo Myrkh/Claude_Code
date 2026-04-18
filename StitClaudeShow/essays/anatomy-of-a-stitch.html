@@ -1,0 +1,890 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<meta name="description" content="Stit'Claude · Field Notes · N° 001 — On the indicator that changed my mind about software. An editorial essay." />
+<title>The Anatomy of a Stitch · Stit'Claude Field Notes</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+
+<style>
+  /* ==========================================================================
+     STIT'CLAUDE · FIELD NOTES № 001
+     House: Editorial-Display × Japanese-Ma × Swiss-Quiet
+     ========================================================================== */
+
+  :root {
+    --essay-w: 1200px;
+    --prose-w: 62ch;
+    --margin-gap: 2.5rem;
+  }
+
+  html {
+    hanging-punctuation: first last;
+    font-optical-sizing: auto;
+  }
+
+  body {
+    background: var(--bg);
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Scroll-driven reading progress — top hairline */
+  .progress {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    z-index: 100;
+    background: color-mix(in oklch, var(--fg) 4%, transparent);
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left center;
+    transform: scaleX(0);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent);
+  }
+  @supports (animation-timeline: scroll()) {
+    .progress-bar {
+      animation: fill linear;
+      animation-timeline: scroll(root);
+    }
+    @keyframes fill {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+  }
+
+  /* ============================================================
+     TOP BAR — minimal, editorial
+     ============================================================ */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: 56px;
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    background: color-mix(in oklch, var(--bg) 70%, transparent);
+    border-bottom: 1px solid color-mix(in oklch, var(--fg) 5%, transparent);
+  }
+  .topbar-inner {
+    max-width: var(--essay-w);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    height: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .brand-mark {
+    justify-self: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .theme-toggle-btn {
+    width: 34px; height: 34px;
+    display: inline-grid; place-items: center;
+    border-radius: var(--radius-pill);
+    color: var(--fg-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+  }
+  .theme-toggle-btn:hover { background: var(--surface); color: var(--fg); }
+  .theme-toggle-btn svg { width: 15px; height: 15px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* View Transitions — theme morph */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  ::view-transition-old(root) { z-index: 1; }
+  ::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-reveal 820ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes theme-reveal {
+    from { clip-path: circle(0% at var(--cx, 50%) var(--cy, 50%)); }
+    to   { clip-path: circle(150% at var(--cx, 50%) var(--cy, 50%)); }
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fg-muted);
+    font-size: var(--step--1);
+    transition: color var(--duration-fast);
+  }
+  .back-link:hover { color: var(--fg); }
+  .back-link svg {
+    width: 14px; height: 14px;
+    transition: transform var(--duration-normal) var(--ease-standard);
+  }
+  .back-link:hover svg { transform: translateX(-3px); }
+
+  /* ============================================================
+     LAYOUT — editorial grid
+     ============================================================ */
+  main {
+    max-width: var(--essay-w);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .masthead {
+    padding-top: clamp(4rem, 10vw, 9rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .masthead-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-8);
+  }
+  .masthead-meta .sep {
+    width: 16px; height: 1px;
+    background: var(--border-strong);
+  }
+  .masthead-meta .num {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .masthead-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    color: var(--fg);
+    max-width: 16ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .masthead-subtitle {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+    color: var(--fg-muted);
+    margin-top: var(--space-6);
+    max-width: 40ch;
+    margin-inline: auto;
+    line-height: 1.4;
+    letter-spacing: -0.008em;
+    text-wrap: balance;
+  }
+  .masthead-byline {
+    margin-top: var(--space-8);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--fg-subtle);
+    text-transform: uppercase;
+  }
+  .masthead-byline strong {
+    font-weight: 500;
+    color: var(--fg-muted);
+  }
+
+  /* ============================================================
+     ARTICLE — grid with marginalia
+     ============================================================ */
+  article {
+    padding-block: clamp(3rem, 6vw, 5rem) clamp(4rem, 8vw, 7rem);
+    display: grid;
+    grid-template-columns:
+      [full-start] minmax(0, 1fr)
+      [main-start] minmax(0, 62ch)
+      [main-end margin-start] minmax(0, 18rem)
+      [margin-end] minmax(0, 1fr)
+      [full-end];
+    column-gap: var(--margin-gap);
+    row-gap: 0;
+  }
+  article > * { grid-column: main; }
+
+  @media (max-width: 960px) {
+    article {
+      grid-template-columns: 1fr;
+    }
+    article > * { grid-column: 1; }
+  }
+
+  /* ============================================================
+     PROSE — core typography
+     ============================================================ */
+  .prose {
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.15vw + 0.9rem, 1.3rem);
+    line-height: 1.65;
+    color: var(--fg-body);
+    letter-spacing: -0.003em;
+    text-wrap: pretty;
+  }
+  .prose p {
+    margin: 0 0 var(--space-6) 0;
+    max-width: none;
+  }
+  .prose em {
+    font-style: italic;
+    color: var(--fg);
+  }
+  .prose strong {
+    font-weight: 600;
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 0.94em;
+    letter-spacing: -0.01em;
+  }
+  .prose a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklch, var(--accent) 60%, transparent);
+    transition: text-decoration-color var(--duration-fast) var(--ease-standard);
+  }
+  .prose a:hover { text-decoration-color: var(--accent); }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 1px 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--fg);
+    font-variant-ligatures: none;
+  }
+
+  /* ============================================================
+     DROP CAP — first letter of first paragraph
+     ============================================================ */
+  .prose p.lead::first-letter {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    float: left;
+    font-size: 5.5em;
+    line-height: 0.82;
+    padding: 0.08em 0.12em 0 0;
+    margin-top: 0.02em;
+    color: var(--accent);
+    font-feature-settings: "dlig" on, "liga" on;
+  }
+  .prose p.lead {
+    text-indent: 0;
+  }
+
+  /* Section marker — roman numerals, small caps */
+  .section-marker {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 2.25rem;
+    color: var(--accent);
+    font-weight: 400;
+    text-align: left;
+    margin: var(--space-16) 0 var(--space-5) 0;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    position: relative;
+  }
+  .section-marker::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 1px;
+    background: var(--accent);
+    margin-top: var(--space-3);
+    opacity: 0.5;
+  }
+
+  .subhead {
+    font-family: var(--font-sans);
+    font-variant-caps: all-small-caps;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+    margin: 0 0 var(--space-4) 0;
+    font-family: var(--font-mono);
+    text-transform: none;
+  }
+
+  /* ============================================================
+     PULL QUOTE
+     ============================================================ */
+  .pull-quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2.15rem);
+    line-height: 1.3;
+    color: var(--fg);
+    letter-spacing: -0.015em;
+    padding: var(--space-8) 0 var(--space-8) var(--space-8);
+    margin: var(--space-10) 0 !important;
+    border-left: 2px solid var(--accent);
+    text-wrap: balance;
+    max-width: 28ch;
+  }
+  .pull-quote cite {
+    display: block;
+    margin-top: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-style: normal;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  /* ============================================================
+     MARGINALIA — notes in the gutter
+     ============================================================ */
+  .marginalia {
+    grid-column: margin !important;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+    padding: var(--space-2) 0 0 0;
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.01em;
+    align-self: start;
+    margin-top: 0.3em;
+  }
+  .marginalia .note-id {
+    display: inline-block;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+  }
+  .marginalia em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--fg);
+    display: block;
+    margin-top: var(--space-2);
+    line-height: 1.35;
+  }
+
+  @media (max-width: 960px) {
+    .marginalia {
+      margin: var(--space-4) 0;
+      padding: var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      border-top: 1px solid var(--border);
+    }
+  }
+
+  /* ============================================================
+     FIGURE — the "artifact" reference box
+     ============================================================ */
+  .figure {
+    margin: var(--space-10) 0 !important;
+    padding: var(--space-6);
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    display: grid;
+    gap: var(--space-3);
+  }
+  .figure-visual {
+    padding: var(--space-8);
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    min-height: 140px;
+  }
+  .figure-caption {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    text-align: center;
+    max-width: none;
+  }
+  .figure-caption strong {
+    color: var(--fg);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 400;
+    margin-right: 6px;
+  }
+
+  /* The actual artifact we discuss — Linear's active indicator */
+  .artifact {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+  }
+  .artifact .bar {
+    width: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 70%, transparent);
+  }
+  .artifact .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .artifact .ico {
+    width: 16px; height: 16px;
+    color: var(--fg-muted);
+  }
+  .artifact .ico svg {
+    width: 100%; height: 100%;
+  }
+
+  /* ============================================================
+     FOOTNOTES
+     ============================================================ */
+  .footnotes {
+    margin-top: var(--space-16);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
+  }
+  .footnotes-title {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
+  }
+  .footnotes ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-4);
+    counter-reset: fn;
+  }
+  .footnotes li {
+    counter-increment: fn;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: var(--space-2);
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--fg-muted);
+    font-style: italic;
+  }
+  .footnotes li::before {
+    content: counter(fn);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-style: normal;
+    letter-spacing: 0.04em;
+    padding-top: 0.25em;
+  }
+
+  /* Inline footnote references */
+  .fn-ref {
+    font-family: var(--font-mono);
+    font-size: 0.65em;
+    color: var(--accent);
+    text-decoration: none;
+    vertical-align: super;
+    padding: 0 2px;
+    font-style: normal;
+  }
+  .fn-ref:hover { text-decoration: underline; }
+
+  /* ============================================================
+     COLOPHON — closing editorial signature
+     ============================================================ */
+  .colophon {
+    text-align: center;
+    padding: clamp(4rem, 8vw, 7rem) 0 clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--border);
+    max-width: var(--essay-w);
+    margin-inline: auto;
+  }
+  .colophon-mark {
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    margin-bottom: var(--space-5);
+  }
+  .colophon-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--fg-muted);
+    max-width: 38ch;
+    margin-inline: auto;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+  .colophon-signature {
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--fg-subtle);
+    text-transform: uppercase;
+  }
+  .colophon-signature a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast);
+  }
+  .colophon-signature a:hover { color: var(--fg); }
+
+  /* ============================================================
+     SCROLL-DRIVEN REVEALS
+     Subtle, editorial — no translateY acrobatics
+     ============================================================ */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 20%;
+    }
+    @keyframes reveal-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  }
+
+  /* Selection color */
+  ::selection {
+    background: color-mix(in oklch, var(--accent) 30%, transparent);
+    color: var(--fg);
+  }
+</style>
+</head>
+
+<body>
+
+<div class="progress"><div class="progress-bar"></div></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M10 4 L4 8 L10 12" />
+      </svg>
+      <span>Stit'Claude</span>
+    </a>
+    <span class="brand-mark">Field Notes · № 001</span>
+    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- =========================================================
+       MASTHEAD
+       ========================================================= -->
+  <section class="masthead">
+    <div class="masthead-meta">
+      <span class="num">№ 001</span>
+      <span class="sep"></span>
+      <span>Essay</span>
+      <span class="sep"></span>
+      <span>MMXXVI</span>
+      <span class="sep"></span>
+      <span>8 min read</span>
+    </div>
+    <h1 class="masthead-title">The Anatomy of a&nbsp;Stitch.</h1>
+    <p class="masthead-subtitle">
+      On the two-pixel indicator that changed my mind about software.
+    </p>
+    <p class="masthead-byline">
+      <strong>Stit'Claude Field Notes</strong> &nbsp;·&nbsp; by the studio
+    </p>
+  </section>
+
+  <!-- =========================================================
+       ARTICLE
+       ========================================================= -->
+  <article>
+
+    <!-- ============ I ============ -->
+    <div class="reveal">
+      <h2 class="section-marker">I.</h2>
+      <p class="subhead">The detail no one mentions</p>
+    </div>
+
+    <p class="prose lead reveal">
+      There is a small, almost invisible design choice in Linear &mdash; the project management tool &mdash;
+      that took me nearly a year to notice, and then once I noticed it, I could not look at another product
+      the same way. It is a two-pixel coral bar, rounded, glowing faintly, floating at the left edge of the
+      currently-active item in the sidebar. That's the entire feature. That's the whole essay.<a class="fn-ref" href="#fn1">¹</a>
+    </p>
+
+    <aside class="marginalia reveal">
+      <span class="note-id">NOTE &nbsp;·&nbsp; I</span>
+      The indicator &mdash; when you see it, you can't unsee it.
+      <em>It is small in the way haiku is small.</em>
+    </aside>
+
+    <p class="prose reveal">
+      Most software marks active items with a filled background: the entire row turns gray, or blue,
+      or purple. This is the default solution. It is the one every tutorial teaches. It is the one
+      every component library ships. And it is, in every single case I have examined carefully,
+      the wrong solution. Because a filled background asks the user to accept that <em>the item has changed</em>.
+      A two-pixel bar does not make any such demand. The item is still the item. Only its <em>context</em> has shifted.
+    </p>
+
+    <div class="figure reveal">
+      <div class="figure-visual">
+        <div class="artifact">
+          <div class="bar" aria-hidden="true"></div>
+          <div class="row">
+            <span class="ico" aria-hidden="true">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="12" height="12" rx="2"/>
+                <path d="M5 8 L7 10 L11 6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span>Inbox</span>
+          </div>
+        </div>
+      </div>
+      <div class="figure-caption">
+        <strong>Fig. 1</strong> The Linear indicator, reproduced from memory. Two pixels. A soft glow. No fill.
+      </div>
+    </div>
+
+    <!-- ============ II ============ -->
+    <div class="reveal">
+      <h2 class="section-marker">II.</h2>
+      <p class="subhead">Why the bar works, and the fill doesn't</p>
+    </div>
+
+    <p class="prose reveal">
+      A filled background is <em>violent</em>. It rewrites the pixels occupied by the label. The text
+      that was black on cream is now black on gray, or white on blue, and the user's eye must re-acquire
+      it. The act of <em>selecting</em> becomes an act of <em>visual disruption</em>. A two-pixel bar, meanwhile,
+      is additive. It is a small mark placed <em>beside</em> the label, not on top of it. The label is
+      unchanged. The user's attention is invited, not commanded.
+    </p>
+
+    <p class="prose reveal">
+      Dieter Rams said good design is <em>as little design as possible</em>. He was explaining furniture,
+      but the principle translates directly. A filled background is a lot of design &mdash; it recolors a
+      rectangle, it redraws text, it introduces a new surface. A two-pixel bar is <em>almost no design</em>:
+      a thin line, one color, one position. It does exactly the job of indicating active state, and
+      nothing else.<a class="fn-ref" href="#fn2">²</a>
+    </p>
+
+    <aside class="marginalia reveal">
+      <span class="note-id">NOTE &nbsp;·&nbsp; II</span>
+      Rams's tenth principle is often quoted as "less, but better". A more accurate translation of
+      <em>weniger, aber besser</em> is something closer to <em>less, except better</em> &mdash; the
+      <em>but</em> is adversarial. Less is not a sacrifice; it is the condition of better.
+    </aside>
+
+    <blockquote class="pull-quote reveal">
+      A filled background is violent. A two-pixel bar is <em>additive</em>. That difference is the entire philosophy.
+      <cite>Field Notes № 001</cite>
+    </blockquote>
+
+    <!-- ============ III ============ -->
+    <div class="reveal">
+      <h2 class="section-marker">III.</h2>
+      <p class="subhead">The glow is not decoration</p>
+    </div>
+
+    <p class="prose reveal">
+      Look closely and you'll see that the bar has a soft coral glow. This is the detail most copycat
+      implementations get wrong. They add the bar but forget the glow, and the result reads as a border &mdash;
+      a division between items &mdash; rather than as an indicator. The glow is what tells the eye that this
+      is not a structural line. It is a <em>mark</em>, a stamp, a small flag planted in the margin.
+    </p>
+
+    <p class="prose reveal">
+      In CSS, the glow is a <code>box-shadow</code> with a blur radius of six or eight pixels, in the same
+      hue as the bar but at approximately seventy percent opacity. That single declaration
+      separates a functional line from a communicative mark. It is, in a literal sense, the difference
+      between the bar being <em>seen</em> and the bar being <em>understood</em>.
+    </p>
+
+    <aside class="marginalia reveal">
+      <span class="note-id">NOTE &nbsp;·&nbsp; III</span>
+      <code style="font-family: inherit;">box-shadow: 0 0 6px color-mix(in oklch, var(--accent) 70%, transparent);</code>
+      <em>The whole idea, in one declaration.</em>
+    </aside>
+
+    <!-- ============ IV ============ -->
+    <div class="reveal">
+      <h2 class="section-marker">IV.</h2>
+      <p class="subhead">What this tells us about software</p>
+    </div>
+
+    <p class="prose reveal">
+      We are told that good software is the sum of its features &mdash; that what matters is <em>what the tool
+      does</em>. I think the better software is the sum of its <em>decisions</em>. The features are
+      requested. The decisions are chosen. And a decision like <em>"we will indicate the active item
+      with an additive mark, not a subtractive rewrite"</em> is the kind of choice that, once made, propagates
+      through every subsequent screen. It is a philosophy made visible.
+    </p>
+
+    <p class="prose reveal">
+      Most products do not make this decision. They ship the filled background, because filled backgrounds
+      are the default of every CSS framework and every design system template in existence. The filled
+      background is not chosen. It is inherited. And software that inherits rather than chooses accumulates
+      these small thoughtlessnesses until the whole product feels, to use the technical term, <em>off</em>.
+    </p>
+
+    <blockquote class="pull-quote reveal">
+      The filled background is not chosen. It is inherited. Software that inherits rather than chooses
+      accumulates small thoughtlessnesses until the whole product feels <em>off</em>.
+      <cite>Field Notes № 001</cite>
+    </blockquote>
+
+    <!-- ============ V ============ -->
+    <div class="reveal">
+      <h2 class="section-marker">V.</h2>
+      <p class="subhead">What to do with this</p>
+    </div>
+
+    <p class="prose reveal">
+      When you next open your design tool, look at your active-state indicator. Ask yourself whether
+      it was chosen or inherited. If it was inherited, try the bar. Two pixels, rounded, accent color,
+      glow at the same hue. Ship that version. Watch how the rest of the interface reshuffles itself
+      around a more honest decision. The buttons might shrink. The colors might calm. The whole system
+      starts conducting itself with a little more dignity.
+    </p>
+
+    <p class="prose reveal">
+      This is how one detail changes a product. Not by being impressive &mdash; a two-pixel bar is
+      the opposite of impressive &mdash; but by being <em>correct</em>. Small correctness, compounded
+      across a thousand decisions, is the difference between a piece of software that feels lived-in
+      and one that feels assembled. The stitch is small. But the garment holds.<a class="fn-ref" href="#fn3">³</a>
+    </p>
+
+    <!-- ============ FOOTNOTES ============ -->
+    <div class="footnotes reveal">
+      <div class="footnotes-title">Footnotes</div>
+      <ol>
+        <li id="fn1">
+          The indicator also appears in Height, Linear's sibling-in-spirit, and in some forks of shadcn/ui.
+          It is rare outside that lineage.
+        </li>
+        <li id="fn2">
+          Rams's full ten principles, published in 1976 at Braun, can be read in about three minutes. The
+          fact that they are still news to most software designers fifty years later is its own essay.
+        </li>
+        <li id="fn3">
+          The title of this essay is a reference to the etymology of Stit'Claude itself &mdash;
+          the skill is named for the <em>stitch</em> that holds a design together. Small. Precise. Invisible if done right.
+        </li>
+      </ol>
+    </div>
+
+  </article>
+
+  <!-- =========================================================
+       COLOPHON
+       ========================================================= -->
+  <footer class="colophon">
+    <span class="colophon-mark"></span>
+    <p class="colophon-text">
+      Stit'Claude Field Notes are short essays on software design, published
+      when the studio feels it has something true to say. Not often.
+    </p>
+    <div class="colophon-signature">
+      <a href="../components.html">Components</a>
+      &nbsp;·&nbsp;
+      <a href="../lab.html">The Lab</a>
+      &nbsp;·&nbsp;
+      MMXXVI
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  /* Theme init from localStorage or system preference */
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+
+  /* Theme toggle with radial View Transition */
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+</script>
+
+</body>
+</html>

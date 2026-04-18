@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Houses · Apple-Craft</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* Apple-Craft signature demos */
+  .ac-stage {
+    display: grid;
+    place-items: center;
+    min-height: 340px;
+    padding: var(--space-8);
+    background: linear-gradient(180deg,
+      oklch(0.97 0.01 245) 0%,
+      oklch(0.92 0.015 240) 100%);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  [data-theme="dark"] .ac-stage {
+    background: linear-gradient(180deg,
+      oklch(0.18 0.012 240) 0%,
+      oklch(0.14 0.014 245) 100%);
+  }
+
+  /* Concentric cards — the signature */
+  .concentric {
+    width: 280px;
+    padding: 24px;
+    background: oklch(1 0 0 / 0.85);
+    border: 1px solid oklch(0.75 0 0 / 0.3);
+    border-radius: 20px;
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.04),
+      0 8px 24px oklch(0 0 0 / 0.08);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  }
+  [data-theme="dark"] .concentric {
+    background: oklch(0.22 0.012 240 / 0.72);
+    border-color: oklch(1 0 0 / 0.08);
+  }
+  .concentric h4 {
+    font-family: -apple-system, "SF Pro Display", "Inter", sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--fg);
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+  }
+  .concentric .concentric-field {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+    background: oklch(0 0 0 / 0.04);
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  [data-theme="dark"] .concentric .concentric-field { background: oklch(1 0 0 / 0.05); }
+  .concentric .concentric-field .k {
+    font-family: -apple-system, "SF Pro Text", "Inter", sans-serif;
+    font-size: 13px; color: var(--fg-muted); font-weight: 500;
+  }
+  .concentric .concentric-field .v {
+    font-family: -apple-system, "SF Pro Text", "Inter", sans-serif;
+    font-size: 13px; color: var(--fg); font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .concentric .concentric-btn {
+    display: block;
+    width: 100%;
+    margin-top: 4px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: oklch(0.55 0.18 255);
+    color: white;
+    border: 0;
+    font-family: -apple-system, "SF Pro Text", "Inter", sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    cursor: pointer;
+    transition: transform 180ms cubic-bezier(0.45, 1.4, 0.55, 1),
+                background 120ms ease;
+  }
+  .concentric .concentric-btn:hover { background: oklch(0.50 0.18 255); }
+  .concentric .concentric-btn:active { transform: scale(0.97); }
+
+  /* Concentric radii demo */
+  .radii-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    text-align: center;
+  }
+  .radii-demo .box {
+    padding: 24px;
+    background: oklch(0.96 0.01 245);
+    border-radius: 20px;
+    border: 1px solid oklch(0.88 0.01 240);
+  }
+  [data-theme="dark"] .radii-demo .box { background: oklch(0.22 0.012 240); border-color: oklch(1 0 0 / 0.08); }
+  .radii-demo .box-inner {
+    padding: 16px;
+    background: oklch(1 0 0);
+    border-radius: 12px;
+    border: 1px solid oklch(0.9 0 0);
+    margin-bottom: 8px;
+  }
+  [data-theme="dark"] .radii-demo .box-inner { background: oklch(0.14 0.012 240); border-color: oklch(1 0 0 / 0.08); }
+  .radii-demo .box-innermost {
+    width: 24px; height: 24px; margin: 0 auto;
+    background: oklch(0.55 0.18 255);
+    border-radius: 6px;
+  }
+
+  /* Spring demo */
+  .spring-row {
+    display: grid;
+    gap: 10px;
+    width: 100%; max-width: 360px;
+  }
+  .spring-item {
+    padding: 14px 18px;
+    background: oklch(1 0 0 / 0.7);
+    border: 1px solid oklch(0 0 0 / 0.08);
+    border-radius: 12px;
+    font-family: -apple-system, "SF Pro Text", sans-serif;
+    font-size: 14px;
+    color: var(--fg);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 300ms cubic-bezier(0.45, 1.4, 0.55, 1);
+  }
+  [data-theme="dark"] .spring-item {
+    background: oklch(0.22 0.012 240 / 0.8);
+    border-color: oklch(1 0 0 / 0.1);
+  }
+  .spring-item:hover {
+    transform: translateX(6px) scale(1.02);
+  }
+  .spring-item .chevron { color: var(--fg-subtle); }
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
+      <span>Stit'Claude</span>
+    </a>
+    <span class="brand-mark">Houses · 05 · Apple-Craft</span>
+    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ======================== MASTHEAD ======================== -->
+  <section class="masthead">
+    <div class="mast-meta">
+      <span class="num">HOUSE № 05</span>
+      <span class="sep"></span>
+      <span>of eight</span>
+    </div>
+    <h1 class="mast-title">Apple-<em>Craft.</em></h1>
+    <p class="mast-subtitle">
+      Obsessive concentricity. Spring-smooth motion. Materials that feel
+      physical. The house where every radius is chosen, not inherited.
+    </p>
+  </section>
+
+  <!-- ======================== QUOTE ======================== -->
+  <section class="quote-block">
+    <blockquote>
+      <em>Details</em> are not the details. They make the product.
+      <cite>Charles Eames &nbsp;·&nbsp; quoted by Jony Ive, everywhere</cite>
+    </blockquote>
+  </section>
+
+  <!-- ======================== 01 · PALETTE ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">01 · Palette</span>
+      <h2 class="bloc-title">Cool grays, blue-leaning. One confident accent.</h2>
+    </div>
+    <p class="bloc-caption">
+      Apple-Craft leans <em>blue-gray</em> rather than warm. Shadows are soft, long, and never pure black.
+      System blue is the default accent unless the brand demands otherwise &mdash; and green is reserved for success only.
+    </p>
+    <div class="bloc-body">
+      <div class="palette-row">
+        <div class="swatch" style="background: oklch(0.985 0.005 245); color: oklch(0.2 0.01 245);" data-val="oklch(0.985 0.005 245)"><span class="lbl">system bg</span></div>
+        <div class="swatch" style="background: oklch(0.950 0.012 245); color: oklch(0.25 0.01 245);" data-val="oklch(0.950 0.012 245)"><span class="lbl">surface</span></div>
+        <div class="swatch" style="background: oklch(0.895 0.015 242); color: oklch(0.25 0.01 245);" data-val="oklch(0.895 0.015 242)"><span class="lbl">separator</span></div>
+        <div class="swatch" style="background: oklch(0.550 0.175 255); color: oklch(0.98 0.005 245);" data-val="oklch(0.550 0.175 255)"><span class="lbl">blue</span></div>
+        <div class="swatch" style="background: oklch(0.625 0.150 145); color: oklch(0.98 0.005 145);" data-val="oklch(0.625 0.150 145)"><span class="lbl">green · success</span></div>
+        <div class="swatch" style="background: oklch(0.175 0.012 245); color: oklch(0.95 0.005 245);" data-val="oklch(0.175 0.012 245)"><span class="lbl">label</span></div>
+      </div>
+      <div class="palette-legend">
+        <button class="tok" data-val="oklch(0.985 0.005 245)"><span class="s" style="background: oklch(0.985 0.005 245)"></span><span class="n">--ac-system-bg</span></button>
+        <button class="tok" data-val="oklch(0.950 0.012 245)"><span class="s" style="background: oklch(0.950 0.012 245)"></span><span class="n">--ac-surface</span></button>
+        <button class="tok" data-val="oklch(0.895 0.015 242)"><span class="s" style="background: oklch(0.895 0.015 242)"></span><span class="n">--ac-separator</span></button>
+        <button class="tok" data-val="oklch(0.550 0.175 255)"><span class="s" style="background: oklch(0.550 0.175 255)"></span><span class="n">--ac-blue</span></button>
+        <button class="tok" data-val="oklch(0.625 0.150 145)"><span class="s" style="background: oklch(0.625 0.150 145)"></span><span class="n">--ac-green</span></button>
+        <button class="tok" data-val="oklch(0.175 0.012 245)"><span class="s" style="background: oklch(0.175 0.012 245)"></span><span class="n">--ac-label</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 02 · CONCENTRIC RADII — the signature ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">02 · The signature: concentric radii</span>
+      <h2 class="bloc-title">Child radius equals parent minus padding.</h2>
+    </div>
+    <p class="bloc-caption">
+      The one rule everyone steals from Apple and nobody names. Outer container at 20&thinsp;px with 8&thinsp;px padding?
+      Inner element at 12&thinsp;px. The nested corners align visually, which the eye reads as "considered."
+      Break this rule and you get the <em>floating rectangle inside another rectangle</em> look that gives every
+      framework-default UI its amateur aura.
+    </p>
+    <div class="bloc-body">
+      <div class="radii-demo">
+        <div>
+          <div class="box" style="border-radius: 20px;">
+            <div class="box-inner" style="border-radius: 12px;">
+              <div class="box-innermost" style="border-radius: 6px;"></div>
+            </div>
+            20 → 12 → 6
+          </div>
+        </div>
+        <div>
+          <div class="box" style="border-radius: 16px;">
+            <div class="box-inner" style="border-radius: 10px;">
+              <div class="box-innermost" style="border-radius: 4px;"></div>
+            </div>
+            16 → 10 → 4
+          </div>
+        </div>
+        <div>
+          <div class="box" style="border-radius: 12px;">
+            <div class="box-inner" style="border-radius: 8px;">
+              <div class="box-innermost" style="border-radius: 3px;"></div>
+            </div>
+            12 → 8 → 3
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 03 · MOTION ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">03 · Motion</span>
+      <h2 class="bloc-title">Spring-smooth, with restraint on the overshoot.</h2>
+    </div>
+    <p class="bloc-caption">
+      Apple-Craft motion always has a touch of overshoot &mdash; it's what makes things feel <em>physical</em>, like
+      objects with mass. But the overshoot is small. Spring-smooth (1.4 peak) is the default;
+      spring-snappy (1.6) on input; spring-bouncy (1.9) only for celebratory moments.
+    </p>
+    <div class="bloc-body">
+      <div class="ac-stage">
+        <div class="spring-row">
+          <button class="spring-item">
+            <span>Hover me — spring returns</span>
+            <span class="chevron">›</span>
+          </button>
+          <button class="spring-item">
+            <span>Each one independent</span>
+            <span class="chevron">›</span>
+          </button>
+          <button class="spring-item">
+            <span>Subtle physical weight</span>
+            <span class="chevron">›</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 04 · COMPONENT SHOWCASE ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">04 · A settings card in Apple-Craft</span>
+      <h2 class="bloc-title">Glass materials. Tabular nums. A real blue button.</h2>
+    </div>
+    <p class="bloc-caption">
+      Translucent background (<code>backdrop-filter: blur(20px) saturate(1.2)</code>), SF Pro throughout,
+      tabular numerics on data, concentric radii respected. The sum of these choices is <em>the Apple feeling</em>
+      &mdash; there is no single technique.
+    </p>
+    <div class="bloc-body">
+      <div class="ac-stage">
+        <div class="concentric">
+          <h4>Lab account</h4>
+          <div class="concentric-field">
+            <span class="k">Storage used</span>
+            <span class="v">4.8 GB</span>
+          </div>
+          <div class="concentric-field">
+            <span class="k">Sync frequency</span>
+            <span class="v">Every 15 min</span>
+          </div>
+          <div class="concentric-field">
+            <span class="k">Member since</span>
+            <span class="v">Mar 2026</span>
+          </div>
+          <button class="concentric-btn">Manage subscription</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 05 · DO / DONT ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">05 · The trap</span>
+      <h2 class="bloc-title">Apple-Craft is a system, not a Sketchfab asset.</h2>
+    </div>
+    <p class="bloc-caption">
+      Copying the visual surface (frosted glass, blue buttons, rounded corners) without the underlying
+      discipline gives you a costume, not a product. Apple-Craft is about <em>what you refuse</em> more
+      than what you add.
+    </p>
+    <div class="bloc-body">
+      <div class="do-dont">
+        <div class="dd-card do">
+          <div class="dd-label">Do</div>
+          <p>Measure nested radii before shipping. If child radius = parent, something is wrong.</p>
+          <p>Use tabular nums on any column of data. Align decimals. It's a rule, not a suggestion.</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-label">Don't</div>
+          <p>Copy the frosted glass effect without controlling what's behind it.</p>
+          <p>Use bouncy spring for a dropdown. Reserve it for user-triggered reward moments only.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 06 · CANON ======================== -->
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">06 · In the world</span>
+      <h2 class="bloc-title">Where Apple-Craft lives, outside Apple.</h2>
+    </div>
+    <p class="bloc-caption">
+      References that embody the discipline. Apple doesn't own this vocabulary &mdash; they just
+      codified it and enforced it without compromise for 20 years.
+    </p>
+    <div class="bloc-body">
+      <div class="canon-grid">
+
+        <article class="canon-card">
+          <div class="era">2007 — ongoing</div>
+          <div class="name">iOS</div>
+          <div class="desc">
+            The source. Every iOS setting, every sheet, every haptic response is Apple-Craft in its purest form.
+            Notice the concentric corners on Control Center.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">2016 — ongoing</div>
+          <div class="name">Linear</div>
+          <div class="desc">
+            The first SaaS to fully internalize Apple's discipline for the web.
+            ⌘K, cursor physics, concentric nav items. It's not inspiration, it's scripture.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">2019 — ongoing</div>
+          <div class="name">Raycast</div>
+          <div class="desc">
+            A launcher built in the Apple-Craft image. Every animation is a spring.
+            Every extension feels native. macOS in miniature.
+          </div>
+        </article>
+
+        <article class="canon-card">
+          <div class="era">2022 — ongoing</div>
+          <div class="name">Mercury</div>
+          <div class="desc">
+            Banking software that looks like it was designed in Cupertino. Proof that the discipline
+            translates to any domain &mdash; even the most buttoned-up.
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== HOUSE NAV ======================== -->
+  <nav class="house-nav" aria-label="House navigation">
+    <a class="house-nav-link" href="playful-warm.html">
+      <span class="dir">← Previous · 04</span>
+      <span class="target"><em>Playful-Warm</em></span>
+    </a>
+    <a class="house-nav-link next" href="japanese-ma.html">
+      <span class="dir">Next · 06 →</span>
+      <span class="target"><em>Japanese-Ma</em></span>
+    </a>
+  </nav>
+
+</main>
+
+<script>
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+
+  document.querySelectorAll('[data-val]').forEach(el => {
+    el.addEventListener('click', () => {
+      const v = el.getAttribute('data-val');
+      navigator.clipboard?.writeText(v);
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1200);
+    });
+  });
+</script>
+
+</body>
+</html>

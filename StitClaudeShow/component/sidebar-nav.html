@@ -1,0 +1,1176 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Sidebar Navigation</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/comp.css" />
+
+<style>
+  /* ==========================================================================
+     SIDEBAR NAVIGATION · component-specific styles
+     House: Power-Dense × Swiss-Quiet × Apple-Craft
+     ========================================================================== */
+
+  .sb-demo-wrap {
+    width: 100%;
+    max-width: 620px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    min-height: 480px;
+  }
+
+  /* =========================================================================
+     THE SIDEBAR ITSELF
+     ========================================================================= */
+  .sb {
+    --sb-width-open: 240px;
+    --sb-width-collapsed: 56px;
+    width: var(--sb-width-open);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    transition: width var(--duration-moderate) var(--ease-spring-snappy);
+    padding: var(--space-3);
+    gap: var(--space-4);
+    overflow: hidden;
+    position: relative;
+  }
+  .sb.collapsed { width: var(--sb-width-collapsed); }
+
+  /* Labels hide with a staggered delay when collapsing */
+  .sb .label {
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      opacity var(--duration-fast) var(--ease-standard),
+      transform var(--duration-normal) var(--ease-decelerate);
+    white-space: nowrap;
+  }
+  .sb.collapsed .label {
+    opacity: 0;
+    transform: translateX(-6px);
+    pointer-events: none;
+  }
+  /* Stagger: shortcuts fade first, then labels, then section headers */
+  .sb .shortcut             { transition-delay: 0ms; }
+  .sb .item .label          { transition-delay: 30ms; }
+  .sb .section-head .label  { transition-delay: 60ms; }
+  .sb .ws-text .label       { transition-delay: 0ms; }
+  .sb .ws-text .subtext     { transition-delay: 40ms; }
+
+  /* ========== Workspace header ========== */
+  .sb-ws {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-standard);
+    flex-shrink: 0;
+  }
+  .sb.collapsed .sb-ws {
+    grid-template-columns: 36px;
+    justify-content: center;
+    padding: var(--space-2) 0;
+  }
+  .sb.collapsed .sb-ws .ws-text,
+  .sb.collapsed .sb-ws .chevron { display: none; }
+  .sb-ws:hover { background: var(--card); }
+  .sb-ws .avatar {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg,
+      var(--coral-9),
+      color-mix(in oklch, var(--coral-9) 50%, oklch(0.55 0.16 270))
+    );
+    display: grid; place-items: center;
+    color: var(--bg);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .sb-ws .ws-text {
+    overflow: hidden;
+    min-width: 0;
+  }
+  .sb-ws .ws-text .label {
+    font-weight: 500;
+    font-size: var(--step--1);
+    color: var(--fg);
+    line-height: 1.15;
+    display: block;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .sb-ws .ws-text .subtext {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    display: block;
+    margin-top: 2px;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .sb-ws .chevron {
+    color: var(--fg-subtle);
+    transition: transform var(--duration-moderate) var(--ease-standard);
+    flex-shrink: 0;
+  }
+  .sb-ws .chevron svg { width: 12px; height: 12px; display: block; }
+  .sb.collapsed .sb-ws .chevron { transform: rotate(180deg); }
+
+  /* ========== Search pill ========== */
+  .sb-search {
+    display: grid;
+    grid-template-columns: 18px 1fr auto;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--fg-subtle);
+    font-size: var(--step--1);
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard),
+      padding var(--duration-moderate) var(--ease-spring-snappy),
+      grid-template-columns var(--duration-moderate) var(--ease-spring-snappy);
+    flex-shrink: 0;
+  }
+  .sb-search:hover { border-color: var(--border-strong); color: var(--fg-muted); }
+  .sb-search svg { width: 13px; height: 13px; }
+  .sb-search .shortcut {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    padding: 2px 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  /* Collapsed: search becomes a centered icon-only tile */
+  .sb.collapsed .sb-search {
+    grid-template-columns: 18px;
+    justify-content: center;
+    padding: 8px 0;
+    background: transparent;
+    border-color: transparent;
+  }
+  .sb.collapsed .sb-search:hover {
+    background: var(--card);
+    color: var(--fg);
+  }
+  .sb.collapsed .sb-search .label,
+  .sb.collapsed .sb-search .shortcut { display: none; }
+
+  /* ========== Section ========== */
+  .sb-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-2);
+    height: 22px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .section-head .action {
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    border-radius: 4px;
+    color: var(--fg-subtle);
+    transition: background var(--duration-fast), color var(--duration-fast);
+    cursor: pointer;
+    border: 0; background: transparent;
+    font-family: inherit;
+    padding: 0;
+  }
+  .section-head .action:hover { background: var(--card); color: var(--fg); }
+  .section-head .action svg { width: 11px; height: 11px; }
+
+  /* ========== Nav item ========== */
+  .item {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 6px var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--fg-muted);
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+    position: relative;
+    text-decoration: none;
+    font-size: var(--step--1);
+    border: 0;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+  }
+  .item:hover { background: var(--card); color: var(--fg); }
+  .item.active { color: var(--fg); }
+  .item.active::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 2px;
+    box-shadow: 0 0 6px color-mix(in oklch, var(--accent) 70%, transparent);
+  }
+  .sb.collapsed .item.active::before {
+    left: 2px;
+  }
+
+  .item .ico {
+    width: 20px; height: 20px;
+    display: grid; place-items: center;
+    color: currentColor;
+    flex-shrink: 0;
+  }
+  .item .ico svg { width: 15px; height: 15px; display: block; }
+
+  .item .label {
+    font-weight: 450;
+    line-height: 1.15;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .item .shortcut {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    padding: 2px 5px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+  }
+  .item:hover .shortcut, .item.active .shortcut { opacity: 1; }
+  .sb.collapsed .item .shortcut { display: none; }
+
+  /* Project color dot */
+  .item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .item .ico.dot-wrap { display: grid; place-items: center; }
+
+  /* Collapsed: tooltip on hover */
+  .item .tooltip {
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 4px 10px;
+    background: var(--ink-12);
+    color: var(--ink-1);
+    font-size: var(--step--2);
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-fast) var(--ease-standard);
+    z-index: 10;
+    font-weight: 500;
+  }
+  .sb.collapsed .item:hover .tooltip {
+    opacity: 1;
+    transition-delay: 400ms;
+  }
+  .sb:not(.collapsed) .item .tooltip { display: none; }
+
+  /* ========== Team avatars ========== */
+  .sb-team-item {
+    grid-template-columns: 1fr !important;
+    padding: 6px var(--space-2);
+  }
+  .sb-team-stack {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-width: 0;
+  }
+  .sb-team-stack .av {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--surface);
+    margin-left: -6px;
+    background-size: cover;
+    background-position: center;
+    font-size: 9px;
+    color: var(--bg);
+    display: grid; place-items: center;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .sb-team-stack .av:first-child { margin-left: 0; }
+  .sb-team-stack .count {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    transition: opacity var(--duration-fast) var(--ease-standard);
+    transition-delay: 60ms;
+  }
+  .sb.collapsed .sb-team-item { padding: 6px 0; }
+  .sb.collapsed .sb-team-stack {
+    justify-content: center;
+    gap: 0;
+  }
+  .sb.collapsed .sb-team-stack .count { display: none; }
+  .sb.collapsed .sb-team-stack .av:not(:first-child) { display: none; }
+
+  /* ========== Footer ========== */
+  .sb-foot {
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .sb-foot .collapse-toggle {
+    display: grid;
+    grid-template-columns: 20px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 6px var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--fg-subtle);
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+    border: 0;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: var(--step--1);
+  }
+  .sb-foot .collapse-toggle:hover { background: var(--card); color: var(--fg-muted); }
+  .sb-foot .collapse-toggle .ico svg {
+    width: 15px; height: 15px;
+    transition: transform var(--duration-moderate) var(--ease-standard);
+  }
+  .sb.collapsed .sb-foot .collapse-toggle .ico svg { transform: rotate(180deg); }
+  .sb-foot .collapse-toggle .shortcut {
+    opacity: 1;
+  }
+
+  /* =========================================================================
+     FAKE CONTENT AREA (to show context)
+     ========================================================================= */
+  .sb-demo-content {
+    padding: var(--space-6);
+    background: var(--bg);
+    overflow: hidden;
+    min-width: 0;
+  }
+  .sb-demo-content h3 {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--step-2);
+    font-weight: 400;
+    color: var(--fg);
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.02em;
+  }
+  .sb-demo-content .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    font-size: var(--step--1);
+  }
+  .sb-demo-content .row:first-of-type { border-top: 0; }
+  .sb-demo-content .row .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sb-demo-content .row .title {
+    flex: 1;
+    color: var(--fg);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .sb-demo-content .row .meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+  .sb-demo-content .hint {
+    margin-top: var(--space-4);
+    padding: var(--space-3);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+  .sb-demo-content .hint kbd {
+    font-family: var(--font-mono);
+    padding: 1px 5px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+</style>
+</head>
+
+<body class="comp-body">
+
+<header class="comp-topbar">
+  <a class="comp-back" href="../lab.html" aria-label="Back to the lab">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4 L4 8 L10 12" /></svg>
+    <span>Back to the Lab</span>
+  </a>
+  <span class="comp-breadcrumb">
+    Components · <span class="current">Navigation / Sidebar</span>
+  </span>
+  <button class="theme-toggle-small" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<header class="comp-head">
+  <div class="comp-meta">
+    <span>Navigation</span>
+    <span class="chip new">new</span>
+  </div>
+  <h1 class="comp-title">Sidebar Navigation</h1>
+  <p class="comp-intro">
+    A collapsible sidebar in the lineage of <em>Linear &times; Raycast</em>.
+    Hierarchical sections, visible keyboard shortcuts, spring-morph collapse, labels that
+    fade in staggered cascade. The kind of sidebar you use for eight hours a day and don't
+    think about &mdash; because it got out of your way.
+  </p>
+</header>
+
+<nav class="comp-tabs" id="tabs" role="tablist">
+  <div class="comp-tab-indicator" id="tab-indicator"></div>
+  <button class="comp-tab active" data-panel="preview"  role="tab">Preview</button>
+  <button class="comp-tab"        data-panel="code"     role="tab">Code</button>
+  <button class="comp-tab"        data-panel="houses"   role="tab">Houses</button>
+  <button class="comp-tab"        data-panel="antislop" role="tab">Anti-patterns</button>
+</nav>
+
+<!-- ============================================================ PREVIEW -->
+<section class="panel active" data-panel="preview">
+  <div class="preview" style="padding: var(--space-6);">
+    <span class="preview-note">click workspace · press ⌘\ · hover icons when collapsed</span>
+
+    <div class="sb-demo-wrap">
+
+      <!-- SIDEBAR -->
+      <aside class="sb" id="sb" aria-label="Main navigation">
+
+        <!-- Workspace pill -->
+        <button class="sb-ws" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+          <span class="avatar">AR</span>
+          <span class="ws-text">
+            <span class="label">Artelia</span>
+            <span class="subtext">PRISM · SIL</span>
+          </span>
+          <span class="chevron" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M8 3 L4 6 L8 9" />
+            </svg>
+          </span>
+        </button>
+
+        <!-- Search -->
+        <button class="sb-search" onclick="alert('This would open ⌘K')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="7" cy="7" r="4.5" />
+            <path d="M10.5 10.5 L14 14" stroke-linecap="round" />
+          </svg>
+          <span class="label">Search</span>
+          <span class="shortcut">⌘K</span>
+        </button>
+
+        <!-- MAIN section -->
+        <div class="sb-section">
+          <div class="section-head">
+            <span class="label">Main</span>
+          </div>
+          <button class="item active" data-section="inbox">
+            <span class="ico">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 6 L2 12 A1 1 0 0 0 3 13 L13 13 A1 1 0 0 0 14 12 L14 6" />
+                <path d="M2 6 L5 3 L11 3 L14 6" />
+                <path d="M2 9 L5 9 L6.5 10.5 L9.5 10.5 L11 9 L14 9" />
+              </svg>
+            </span>
+            <span class="label">Inbox</span>
+            <span class="shortcut">⌘1</span>
+            <span class="tooltip">Inbox · ⌘1</span>
+          </button>
+          <button class="item" data-section="my-issues">
+            <span class="ico">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="8" cy="8" r="5.5" />
+                <path d="M8 5 L8 8.5 L10.5 10" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="label">My Issues</span>
+            <span class="shortcut">⌘2</span>
+            <span class="tooltip">My Issues · ⌘2</span>
+          </button>
+          <button class="item" data-section="views">
+            <span class="ico">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="2" width="5" height="5" rx="1" />
+                <rect x="9" y="2" width="5" height="5" rx="1" />
+                <rect x="2" y="9" width="5" height="5" rx="1" />
+                <rect x="9" y="9" width="5" height="5" rx="1" />
+              </svg>
+            </span>
+            <span class="label">Views</span>
+            <span class="shortcut">⌘3</span>
+            <span class="tooltip">Views · ⌘3</span>
+          </button>
+        </div>
+
+        <!-- PROJECTS section -->
+        <div class="sb-section">
+          <div class="section-head">
+            <span class="label">Projects</span>
+            <button class="action" aria-label="Add project">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                <path d="M8 3 L8 13 M3 8 L13 8" />
+              </svg>
+            </button>
+          </div>
+          <button class="item" data-section="proj-prism">
+            <span class="ico dot-wrap"><span class="dot" style="background: oklch(0.645 0.190 35)"></span></span>
+            <span class="label">PRISM core</span>
+            <span class="tooltip">PRISM core</span>
+          </button>
+          <button class="item" data-section="proj-grif">
+            <span class="ico dot-wrap"><span class="dot" style="background: oklch(0.62 0.16 200)"></span></span>
+            <span class="label">GRIF migration</span>
+            <span class="tooltip">GRIF migration</span>
+          </button>
+          <button class="item" data-section="proj-kore">
+            <span class="ico dot-wrap"><span class="dot" style="background: oklch(0.68 0.17 145)"></span></span>
+            <span class="label">KORE docs</span>
+            <span class="tooltip">KORE docs</span>
+          </button>
+          <button class="item" data-section="proj-ins">
+            <span class="ico dot-wrap"><span class="dot" style="background: oklch(0.70 0.17 85)"></span></span>
+            <span class="label">INS database</span>
+            <span class="tooltip">INS database</span>
+          </button>
+        </div>
+
+        <!-- TEAM section -->
+        <div class="sb-section">
+          <div class="section-head">
+            <span class="label">Team</span>
+          </div>
+          <button class="item sb-team-item" data-section="team">
+            <div class="sb-team-stack">
+              <span class="av" style="background: oklch(0.65 0.18 35);">Y</span>
+              <span class="av" style="background: oklch(0.60 0.16 200)">M</span>
+              <span class="av" style="background: oklch(0.65 0.17 145)">C</span>
+              <span class="av" style="background: oklch(0.55 0.18 270)">L</span>
+              <span class="count">4 members</span>
+            </div>
+            <span class="tooltip">Team · 4 members</span>
+          </button>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="sb-foot">
+          <button class="item" data-section="settings">
+            <span class="ico">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="8" cy="8" r="2" />
+                <path d="M8 1 L8 3 M8 13 L8 15 M3.3 3.3 L4.7 4.7 M11.3 11.3 L12.7 12.7 M1 8 L3 8 M13 8 L15 8 M3.3 12.7 L4.7 11.3 M11.3 4.7 L12.7 3.3" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="label">Settings</span>
+            <span class="tooltip">Settings</span>
+          </button>
+          <button class="collapse-toggle" onclick="toggleSidebar()" aria-label="Collapse sidebar">
+            <span class="ico">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+                <rect x="2" y="3" width="12" height="10" rx="1" />
+                <line x1="6" y1="3" x2="6" y2="13" />
+                <path d="M10 6 L8 8 L10 10" />
+              </svg>
+            </span>
+            <span class="label">Collapse</span>
+            <span class="shortcut">⌘\</span>
+          </button>
+        </div>
+
+      </aside>
+
+      <!-- FAKE CONTENT (for context) -->
+      <div class="sb-demo-content">
+        <h3>Inbox</h3>
+        <div class="row">
+          <span class="dot" style="background: oklch(0.645 0.190 35)"></span>
+          <span class="title">SIF-017 proof test overdue</span>
+          <span class="meta">2 min</span>
+        </div>
+        <div class="row">
+          <span class="dot" style="background: oklch(0.68 0.17 145)"></span>
+          <span class="title">Lambda library v0.8 released</span>
+          <span class="meta">1 h</span>
+        </div>
+        <div class="row">
+          <span class="dot" style="background: oklch(0.62 0.16 200)"></span>
+          <span class="title">GRIF import parser handles edge cases</span>
+          <span class="meta">3 h</span>
+        </div>
+        <div class="row">
+          <span class="dot" style="background: oklch(0.70 0.17 85)"></span>
+          <span class="title">INS-0082 reference table merged</span>
+          <span class="meta">yesterday</span>
+        </div>
+        <div class="hint">
+          Try it: click <kbd>Artelia</kbd>, press <kbd>⌘&thinsp;\</kbd>, or hover icons when collapsed. Watch the labels fade in cascade.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ CODE -->
+<section class="panel" data-panel="code">
+  <p class="code-hint">
+    <strong>Drop-in.</strong> Paste into any empty <code>.html</code> file.
+    The sidebar collapses via click on the workspace pill, click on the footer Collapse button, or <code>⌘\</code> / <code>Ctrl+\</code>.
+  </p>
+  <div class="code-card">
+    <div class="code-head">
+      <div class="path">
+        <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <span>sidebar-nav.html</span>
+      </div>
+      <button class="code-copy" onclick="copyCode(this)">Copy</button>
+    </div>
+<div class="code-body"><pre><code id="code-block"><span class="c-com">&lt;!-- Stit'Claude · Sidebar Navigation · drop-in, zero deps --&gt;</span>
+
+<span class="c-sel">&lt;style&gt;</span>
+  <span class="c-sel">.stit-sb-root</span> {
+    <span class="c-val">--fg</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.145 0.015 36</span>);
+    <span class="c-val">--fg-muted</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.265 0.012 40</span>);
+    <span class="c-val">--fg-subtle</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.360 0.012 42</span>);
+    <span class="c-val">--bg</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.988 0.006 85</span>);
+    <span class="c-val">--surface</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.971 0.010 82</span>);
+    <span class="c-val">--card</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.946 0.014 80</span>);
+    <span class="c-val">--border</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.860 0.018 75</span>);
+    <span class="c-val">--accent</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.645 0.190 35</span>);
+    <span class="c-val">--radius-sm</span>: <span class="c-num">6px</span>;
+    <span class="c-val">--radius-md</span>: <span class="c-num">10px</span>;
+    <span class="c-val">--ease-snappy</span>: <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.3, 1.6, 0.5, 1</span>);
+    <span class="c-val">--ease-standard</span>: <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.2, 0, 0, 1</span>);
+
+    <span class="c-prop">font-family</span>: <span class="c-str">"Inter"</span>, <span class="c-val">system-ui</span>, <span class="c-val">sans-serif</span>;
+  }
+  <span class="c-sel">.stit-sb</span> {
+    <span class="c-val">--w-open</span>: <span class="c-num">240px</span>;
+    <span class="c-val">--w-closed</span>: <span class="c-num">56px</span>;
+    <span class="c-prop">width</span>: <span class="c-fn">var</span>(<span class="c-val">--w-open</span>);
+    <span class="c-prop">height</span>: <span class="c-num">100vh</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--surface</span>);
+    <span class="c-prop">border-right</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">display</span>: <span class="c-val">flex</span>;
+    <span class="c-prop">flex-direction</span>: <span class="c-val">column</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">16px</span>;
+    <span class="c-prop">padding</span>: <span class="c-num">12px</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">width</span> <span class="c-num">340ms</span> <span class="c-fn">var</span>(<span class="c-val">--ease-snappy</span>);
+    <span class="c-prop">overflow</span>: <span class="c-val">hidden</span>;
+  }
+  <span class="c-sel">.stit-sb.is-collapsed</span> { <span class="c-prop">width</span>: <span class="c-fn">var</span>(<span class="c-val">--w-closed</span>); }
+
+  <span class="c-com">/* Labels fade in staggered cascade */</span>
+  <span class="c-sel">.stit-sb .lbl</span> {
+    <span class="c-prop">white-space</span>: <span class="c-val">nowrap</span>;
+    <span class="c-prop">opacity</span>: <span class="c-num">1</span>;
+    <span class="c-prop">transform</span>: <span class="c-fn">translateX</span>(<span class="c-num">0</span>);
+    <span class="c-prop">transition</span>:
+      <span class="c-prop">opacity</span> <span class="c-num">120ms</span> <span class="c-fn">var</span>(<span class="c-val">--ease-standard</span>),
+      <span class="c-prop">transform</span> <span class="c-num">200ms</span> <span class="c-fn">var</span>(<span class="c-val">--ease-standard</span>);
+  }
+  <span class="c-sel">.stit-sb.is-collapsed .lbl</span> {
+    <span class="c-prop">opacity</span>: <span class="c-num">0</span>;
+    <span class="c-prop">transform</span>: <span class="c-fn">translateX</span>(<span class="c-num">-6px</span>);
+  }
+  <span class="c-sel">.stit-sb .kbd</span> {
+    <span class="c-prop">font-family</span>: <span class="c-str">"JetBrains Mono"</span>, <span class="c-val">ui-monospace</span>, <span class="c-val">monospace</span>;
+    <span class="c-prop">font-size</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg-subtle</span>);
+    <span class="c-prop">padding</span>: <span class="c-num">2px 5px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--bg</span>);
+    <span class="c-prop">border</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">border-radius</span>: <span class="c-num">3px</span>;
+    <span class="c-prop">letter-spacing</span>: <span class="c-num">0.04em</span>;
+    <span class="c-prop">opacity</span>: <span class="c-num">0</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">opacity</span> <span class="c-num">120ms</span>;
+  }
+  <span class="c-sel">.stit-sb .item:hover .kbd</span>,
+  <span class="c-sel">.stit-sb .item.is-active .kbd</span> { <span class="c-prop">opacity</span>: <span class="c-num">1</span>; }
+  <span class="c-sel">.stit-sb.is-collapsed .kbd</span> { <span class="c-prop">display</span>: <span class="c-val">none</span>; }
+
+  <span class="c-com">/* Workspace pill */</span>
+  <span class="c-sel">.stit-sb .ws</span> {
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">grid-template-columns</span>: <span class="c-num">36px 1fr auto</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">align-items</span>: <span class="c-val">center</span>;
+    <span class="c-prop">padding</span>: <span class="c-num">8px</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-fn">var</span>(<span class="c-val">--radius-md</span>);
+    <span class="c-prop">border</span>: <span class="c-num">0</span>;
+    <span class="c-prop">background</span>: <span class="c-val">transparent</span>;
+    <span class="c-prop">cursor</span>: <span class="c-val">pointer</span>;
+    <span class="c-prop">font</span>: <span class="c-val">inherit</span>;
+    <span class="c-prop">text-align</span>: <span class="c-val">left</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">background</span> <span class="c-num">120ms</span> <span class="c-fn">var</span>(<span class="c-val">--ease-standard</span>);
+  }
+  <span class="c-sel">.stit-sb .ws:hover</span> { <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--card</span>); }
+  <span class="c-sel">.stit-sb .ws .avatar</span> {
+    <span class="c-prop">width</span>: <span class="c-num">36px</span>; <span class="c-prop">height</span>: <span class="c-num">36px</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-fn">var</span>(<span class="c-val">--radius-sm</span>);
+    <span class="c-prop">background</span>: <span class="c-fn">linear-gradient</span>(<span class="c-num">135deg</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>), <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>) <span class="c-num">50%</span>, <span class="c-fn">oklch</span>(<span class="c-num">0.55 0.16 270</span>)));
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>; <span class="c-prop">place-items</span>: <span class="c-val">center</span>;
+    <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--bg</span>); <span class="c-prop">font-weight</span>: <span class="c-num">600</span>; <span class="c-prop">font-size</span>: <span class="c-num">13px</span>;
+  }
+
+  <span class="c-com">/* Nav item */</span>
+  <span class="c-sel">.stit-sb .item</span> {
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">grid-template-columns</span>: <span class="c-num">20px 1fr auto</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">align-items</span>: <span class="c-val">center</span>;
+    <span class="c-prop">padding</span>: <span class="c-num">6px 8px</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-fn">var</span>(<span class="c-val">--radius-sm</span>);
+    <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg-muted</span>);
+    <span class="c-prop">cursor</span>: <span class="c-val">pointer</span>;
+    <span class="c-prop">border</span>: <span class="c-num">0</span>;
+    <span class="c-prop">background</span>: <span class="c-val">transparent</span>;
+    <span class="c-prop">font</span>: <span class="c-val">inherit</span>;
+    <span class="c-prop">font-size</span>: <span class="c-num">14px</span>;
+    <span class="c-prop">text-align</span>: <span class="c-val">left</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">background</span> <span class="c-num">120ms</span>, <span class="c-prop">color</span> <span class="c-num">120ms</span>;
+    <span class="c-prop">position</span>: <span class="c-val">relative</span>;
+  }
+  <span class="c-sel">.stit-sb .item:hover</span> { <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--card</span>); <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg</span>); }
+  <span class="c-sel">.stit-sb .item.is-active</span> { <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg</span>); }
+  <span class="c-sel">.stit-sb .item.is-active::before</span> {
+    <span class="c-prop">content</span>: <span class="c-str">''</span>;
+    <span class="c-prop">position</span>: <span class="c-val">absolute</span>;
+    <span class="c-prop">left</span>: <span class="c-num">-1px</span>; <span class="c-prop">top</span>: <span class="c-num">50%</span>;
+    <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">-50%</span>);
+    <span class="c-prop">width</span>: <span class="c-num">2px</span>; <span class="c-prop">height</span>: <span class="c-num">14px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--accent</span>);
+    <span class="c-prop">border-radius</span>: <span class="c-num">2px</span>;
+    <span class="c-prop">box-shadow</span>: <span class="c-num">0 0 6px</span> <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>) <span class="c-num">70%</span>, <span class="c-val">transparent</span>);
+  }
+  <span class="c-sel">.stit-sb .item .ico</span> { <span class="c-prop">width</span>: <span class="c-num">20px</span>; <span class="c-prop">display</span>: <span class="c-val">grid</span>; <span class="c-prop">place-items</span>: <span class="c-val">center</span>; }
+  <span class="c-sel">.stit-sb .item .ico svg</span> { <span class="c-prop">width</span>: <span class="c-num">15px</span>; <span class="c-prop">height</span>: <span class="c-num">15px</span>; }
+
+  <span class="c-com">/* Section header */</span>
+  <span class="c-sel">.stit-sb .sec-head</span> {
+    <span class="c-prop">padding</span>: <span class="c-num">0 8px</span>;
+    <span class="c-prop">height</span>: <span class="c-num">22px</span>;
+    <span class="c-prop">display</span>: <span class="c-val">flex</span>;
+    <span class="c-prop">align-items</span>: <span class="c-val">center</span>;
+    <span class="c-prop">font-family</span>: <span class="c-str">"JetBrains Mono"</span>, <span class="c-val">monospace</span>;
+    <span class="c-prop">font-size</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--fg-subtle</span>);
+    <span class="c-prop">letter-spacing</span>: <span class="c-num">0.1em</span>;
+    <span class="c-prop">text-transform</span>: <span class="c-val">uppercase</span>;
+  }
+
+  <span class="c-com">/* Tooltip on collapsed hover */</span>
+  <span class="c-sel">.stit-sb .tip</span> {
+    <span class="c-prop">position</span>: <span class="c-val">absolute</span>;
+    <span class="c-prop">left</span>: <span class="c-fn">calc</span>(<span class="c-num">100% + 10px</span>);
+    <span class="c-prop">top</span>: <span class="c-num">50%</span>;
+    <span class="c-prop">transform</span>: <span class="c-fn">translateY</span>(<span class="c-num">-50%</span>);
+    <span class="c-prop">padding</span>: <span class="c-num">4px 10px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.145 0.015 36</span>);
+    <span class="c-prop">color</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.988 0.006 85</span>);
+    <span class="c-prop">font-size</span>: <span class="c-num">12px</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-fn">var</span>(<span class="c-val">--radius-sm</span>);
+    <span class="c-prop">white-space</span>: <span class="c-val">nowrap</span>;
+    <span class="c-prop">opacity</span>: <span class="c-num">0</span>;
+    <span class="c-prop">pointer-events</span>: <span class="c-val">none</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">opacity</span> <span class="c-num">120ms</span>;
+    <span class="c-prop">z-index</span>: <span class="c-num">10</span>;
+  }
+  <span class="c-sel">.stit-sb.is-collapsed .item:hover .tip</span> {
+    <span class="c-prop">opacity</span>: <span class="c-num">1</span>;
+    <span class="c-prop">transition-delay</span>: <span class="c-num">400ms</span>;
+  }
+  <span class="c-sel">.stit-sb:not(.is-collapsed) .tip</span> { <span class="c-prop">display</span>: <span class="c-val">none</span>; }
+
+  <span class="c-com">/* Footer */</span>
+  <span class="c-sel">.stit-sb .foot</span> {
+    <span class="c-prop">margin-top</span>: <span class="c-val">auto</span>;
+    <span class="c-prop">padding-top</span>: <span class="c-num">12px</span>;
+    <span class="c-prop">border-top</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">display</span>: <span class="c-val">flex</span>;
+    <span class="c-prop">flex-direction</span>: <span class="c-val">column</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">2px</span>;
+  }
+<span class="c-sel">&lt;/style&gt;</span>
+
+<span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-sb-root"</span><span class="c-sel">&gt;</span>
+  <span class="c-sel">&lt;aside</span> <span class="c-prop">class</span>=<span class="c-str">"stit-sb"</span> <span class="c-prop">id</span>=<span class="c-str">"stit-sb"</span><span class="c-sel">&gt;</span>
+
+    <span class="c-com">&lt;!-- Workspace pill --&gt;</span>
+    <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"ws"</span> <span class="c-prop">onclick</span>=<span class="c-str">"stitSbToggle()"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"avatar"</span><span class="c-sel">&gt;</span>AR<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"lbl"</span><span class="c-sel">&gt;</span>Artelia<span class="c-sel">&lt;/span&gt;</span>
+    <span class="c-sel">&lt;/button&gt;</span>
+
+    <span class="c-com">&lt;!-- Section: Main --&gt;</span>
+    <span class="c-sel">&lt;div&gt;</span>
+      <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"sec-head"</span><span class="c-sel">&gt;&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"lbl"</span><span class="c-sel">&gt;</span>Main<span class="c-sel">&lt;/span&gt;&lt;/div&gt;</span>
+      <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"item is-active"</span><span class="c-sel">&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"ico"</span><span class="c-sel">&gt;</span>
+          <span class="c-sel">&lt;svg</span> <span class="c-prop">viewBox</span>=<span class="c-str">"0 0 16 16"</span> <span class="c-prop">fill</span>=<span class="c-str">"none"</span> <span class="c-prop">stroke</span>=<span class="c-str">"currentColor"</span> <span class="c-prop">stroke-width</span>=<span class="c-str">"1.5"</span><span class="c-sel">&gt;&lt;path</span> <span class="c-prop">d</span>=<span class="c-str">"M2 6 L2 12 A1 1 0 0 0 3 13 L13 13 A1 1 0 0 0 14 12 L14 6 L5 3 L11 3 L14 6"</span><span class="c-sel">/&gt;&lt;/svg&gt;</span>
+        <span class="c-sel">&lt;/span&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"lbl"</span><span class="c-sel">&gt;</span>Inbox<span class="c-sel">&lt;/span&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"kbd"</span><span class="c-sel">&gt;</span>⌘1<span class="c-sel">&lt;/span&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"tip"</span><span class="c-sel">&gt;</span>Inbox · ⌘1<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;/button&gt;</span>
+      <span class="c-com">&lt;!-- Add more items: My Issues, Views, etc. --&gt;</span>
+    <span class="c-sel">&lt;/div&gt;</span>
+
+    <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"foot"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"item"</span> <span class="c-prop">onclick</span>=<span class="c-str">"stitSbToggle()"</span><span class="c-sel">&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"ico"</span><span class="c-sel">&gt;</span><span class="c-com">&lt;!-- collapse icon --&gt;</span><span class="c-sel">&lt;/span&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"lbl"</span><span class="c-sel">&gt;</span>Collapse<span class="c-sel">&lt;/span&gt;</span>
+        <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"kbd"</span><span class="c-sel">&gt;</span>⌘\<span class="c-sel">&lt;/span&gt;</span>
+      <span class="c-sel">&lt;/button&gt;</span>
+    <span class="c-sel">&lt;/div&gt;</span>
+
+  <span class="c-sel">&lt;/aside&gt;</span>
+<span class="c-sel">&lt;/div&gt;</span>
+
+<span class="c-sel">&lt;script&gt;</span>
+  <span class="c-kw">function</span> <span class="c-fn">stitSbToggle</span>() {
+    document.getElementById(<span class="c-str">'stit-sb'</span>).classList.toggle(<span class="c-str">'is-collapsed'</span>);
+  }
+  <span class="c-com">// Keyboard: ⌘\ / Ctrl+\ to toggle</span>
+  document.addEventListener(<span class="c-str">'keydown'</span>, (e) =&gt; {
+    <span class="c-kw">if</span> ((e.metaKey || e.ctrlKey) &amp;&amp; e.key === <span class="c-str">'\\'</span>) {
+      e.preventDefault();
+      <span class="c-fn">stitSbToggle</span>();
+    }
+  });
+<span class="c-sel">&lt;/script&gt;</span>
+</code></pre></div>
+  </div>
+</section>
+
+<!-- ============================================================ HOUSES -->
+<section class="panel" data-panel="houses">
+  <div class="houses-grid">
+
+    <article class="house-card">
+      <h3 class="name">Power-Dense</h3>
+      <p class="why">
+        Keyboard shortcuts visible on every item. Dense information density without
+        feeling cramped. Linear's ur-sidebar lives here.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.17 0 0)"></span>
+        <span class="sw" style="background: oklch(0.55 0.16 270)"></span>
+        <span class="sw" style="background: oklch(0.85 0 0)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Swiss-Quiet</h3>
+      <p class="why">
+        One accent (active indicator), hairline borders, zero decorative flourishes.
+        The whole design vanishes so you can think about your work.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.97 0 0)"></span>
+        <span class="sw" style="background: oklch(0.55 0.16 270)"></span>
+        <span class="sw" style="background: oklch(0.2 0 0)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Apple-Craft</h3>
+      <p class="why">
+        Spring-snappy width transition. Concentric radii (sidebar 14px → item 6px →
+        icon 4px). Tooltips delayed 400ms. No effect has no reason.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.95 0.012 245)"></span>
+        <span class="sw" style="background: oklch(0.92 0.02 280)"></span>
+        <span class="sw" style="background: oklch(0.62 0.15 145)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Industrial-Pro</h3>
+      <p class="why">
+        With icon colors drawn from project status (OKLCH-derived signal hues) and
+        tabular nums on counters, the sidebar earns its place in a Bloomberg-grade tool.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.17 0.02 260)"></span>
+        <span class="sw" style="background: oklch(0.58 0.14 200)"></span>
+        <span class="sw" style="background: oklch(0.72 0.17 85)"></span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============================================================ ANTISLOP -->
+<section class="panel" data-panel="antislop">
+  <div class="antislop-card">
+    <ul class="antislop-list">
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Emoji + icon redundancy (📁 Projects)</strong>
+          <p class="detail">
+            An emoji next to a lucide icon next to the label. Three visual signals competing
+            for the same word. Noise and ambiguity at once.
+          </p>
+          <p class="instead">
+            Instead: one glyph per item. A stroked SVG icon for system items, a colored
+            dot for user-defined things (projects, tags). Emojis belong to user content.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Collapse that hides labels instantly</strong>
+          <p class="detail">
+            Click collapse and all labels disappear in the same frame as the width shrinks.
+            The sidebar looks like it crashed, not like it transformed.
+          </p>
+          <p class="instead">
+            Instead: stagger label fade-outs with <code>transition-delay</code> per category
+            (0ms shortcuts, 30ms labels, 60ms section heads). The cascade reads as choreography.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Big logo at the top that takes 80&thinsp;px</strong>
+          <p class="detail">
+            The workspace logo occupies prime vertical space every day, telling the user
+            information they already have. You know what product you opened.
+          </p>
+          <p class="instead">
+            Instead: a compact workspace pill (36&thinsp;px avatar + name + chevron) that
+            doubles as the collapse trigger. It earns its pixels.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>No keyboard shortcut at all</strong>
+          <p class="detail">
+            Power users live in the sidebar. Without <code>⌘1 / ⌘2 / ⌘3</code>, they keep
+            reaching for the mouse. Any app used daily must grow keyboard surface area.
+          </p>
+          <p class="instead">
+            Instead: visible shortcuts on hover, trigger them from anywhere in the app,
+            display them in a <code>⌘K</code> palette too. Three entries for the same feature
+            is a feature.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Tooltips appearing immediately on hover in collapsed mode</strong>
+          <p class="detail">
+            Move the cursor across the rail &mdash; 5 tooltips flash by in half a second.
+            Visual panic instead of information.
+          </p>
+          <p class="instead">
+            Instead: <code>transition-delay: 400ms</code> before the tooltip appears.
+            The user has to hover intentionally. Reading the icon is the path of first resort,
+            tooltip is the backup.
+          </p>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ PRINCIPLES -->
+<footer class="comp-principles">
+  <span class="label">Principles</span>
+  <span class="chip">shortcuts visible</span>
+  <span class="chip">staggered label fade</span>
+  <span class="chip">spring-snappy width</span>
+  <span class="chip">active indicator as bar, not fill</span>
+  <span class="chip">concentric radii 14 → 10 → 6</span>
+  <span class="chip">tooltip 400ms delay</span>
+  <span class="chip">triple trigger (click · shortcut · button)</span>
+</footer>
+
+<script>
+(function initTheme() {
+  let t = 'light';
+  try {
+    const s = localStorage.getItem('stit-lab-theme');
+    if (s === 'light' || s === 'dark') t = s;
+    else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
+function toggleTheme(event) {
+  const cx = event?.clientX ?? window.innerWidth / 2;
+  const cy = event?.clientY ?? window.innerHeight / 2;
+  document.documentElement.style.setProperty('--cx', cx + 'px');
+  document.documentElement.style.setProperty('--cy', cy + 'px');
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  function apply() {
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+  else document.startViewTransition(() => apply());
+}
+
+(function initTabs() {
+  const root = document.getElementById('tabs');
+  if (!root) return;
+  const indicator = document.getElementById('tab-indicator');
+  const tabs = root.querySelectorAll('.comp-tab');
+  const panels = document.querySelectorAll('.panel');
+  function moveIndicator(btn) {
+    const r = btn.getBoundingClientRect();
+    const rootR = root.getBoundingClientRect();
+    indicator.style.width = r.width + 'px';
+    indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+  }
+  function setTab(name) {
+    const btn = root.querySelector(`[data-panel="${name}"]`);
+    if (!btn) return;
+    tabs.forEach(t => t.classList.toggle('active', t === btn));
+    panels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+    moveIndicator(btn);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.panel)));
+  requestAnimationFrame(() => moveIndicator(root.querySelector('.comp-tab.active')));
+  window.addEventListener('resize', () => moveIndicator(root.querySelector('.comp-tab.active')));
+})();
+
+function copyCode(btn) {
+  const code = document.getElementById('code-block');
+  if (!code) return;
+  navigator.clipboard?.writeText(code.textContent);
+  const orig = btn.textContent;
+  btn.classList.add('copied'); btn.textContent = 'Copied';
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+}
+
+/* ============================================================
+   SIDEBAR — specific logic
+   ============================================================ */
+function toggleSidebar() {
+  document.getElementById('sb').classList.toggle('collapsed');
+}
+
+// Keyboard: ⌘\ or Ctrl+\ to collapse/expand
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === '\\') {
+    e.preventDefault();
+    toggleSidebar();
+  }
+  // Also: ⌘1, ⌘2, ⌘3 to switch active item (as docs for the snippet)
+  if ((e.metaKey || e.ctrlKey) && /^[123]$/.test(e.key)) {
+    e.preventDefault();
+    const sb = document.getElementById('sb');
+    const mainItems = sb.querySelectorAll('.sb-section:first-of-type .item');
+    const idx = parseInt(e.key, 10) - 1;
+    if (mainItems[idx]) {
+      mainItems.forEach(it => it.classList.remove('active'));
+      mainItems[idx].classList.add('active');
+    }
+  }
+});
+
+// Click behavior on items — mark as active
+document.querySelectorAll('#sb .item').forEach(it => {
+  it.addEventListener('click', (e) => {
+    // don't change active on the Collapse footer button or the workspace
+    if (it.closest('.sb-foot')) return;
+    document.querySelectorAll('#sb .item').forEach(x => x.classList.remove('active'));
+    it.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

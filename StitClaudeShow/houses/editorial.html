@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Houses · Editorial-Display</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/house.css" />
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
+      <span>Stit'Claude</span>
+    </a>
+    <span class="brand-mark">Houses · 01 · Editorial-Display</span>
+    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <section class="masthead">
+    <div class="mast-meta">
+      <span class="num">HOUSE № 01</span>
+      <span class="sep"></span>
+      <span>of eight</span>
+    </div>
+    <h1 class="mast-title">Editorial-<em>Display.</em></h1>
+    <p class="mast-subtitle">Magazine typography applied to software. Oversized serifs, pull quotes, generous leading. Headlines that earn their scale.</p>
+  </section>
+
+  <section class="quote-block">
+    <blockquote>
+      Typography is the detail that no one notices until it's <em>wrong</em> — and then everyone does.
+      <cite>Massimo Vignelli · <em>The Vignelli Canon</em> · 2008</cite>
+    </blockquote>
+  </section>
+
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">01 · Palette</span>
+      <h2 class="bloc-title">The colors that define this house.</h2>
+    </div>
+    <p class="bloc-caption">Click any swatch or token to copy its OKLCH value. Six carefully chosen hues — no more, no less.</p>
+    <div class="bloc-body">
+      <div class="palette-row">
+        <div class="swatch" style="background: oklch(0.980 0.010 85); color: oklch(0.2 0.01 40);" data-val="oklch(0.980 0.010 85)"><span class="lbl">cream</span></div>
+        <div class="swatch" style="background: oklch(0.920 0.020 80); color: oklch(0.2 0.01 40);" data-val="oklch(0.920 0.020 80)"><span class="lbl">paper</span></div>
+        <div class="swatch" style="background: oklch(0.870 0.030 75); color: oklch(0.2 0.01 40);" data-val="oklch(0.870 0.030 75)"><span class="lbl">border</span></div>
+        <div class="swatch" style="background: oklch(0.250 0.035 30); color: oklch(0.95 0.01 85);" data-val="oklch(0.250 0.035 30)"><span class="lbl">ink-deep</span></div>
+        <div class="swatch" style="background: oklch(0.165 0.020 35); color: oklch(0.95 0.01 85);" data-val="oklch(0.165 0.020 35)"><span class="lbl">ink</span></div>
+        <div class="swatch" style="background: oklch(0.565 0.180 25); color: oklch(0.2 0.01 40);" data-val="oklch(0.565 0.180 25)"><span class="lbl">vermillion</span></div>
+      </div>
+      <div class="palette-legend">
+        <button class="tok" data-val="oklch(0.980 0.010 85)"><span class="s" style="background: oklch(0.980 0.010 85)"></span><span class="n">--ed-cream</span></button>
+        <button class="tok" data-val="oklch(0.920 0.020 80)"><span class="s" style="background: oklch(0.920 0.020 80)"></span><span class="n">--ed-paper</span></button>
+        <button class="tok" data-val="oklch(0.870 0.030 75)"><span class="s" style="background: oklch(0.870 0.030 75)"></span><span class="n">--ed-border</span></button>
+        <button class="tok" data-val="oklch(0.250 0.035 30)"><span class="s" style="background: oklch(0.250 0.035 30)"></span><span class="n">--ed-ink-deep</span></button>
+        <button class="tok" data-val="oklch(0.165 0.020 35)"><span class="s" style="background: oklch(0.165 0.020 35)"></span><span class="n">--ed-ink</span></button>
+        <button class="tok" data-val="oklch(0.565 0.180 25)"><span class="s" style="background: oklch(0.565 0.180 25)"></span><span class="n">--ed-vermillion</span></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">02 · Motion</span>
+      <h2 class="bloc-title">How this house moves.</h2>
+    </div>
+    <p class="bloc-caption">Slow, theatrical entrances. Expo-out easings. Letters that settle into place with weight. This house reads; it does not perform.</p>
+    <div class="bloc-body">
+      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-slow: 520ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">default duration</span></div>
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-slower: 800ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">editorial reveal</span></div>
+        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-expo-out</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.16, 1, 0.3, 1)</span></div>
+        <div style="padding: 12px 16px; background: color-mix(in oklch, var(--accent) 5%, var(--surface)); border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border)); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✕</span><code style="color: var(--fg);">bouncy spring</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">never — never playful</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">03 · The trap</span>
+      <h2 class="bloc-title">Do one thing, refuse another.</h2>
+    </div>
+    <p class="bloc-caption">Every house has a characteristic failure mode. These are the traps to avoid.</p>
+    <div class="bloc-body">
+      <div class="do-dont">
+        <div class="dd-card do">
+          <div class="dd-label">Do</div>
+          <p>Use drop caps on the first paragraph of long-form content. One drop cap per page maximum.</p>
+          <p>Allow headline sizes to break the container — text that overflows feels authored.</p>
+        </div>
+        <div class="dd-card dont">
+          <div class="dd-label">Don't</div>
+          <p>Set all text at 14–16px because 'it's more readable.' 16–22px for body serif is correct.</p>
+          <p>Wrap a pull quote in a gray box. Let the typography do the pulling, not a container.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc">
+    <div class="bloc-head">
+      <span class="bloc-num">04 · In the world</span>
+      <h2 class="bloc-title">Where this house lives, outside the lab.</h2>
+    </div>
+    <p class="bloc-caption">The proof is in the products. These are the references to study when you want to understand this house deeply.</p>
+    <div class="bloc-body">
+      <div class="canon-grid">
+        <article class="canon-card"><div class="era">1962 — 1978</div><div class="name">Esquire magazine</div><div class="desc">George Lois era. Covers that were editorial arguments. Typography used as rhetoric.</div></article>
+        <article class="canon-card"><div class="era">2015 — ongoing</div><div class="name">Aeon magazine</div><div class="desc">Long-form essays rendered with serif discipline. Proof that the web can do what print does.</div></article>
+        <article class="canon-card"><div class="era">1994 — ongoing</div><div class="name">Wired magazine</div><div class="desc">Early issues pushed magazine type into tech. Still a reference for scale and hierarchy.</div></article>
+        <article class="canon-card"><div class="era">2019 — ongoing</div><div class="name">Are.na blog</div><div class="desc">Calm, considered editorial site that feels like a magazine that survived the blog era.</div></article>
+      </div>
+    </div>
+  </section>
+
+  <nav class="house-nav" aria-label="House navigation">
+    <a class="house-nav-link" href="editorial-display.html">
+      <span class="dir">← Previous · 08</span>
+      <span class="target"><em>Editorial-Display</em></span>
+    </a>
+    <a class="house-nav-link next" href="industrial-pro.html">
+      <span class="dir">Next · 02 →</span>
+      <span class="target"><em>Industrial-Pro</em></span>
+    </a>
+  </nav>
+
+</main>
+
+<script>
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+  document.querySelectorAll('[data-val]').forEach(el => {
+    el.addEventListener('click', () => {
+      const v = el.getAttribute('data-val');
+      navigator.clipboard?.writeText(v);
+      el.classList.add('copied');
+      setTimeout(() => el.classList.remove('copied'), 1200);
+    });
+  });
+</script>
+
+</body>
+</html>

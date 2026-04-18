@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<meta name="description" content="Stit'Claude — a design skill for Claude. Tokens, components, essays. Less but better. On ne fait plus de designers comme ça aujourd'hui." />
+<title>Stit'Claude · A design skill for Claude</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="assets/theme.css" />
+
+<style>
+  /* ==========================================================================
+     STIT'CLAUDE · LANDING
+     House: Editorial-Display × Japanese-Ma × Apple-Craft
+     The first thing anyone sees. It has to earn their attention in 3 seconds,
+     and their trust in 10.
+     ========================================================================== */
+
+  html {
+    hanging-punctuation: first last;
+    font-optical-sizing: auto;
+  }
+
+  body {
+    background: var(--bg);
+    min-height: 100dvh;
+  }
+
+  /* ============ Scroll progress ============ */
+  .progress {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    z-index: 100;
+    background: color-mix(in oklch, var(--fg) 4%, transparent);
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left center;
+    transform: scaleX(0);
+    box-shadow: 0 0 8px color-mix(in oklch, var(--accent) 60%, transparent);
+  }
+  @supports (animation-timeline: scroll()) {
+    .progress-bar {
+      animation: fill linear;
+      animation-timeline: scroll(root);
+    }
+    @keyframes fill {
+      from { transform: scaleX(0); }
+      to   { transform: scaleX(1); }
+    }
+  }
+
+  /* ============ Top bar ============ */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: 56px;
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    background: color-mix(in oklch, var(--bg) 70%, transparent);
+    border-bottom: 1px solid color-mix(in oklch, var(--fg) 5%, transparent);
+  }
+  .topbar-inner {
+    max-width: 1160px;
+    margin-inline: auto;
+    height: 100%;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--fg);
+  }
+  .brand .mark {
+    width: 24px;
+    height: 28px;
+    color: var(--accent);
+    display: inline-block;
+    background-color: currentColor;
+    mask-image: url('assets/logo-mark.svg');
+    -webkit-mask-image: url('assets/logo-mark.svg');
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+  }
+  .top-nav {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .top-nav a {
+    padding: 6px 12px;
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    border-radius: var(--radius-sm);
+    transition: color var(--duration-fast), background var(--duration-fast);
+  }
+  .top-nav a:hover { color: var(--fg); background: var(--surface); }
+  .theme-toggle-btn {
+    width: 34px; height: 34px;
+    display: inline-grid; place-items: center;
+    border-radius: var(--radius-pill);
+    color: var(--fg-muted);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: background var(--duration-fast), color var(--duration-fast);
+  }
+  .theme-toggle-btn:hover { background: var(--surface); color: var(--fg); }
+  .theme-toggle-btn svg { width: 15px; height: 15px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* View Transitions */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  ::view-transition-old(root) { z-index: 1; }
+  ::view-transition-new(root) {
+    z-index: 2;
+    animation: theme-reveal 820ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes theme-reveal {
+    from { clip-path: circle(0% at var(--cx, 50%) var(--cy, 50%)); }
+    to   { clip-path: circle(150% at var(--cx, 50%) var(--cy, 50%)); }
+  }
+
+  /* ============ Layout ============ */
+  main {
+    max-width: 1160px;
+    margin-inline: auto;
+    padding: var(--space-8) var(--gutter) 0;
+  }
+
+  /* ============ Hero ============ */
+  .hero {
+    padding-block: clamp(4rem, 12vw, 10rem) clamp(3rem, 8vw, 6rem);
+    text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: min(100%, 900px);
+    height: 600px;
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 40%,
+      color-mix(in oklch, var(--accent) 10%, transparent) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-8);
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: color-mix(in oklch, var(--bg) 70%, transparent);
+  }
+  .hero-eyebrow .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  .hero-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(3.5rem, 11vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--fg);
+    max-width: 14ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+    display: inline-block;
+  }
+
+  .hero-lede {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    line-height: 1.4;
+    color: var(--fg-muted);
+    max-width: 44ch;
+    margin: var(--space-8) auto 0;
+    text-wrap: balance;
+    letter-spacing: -0.008em;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-10);
+    flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: var(--radius-pill);
+    font-size: var(--step--1);
+    font-weight: 500;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+      background var(--duration-fast) var(--ease-standard),
+      border-color var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard),
+      transform var(--duration-normal) var(--ease-spring-smooth);
+    white-space: nowrap;
+  }
+  .btn svg {
+    width: 14px; height: 14px;
+    transition: transform var(--duration-normal) var(--ease-standard);
+  }
+  .btn:hover svg { transform: translateX(3px); }
+  .btn-primary {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+  .btn-primary:hover {
+    background: var(--fg-muted);
+    border-color: var(--fg-muted);
+  }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-outline {
+    color: var(--fg);
+    border-color: var(--border-strong);
+    background: transparent;
+  }
+  .btn-outline:hover {
+    background: var(--surface);
+    border-color: var(--fg-muted);
+  }
+
+  .hero-meta {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    display: flex;
+    justify-content: center;
+    gap: clamp(2rem, 4vw, 4rem);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.08em;
+  }
+  .hero-meta .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .hero-meta .stat .num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+  }
+  .hero-meta .stat .lbl {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .hero-meta .sep {
+    width: 1px;
+    align-self: stretch;
+    background: var(--border);
+  }
+
+  /* ============ Sections entry ============ */
+  .entries {
+    padding-block: clamp(4rem, 8vw, 7rem);
+    border-top: 1px solid var(--border);
+  }
+  .entries-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-6);
+    margin-bottom: var(--space-10);
+    flex-wrap: wrap;
+  }
+  .entries-head h2 {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--fg);
+    max-width: 18ch;
+  }
+  .entries-head .caption {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    max-width: 42ch;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .entries-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--space-4);
+  }
+  @media (max-width: 960px) {
+    .entries-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .entries-grid { grid-template-columns: 1fr; }
+  }
+
+  .entry {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-6);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard),
+      transform var(--duration-normal) var(--ease-spring-smooth);
+    min-height: 280px;
+  }
+  .entry:hover {
+    border-color: color-mix(in oklch, var(--accent) 40%, var(--border));
+    background: var(--card-hover);
+    transform: translateY(-3px);
+  }
+  .entry-large { grid-column: span 8; min-height: 360px; }
+  .entry-small { grid-column: span 4; }
+  @media (max-width: 960px) {
+    .entry-large, .entry-small { grid-column: span 6; }
+  }
+  @media (max-width: 560px) {
+    .entry-large, .entry-small { grid-column: span 1; min-height: 240px; }
+  }
+
+  .entry-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .entry-meta .num { color: var(--accent); font-weight: 500; }
+  .entry-meta .sep { width: 14px; height: 1px; background: var(--border-strong); }
+
+  .entry-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    margin-bottom: var(--space-3);
+    max-width: 14ch;
+    text-wrap: balance;
+  }
+  .entry-large .entry-title { font-size: clamp(2rem, 4vw, 3.25rem); }
+
+  .entry-desc {
+    font-size: var(--step--1);
+    color: var(--fg-muted);
+    line-height: 1.55;
+    max-width: 40ch;
+    text-wrap: pretty;
+  }
+
+  .entry-arrow {
+    margin-top: auto;
+    padding-top: var(--space-6);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .entry-arrow svg {
+    width: 12px; height: 12px;
+    transition: transform var(--duration-normal) var(--ease-standard);
+  }
+  .entry:hover .entry-arrow svg { transform: translateX(4px); }
+
+  /* Visual flourish per entry */
+  .entry-visual {
+    position: absolute;
+    right: -30px;
+    top: -30px;
+    width: 180px;
+    height: 180px;
+    opacity: 0.3;
+    transition: opacity var(--duration-moderate) var(--ease-standard);
+    pointer-events: none;
+  }
+  .entry:hover .entry-visual { opacity: 0.55; }
+  .entry-visual svg { width: 100%; height: 100%; }
+
+  /* ============ Section: Philosophy ============ */
+  .philosophy {
+    padding-block: clamp(5rem, 10vw, 8rem);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .philosophy-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-6);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .philosophy-eyebrow::before,
+  .philosophy-eyebrow::after {
+    content: '';
+    width: 30px; height: 1px;
+    background: var(--border-strong);
+  }
+  .philosophy-quote {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    max-width: 26ch;
+    margin-inline: auto;
+    text-wrap: balance;
+  }
+  .philosophy-quote em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .philosophy-cite {
+    margin-top: var(--space-6);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+
+  /* ============ Footer ============ */
+  footer.site-foot {
+    max-width: 1160px;
+    margin-inline: auto;
+    padding: var(--space-10) var(--gutter);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--fg-subtle);
+  }
+  footer.site-foot em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--fg-muted);
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  footer.site-foot a {
+    color: var(--fg-muted);
+    transition: color var(--duration-fast);
+  }
+  footer.site-foot a:hover { color: var(--fg); }
+
+  /* ============ Motion ============ */
+  @keyframes stit-enter {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-eyebrow, .hero-title, .hero-lede, .hero-actions, .hero-meta {
+    opacity: 0;
+    animation: stit-enter var(--duration-slow) var(--ease-decelerate) forwards;
+  }
+  .hero-eyebrow  { animation-delay:  80ms; }
+  .hero-title    { animation-delay: 180ms; }
+  .hero-lede     { animation-delay: 320ms; }
+  .hero-actions  { animation-delay: 440ms; }
+  .hero-meta     { animation-delay: 560ms; }
+
+  @supports (animation-timeline: view()) {
+    .entry, .entries-head, .philosophy-quote, .philosophy-cite {
+      animation: stit-enter linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="progress"><div class="progress-bar"></div></div>
+
+<!-- ========== TOP BAR ========== -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#">
+      <span class="mark" aria-hidden="true"></span>
+      <span>Stit'Claude</span>
+    </a>
+    <nav class="top-nav">
+      <a href="lab.html">Lab</a>
+      <a href="tokens.html">Tokens</a>
+      <a href="essays/anatomy-of-a-stitch.html">Field Notes</a>
+      <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
+        <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+          <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+        </svg>
+        <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+          <circle cx="8" cy="8" r="3" />
+          <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+        </svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      <span>A design skill for Claude · MMXXVI</span>
+    </div>
+    <h1 class="hero-title">Less, but <em>better.</em> Again.</h1>
+    <p class="hero-lede">
+      A design discipline encoded as a Claude skill.
+      OKLCH tokens, motion with a reason, eight houses, thirty anti-patterns refused.
+      The kind of design they don't make anymore.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="lab.html">
+        Enter the Lab
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+        </svg>
+      </a>
+      <a class="btn btn-outline" href="components.html">Browse components</a>
+    </div>
+    <div class="hero-meta">
+      <span class="stat"><span class="num">18</span> <span class="lbl">components</span></span>
+      <span class="sep"></span>
+      <span class="stat"><span class="num">8</span> <span class="lbl">houses</span></span>
+      <span class="sep"></span>
+      <span class="stat"><span class="num">30</span> <span class="lbl">anti-patterns</span></span>
+      <span class="sep"></span>
+      <span class="stat"><span class="num">0</span> <span class="lbl">dependencies</span></span>
+    </div>
+  </section>
+
+  <!-- ========== ENTRIES ========== -->
+  <section class="entries">
+    <div class="entries-head">
+      <h2>Four doors in.</h2>
+      <p class="caption">
+        Stit'Claude is not one thing &mdash; it is a lab, a component library,
+        a token system, and a carnet éditorial. Start wherever catches the eye.
+      </p>
+    </div>
+
+    <div class="entries-grid">
+
+      <!-- Lab — large feature card -->
+      <a class="entry entry-large" href="lab.html">
+        <span class="entry-visual" aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="70" stroke="oklch(0.645 0.19 35)" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.7"/>
+            <circle cx="100" cy="100" r="40" stroke="oklch(0.645 0.19 35)" stroke-width="1.2" opacity="0.9"/>
+            <circle cx="100" cy="100" r="12" fill="oklch(0.645 0.19 35)"/>
+            <circle cx="155" cy="65" r="4" fill="oklch(0.645 0.19 35)"/>
+            <circle cx="55" cy="140" r="3" fill="oklch(0.645 0.19 35)" opacity="0.6"/>
+          </svg>
+        </span>
+        <div class="entry-meta">
+          <span class="num">01</span>
+          <span class="sep"></span>
+          <span>The Lab</span>
+        </div>
+        <h3 class="entry-title">Ten components, <em style="color: var(--accent); font-style: normal;">all alive.</em></h3>
+        <p class="entry-desc">
+          OKLCH color lab. Spring physics, side by side. Variable font slider.
+          Magnetic button. Command palette. ⌘K. Everything live, in a single file.
+        </p>
+        <span class="entry-arrow">
+          Enter the Lab
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+          </svg>
+        </span>
+      </a>
+
+      <!-- Components — small card -->
+      <a class="entry entry-small" href="components.html">
+        <span class="entry-visual" aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none" stroke="oklch(0.645 0.19 35)" stroke-width="1.2" opacity="0.8">
+            <rect x="40" y="40" width="50" height="50" rx="4"/>
+            <rect x="110" y="40" width="50" height="50" rx="4"/>
+            <rect x="40" y="110" width="50" height="50" rx="4"/>
+            <rect x="110" y="110" width="50" height="50" rx="4" fill="oklch(0.645 0.19 35)" opacity="0.3"/>
+          </svg>
+        </span>
+        <div class="entry-meta">
+          <span class="num">02</span>
+          <span class="sep"></span>
+          <span>Library</span>
+        </div>
+        <h3 class="entry-title">Components, <em style="color: var(--accent); font-style: normal;">catalogued.</em></h3>
+        <p class="entry-desc">Eighteen production-grade UI primitives. Drop-in, zero deps, with Houses and anti-patterns documented.</p>
+        <span class="entry-arrow">
+          Browse
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+          </svg>
+        </span>
+      </a>
+
+      <!-- Tokens — small card -->
+      <a class="entry entry-small" href="tokens.html">
+        <span class="entry-visual" aria-hidden="true">
+          <svg viewBox="0 0 200 200" fill="none">
+            <rect x="30" y="50" width="20" height="20" rx="2" fill="oklch(0.55 0.18 35)"/>
+            <rect x="55" y="50" width="20" height="20" rx="2" fill="oklch(0.645 0.19 35)"/>
+            <rect x="80" y="50" width="20" height="20" rx="2" fill="oklch(0.72 0.17 35)"/>
+            <rect x="105" y="50" width="20" height="20" rx="2" fill="oklch(0.82 0.12 33)" opacity="0.8"/>
+            <rect x="130" y="50" width="20" height="20" rx="2" fill="oklch(0.92 0.07 33)" opacity="0.6"/>
+            <rect x="155" y="50" width="20" height="20" rx="2" fill="oklch(0.97 0.02 33)" opacity="0.5"/>
+            <rect x="30" y="90" width="145" height="8" rx="2" fill="oklch(0.645 0.19 35)" opacity="0.2"/>
+          </svg>
+        </span>
+        <div class="entry-meta">
+          <span class="num">03</span>
+          <span class="sep"></span>
+          <span>System</span>
+        </div>
+        <h3 class="entry-title">The <em style="color: var(--accent); font-style: normal;">token</em> system.</h3>
+        <p class="entry-desc">OKLCH palette, 12-step scale, motion tokens, easings, typography. The technical spine of the skill.</p>
+        <span class="entry-arrow">
+          Inspect
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+          </svg>
+        </span>
+      </a>
+
+      <!-- Field Notes — wide card -->
+      <a class="entry entry-large" href="essays/anatomy-of-a-stitch.html">
+        <span class="entry-visual" aria-hidden="true" style="width: 240px; height: 240px;">
+          <svg viewBox="0 0 200 200" fill="none">
+            <path d="M30 30 L30 170" stroke="oklch(0.645 0.19 35)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M50 50 L170 50 M50 80 L150 80 M50 110 L160 110 M50 140 L130 140" stroke="oklch(0.645 0.19 35)" stroke-width="1" opacity="0.4"/>
+            <circle cx="30" cy="100" r="5" fill="oklch(0.645 0.19 35)"/>
+          </svg>
+        </span>
+        <div class="entry-meta">
+          <span class="num">04</span>
+          <span class="sep"></span>
+          <span>Essays · Field Notes № 001</span>
+        </div>
+        <h3 class="entry-title">The Anatomy of a <em style="color: var(--accent); font-style: normal;">Stitch.</em></h3>
+        <p class="entry-desc">
+          An essay on the two-pixel indicator that changed my mind about software.
+          Drop cap, marginalia, pull quotes. Eight minutes. Worth it.
+        </p>
+        <span class="entry-arrow">
+          Read the essay
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+          </svg>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ========== PHILOSOPHY ========== -->
+  <section class="philosophy">
+    <div class="philosophy-eyebrow">The Stit'Claude principle</div>
+    <p class="philosophy-quote">
+      Good design is <em>as little design as possible.</em> Most products ship the default.
+      Stit'Claude does not.
+    </p>
+    <p class="philosophy-cite">Dieter Rams · 1976 · adapted</p>
+  </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="site-foot">
+  <span><em>On ne fait plus de designers comme ça aujourd'hui.</em></span>
+  <span>
+    <a href="lab.html">lab</a> &nbsp;·&nbsp;
+    <a href="components.html">components</a> &nbsp;·&nbsp;
+    <a href="tokens.html">tokens</a> &nbsp;·&nbsp;
+    <a href="essays/anatomy-of-a-stitch.html">field notes</a> &nbsp;·&nbsp;
+    v1 · MIT
+  </span>
+</footer>
+
+<script>
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const cx = event?.clientX ?? window.innerWidth / 2;
+    const cy = event?.clientY ?? window.innerHeight / 2;
+    document.documentElement.style.setProperty('--cx', cx + 'px');
+    document.documentElement.style.setProperty('--cy', cy + 'px');
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    function apply() {
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+    }
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+    else document.startViewTransition(() => apply());
+  }
+</script>
+
+</body>
+</html>

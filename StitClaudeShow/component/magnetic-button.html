@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · Magnetic Button</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/comp.css" />
+
+<style>
+  .magnet-lab-wrap { width: 100%; max-width: 440px; }
+</style>
+</head>
+
+<body class="comp-body">
+
+<header class="comp-topbar">
+  <a class="comp-back" href="../lab.html" aria-label="Back to the lab">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 4 L4 8 L10 12" /></svg>
+    <span>Back to the Lab</span>
+  </a>
+  <span class="comp-breadcrumb">
+    Components · <span class="current">Motion &amp; Physics / Magnetic Button</span>
+  </span>
+  <button class="theme-toggle-small" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<header class="comp-head">
+  <div class="comp-meta">
+    <span>Motion &amp; Physics</span>
+  </div>
+  <h1 class="comp-title">Magnetic Button</h1>
+  <p class="comp-intro">
+    A button subtly <em>attracted</em> to the cursor when it's near.
+    It's the kind of detail that most people won't notice consciously &mdash;
+    but the page will feel more alive, and they won't know why.
+  </p>
+</header>
+
+<nav class="comp-tabs" id="tabs" role="tablist">
+  <div class="comp-tab-indicator" id="tab-indicator"></div>
+  <button class="comp-tab active" data-panel="preview"  role="tab">Preview</button>
+  <button class="comp-tab"        data-panel="code"     role="tab">Code</button>
+  <button class="comp-tab"        data-panel="houses"   role="tab">Houses</button>
+  <button class="comp-tab"        data-panel="antislop" role="tab">Anti-patterns</button>
+</nav>
+
+<section class="panel active" data-panel="preview">
+  <div class="preview">
+    <span class="preview-note">hover near the button</span>
+    <div class="magnet-lab-wrap">
+      <div class="magnet-lab">
+        <div class="magnet-stage" id="magnet-stage">
+          <button class="magnet-btn" id="magnet-btn">
+            <span class="inner">Catch me</span>
+          </button>
+        </div>
+        <div class="magnet-caption">spring 600ms · stiffness 1.6 · radius 160px</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="panel" data-panel="code">
+  <p class="code-hint">
+    <strong>Drop-in.</strong> The button follows the cursor when it's within 160&thinsp;px.
+    Move your mouse out and it springs back. Pure pointer events, no RAF loop needed.
+  </p>
+  <div class="code-card">
+    <div class="code-head">
+      <div class="path">
+        <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+        <span>magnetic-button.html</span>
+      </div>
+      <button class="code-copy" onclick="copyCode(this)">Copy</button>
+    </div>
+<div class="code-body"><pre><code id="code-block"><span class="c-com">&lt;!-- Stit'Claude · Magnetic Button · drop-in --&gt;</span>
+
+<span class="c-sel">&lt;style&gt;</span>
+  <span class="c-sel">.stit-magnet</span> {
+    <span class="c-val">--fg</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.145 0.015 36</span>);
+    <span class="c-val">--bg</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.988 0.006 85</span>);
+    <span class="c-val">--surface</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.946 0.014 80</span>);
+    <span class="c-val">--border</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.860 0.018 75</span>);
+    <span class="c-val">--accent</span>: <span class="c-fn">oklch</span>(<span class="c-num">0.645 0.190 35</span>);
+
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">gap</span>: <span class="c-num">12px</span>;
+    <span class="c-prop">max-width</span>: <span class="c-num">440px</span>;
+    <span class="c-prop">font-family</span>: <span class="c-str">"Inter"</span>, <span class="c-val">system-ui</span>, <span class="c-val">sans-serif</span>;
+  }
+  <span class="c-sel">.stit-magnet__stage</span> {
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--surface</span>);
+    <span class="c-prop">border</span>: <span class="c-num">1px</span> <span class="c-val">solid</span> <span class="c-fn">var</span>(<span class="c-val">--border</span>);
+    <span class="c-prop">border-radius</span>: <span class="c-num">10px</span>;
+    <span class="c-prop">display</span>: <span class="c-val">grid</span>;
+    <span class="c-prop">place-items</span>: <span class="c-val">center</span>;
+    <span class="c-prop">min-height</span>: <span class="c-num">220px</span>;
+    <span class="c-prop">position</span>: <span class="c-val">relative</span>;
+    <span class="c-prop">overflow</span>: <span class="c-val">hidden</span>;
+    <span class="c-prop">cursor</span>: <span class="c-val">crosshair</span>;
+  }
+  <span class="c-sel">.stit-magnet__stage::before</span> {
+    <span class="c-prop">content</span>: <span class="c-str">''</span>;
+    <span class="c-prop">position</span>: <span class="c-val">absolute</span>;
+    <span class="c-prop">inset</span>: <span class="c-num">0</span>;
+    <span class="c-prop">background-image</span>: <span class="c-fn">radial-gradient</span>(
+      <span class="c-fn">circle at</span> <span class="c-num">50% 50%</span>,
+      <span class="c-fn">color-mix</span>(<span class="c-kw">in oklch</span>, <span class="c-fn">var</span>(<span class="c-val">--accent</span>) <span class="c-num">8%</span>, <span class="c-val">transparent</span>),
+      <span class="c-val">transparent</span> <span class="c-num">60%</span>
+    );
+    <span class="c-prop">pointer-events</span>: <span class="c-val">none</span>;
+  }
+  <span class="c-sel">.stit-magnet__btn</span> {
+    <span class="c-prop">position</span>: <span class="c-val">relative</span>;
+    <span class="c-prop">padding</span>: <span class="c-num">14px 24px</span>;
+    <span class="c-prop">background</span>: <span class="c-fn">var</span>(<span class="c-val">--fg</span>);
+    <span class="c-prop">color</span>: <span class="c-fn">var</span>(<span class="c-val">--bg</span>);
+    <span class="c-prop">border</span>: <span class="c-val">none</span>;
+    <span class="c-prop">border-radius</span>: <span class="c-num">999px</span>;
+    <span class="c-prop">font</span>: <span class="c-val">inherit</span>;
+    <span class="c-prop">font-weight</span>: <span class="c-num">600</span>;
+    <span class="c-prop">font-size</span>: <span class="c-num">14px</span>;
+    <span class="c-prop">cursor</span>: <span class="c-val">pointer</span>;
+    <span class="c-prop">will-change</span>: <span class="c-val">transform</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">transform</span> <span class="c-num">600ms</span> <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.3, 1.6, 0.5, 1</span>);
+    <span class="c-prop">z-index</span>: <span class="c-num">2</span>;
+  }
+  <span class="c-sel">.stit-magnet__btn .inner</span> {
+    <span class="c-prop">display</span>: <span class="c-val">inline-block</span>;
+    <span class="c-prop">transition</span>: <span class="c-prop">transform</span> <span class="c-num">600ms</span> <span class="c-fn">cubic-bezier</span>(<span class="c-num">0.3, 1.6, 0.5, 1</span>);
+  }
+<span class="c-sel">&lt;/style&gt;</span>
+
+<span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-magnet"</span><span class="c-sel">&gt;</span>
+  <span class="c-sel">&lt;div</span> <span class="c-prop">class</span>=<span class="c-str">"stit-magnet__stage"</span> <span class="c-prop">id</span>=<span class="c-str">"stit-magnet-stage"</span><span class="c-sel">&gt;</span>
+    <span class="c-sel">&lt;button</span> <span class="c-prop">class</span>=<span class="c-str">"stit-magnet__btn"</span> <span class="c-prop">id</span>=<span class="c-str">"stit-magnet-btn"</span><span class="c-sel">&gt;</span>
+      <span class="c-sel">&lt;span</span> <span class="c-prop">class</span>=<span class="c-str">"inner"</span><span class="c-sel">&gt;</span>Catch me<span class="c-sel">&lt;/span&gt;</span>
+    <span class="c-sel">&lt;/button&gt;</span>
+  <span class="c-sel">&lt;/div&gt;</span>
+<span class="c-sel">&lt;/div&gt;</span>
+
+<span class="c-sel">&lt;script&gt;</span>
+(<span class="c-kw">function</span>() {
+  <span class="c-kw">const</span> stage = document.getElementById(<span class="c-str">'stit-magnet-stage'</span>);
+  <span class="c-kw">const</span> btn = document.getElementById(<span class="c-str">'stit-magnet-btn'</span>);
+  <span class="c-kw">const</span> inner = btn.querySelector(<span class="c-str">'.inner'</span>);
+  <span class="c-kw">const</span> RADIUS = <span class="c-num">160</span>;
+  <span class="c-kw">const</span> STRENGTH = <span class="c-num">0.35</span>;
+
+  stage.addEventListener(<span class="c-str">'pointermove'</span>, (e) =&gt; {
+    <span class="c-kw">const</span> rect = btn.getBoundingClientRect();
+    <span class="c-kw">const</span> cx = rect.left + rect.width / <span class="c-num">2</span>;
+    <span class="c-kw">const</span> cy = rect.top + rect.height / <span class="c-num">2</span>;
+    <span class="c-kw">const</span> dx = e.clientX - cx;
+    <span class="c-kw">const</span> dy = e.clientY - cy;
+    <span class="c-kw">const</span> dist = Math.hypot(dx, dy);
+    <span class="c-kw">if</span> (dist &lt; RADIUS) {
+      <span class="c-kw">const</span> pull = (<span class="c-num">1</span> - dist / RADIUS) * STRENGTH;
+      btn.style.transform = <span class="c-str">`translate(${dx * pull}px, ${dy * pull}px)`</span>;
+      inner.style.transform = <span class="c-str">`translate(${dx * pull * 0.5}px, ${dy * pull * 0.5}px)`</span>;
+    }
+  });
+  stage.addEventListener(<span class="c-str">'pointerleave'</span>, () =&gt; {
+    btn.style.transform = <span class="c-str">''</span>;
+    inner.style.transform = <span class="c-str">''</span>;
+  });
+})();
+<span class="c-sel">&lt;/script&gt;</span>
+</code></pre></div>
+  </div>
+</section>
+
+<section class="panel" data-panel="houses">
+  <div class="houses-grid">
+
+    <article class="house-card">
+      <h3 class="name">Apple-Craft</h3>
+      <p class="why">
+        visionOS cursors, Dynamic Island, the dock &mdash; Apple is magnetic everywhere.
+        Subtle pull is the opposite of heavy animation and it respects the user.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.95 0.012 245)"></span>
+        <span class="sw" style="background: oklch(0.92 0.02 280)"></span>
+        <span class="sw" style="background: oklch(0.62 0.15 145)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Editorial-Display</h3>
+      <p class="why">
+        Awwwards-grade portfolios live on this effect. One magnetic CTA on a hero,
+        restrained, and the page reads confident without shouting.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.98 0.01 85)"></span>
+        <span class="sw" style="background: oklch(0.20 0.05 30)"></span>
+        <span class="sw" style="background: oklch(0.55 0.18 25)"></span>
+      </div>
+    </article>
+
+    <article class="house-card">
+      <h3 class="name">Playful-Warm</h3>
+      <p class="why">
+        Arc Browser's tab interactions, Figma's canvas &mdash; magnetic pull makes the product feel personal.
+        Go slightly stronger here (strength ~ 0.45) to lean into the playfulness.
+      </p>
+      <div class="palette">
+        <span class="sw" style="background: oklch(0.92 0.08 60)"></span>
+        <span class="sw" style="background: oklch(0.65 0.2 20)"></span>
+        <span class="sw" style="background: oklch(0.55 0.15 200)"></span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<section class="panel" data-panel="antislop">
+  <div class="antislop-card">
+    <ul class="antislop-list">
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Pull strength of 1.0 (the button follows the cursor literally)</strong>
+          <p class="detail">
+            The button glues itself to the pointer. Users can't click it because it's always
+            where they aren't. The effect goes from subtle to slapstick.
+          </p>
+          <p class="instead">
+            Instead: keep strength between 0.25 and 0.45.
+            The button should <em>suggest</em> being pulled, not actually get pulled.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>No release spring on <code>pointerleave</code></strong>
+          <p class="detail">
+            When the cursor exits the stage, the button snaps back instantly.
+            Looks like a glitch, not a feature.
+          </p>
+          <p class="instead">
+            Instead: set <code>transition: transform 600ms cubic-bezier(0.3, 1.6, 0.5, 1)</code>
+            on the button &mdash; the release springs back naturally.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Magnetic everywhere</strong>
+          <p class="detail">
+            Eight magnetic buttons on one page. The effect is now noise.
+            Users see the motion coming and start ignoring it.
+          </p>
+          <p class="instead">
+            Instead: one magnetic CTA per section. Use it for your primary call to action.
+            Everything else is a regular button.
+          </p>
+        </div>
+      </li>
+
+      <li>
+        <span class="ico">✕</span>
+        <div class="body">
+          <strong>Using a requestAnimationFrame loop instead of pointer events</strong>
+          <p class="detail">
+            Running at 60&thinsp;fps even when the cursor hasn't moved.
+            Burns battery on laptops, wastes main thread.
+          </p>
+          <p class="instead">
+            Instead: use <code>pointermove</code>. It fires only when the cursor actually moves.
+            Zero idle cost.
+          </p>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<footer class="comp-principles">
+  <span class="label">Principles</span>
+  <span class="chip">pull ≤ 0.45</span>
+  <span class="chip">radius 140–180px</span>
+  <span class="chip">pointermove not RAF</span>
+  <span class="chip">spring release 600ms</span>
+  <span class="chip">inner layer parallax 0.5×</span>
+  <span class="chip">one per section max</span>
+</footer>
+
+<script>
+(function initTheme() {
+  let t = 'light';
+  try {
+    const s = localStorage.getItem('stit-lab-theme');
+    if (s === 'light' || s === 'dark') t = s;
+    else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
+function toggleTheme(event) {
+  const cx = event?.clientX ?? window.innerWidth / 2;
+  const cy = event?.clientY ?? window.innerHeight / 2;
+  document.documentElement.style.setProperty('--cx', cx + 'px');
+  document.documentElement.style.setProperty('--cy', cy + 'px');
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  function apply() {
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
+  else document.startViewTransition(() => apply());
+}
+
+(function initTabs() {
+  const root = document.getElementById('tabs');
+  if (!root) return;
+  const indicator = document.getElementById('tab-indicator');
+  const tabs = root.querySelectorAll('.comp-tab');
+  const panels = document.querySelectorAll('.panel');
+  function moveIndicator(btn) {
+    const r = btn.getBoundingClientRect();
+    const rootR = root.getBoundingClientRect();
+    indicator.style.width = r.width + 'px';
+    indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+  }
+  function setTab(name) {
+    const btn = root.querySelector(`[data-panel="${name}"]`);
+    if (!btn) return;
+    tabs.forEach(t => t.classList.toggle('active', t === btn));
+    panels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+    moveIndicator(btn);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.panel)));
+  requestAnimationFrame(() => moveIndicator(root.querySelector('.comp-tab.active')));
+  window.addEventListener('resize', () => moveIndicator(root.querySelector('.comp-tab.active')));
+})();
+
+function copyCode(btn) {
+  const code = document.getElementById('code-block');
+  if (!code) return;
+  navigator.clipboard?.writeText(code.textContent);
+  const orig = btn.textContent;
+  btn.classList.add('copied'); btn.textContent = 'Copied';
+  setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+}
+
+/* ======== Magnetic Button — specific ======== */
+(function() {
+  const stage = document.getElementById('magnet-stage');
+  const btn = document.getElementById('magnet-btn');
+  const inner = btn.querySelector('.inner');
+  stage.addEventListener('pointermove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const dist = Math.hypot(dx, dy);
+    if (dist < 160) {
+      const pull = (1 - dist / 160) * 0.35;
+      btn.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+      inner.style.transform = `translate(${dx * pull * 0.5}px, ${dy * pull * 0.5}px)`;
+    }
+  });
+  stage.addEventListener('pointerleave', () => {
+    btn.style.transform = '';
+    inner.style.transform = '';
+  });
+})();
+</script>
+</body>
+</html>
