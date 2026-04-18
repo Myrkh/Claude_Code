@@ -1,31 +1,637 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
-<meta name="theme-color" content="#faf7f0" />
+<meta name="theme-color" content="#1a0f12" />
 <title>Stit'Claude · Houses · Editorial-Display</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="../assets/theme.css" />
-<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* ==========================================================================
+     HOUSE · EDITORIAL-DISPLAY — fashion / runway
+     Mubi · Vercel launch · Feed.so · Linear marketing
+     ========================================================================== */
+  :root[data-theme="dark"] {
+    --ed-bg: oklch(0.11 0.020 28);
+    --ed-bg-soft: oklch(0.15 0.024 28);
+    --ed-paper: oklch(0.92 0.025 85);
+    --ed-paper-dim: oklch(0.75 0.028 82);
+    --ed-fg: oklch(0.96 0.018 85);
+    --ed-fg-muted: oklch(0.72 0.030 78);
+    --ed-fg-deep: oklch(0.48 0.038 65);
+    --ed-rose: oklch(0.74 0.078 28);
+    --ed-rose-deep: oklch(0.58 0.095 25);
+    --ed-burgundy: oklch(0.38 0.075 22);
+    --ed-vermillion: oklch(0.62 0.200 28);
+    --ed-gold: oklch(0.78 0.120 78);
+    --ed-rule: oklch(0.28 0.035 30);
+  }
+  :root[data-theme="light"] {
+    --ed-bg: oklch(0.975 0.015 80);
+    --ed-bg-soft: oklch(0.94 0.025 75);
+    --ed-paper: oklch(0.20 0.025 30);
+    --ed-paper-dim: oklch(0.35 0.030 35);
+    --ed-fg: oklch(0.18 0.025 30);
+    --ed-fg-muted: oklch(0.40 0.030 35);
+    --ed-fg-deep: oklch(0.58 0.035 40);
+    --ed-rose: oklch(0.55 0.095 22);
+    --ed-rose-deep: oklch(0.45 0.100 20);
+    --ed-burgundy: oklch(0.32 0.090 22);
+    --ed-vermillion: oklch(0.56 0.200 28);
+    --ed-gold: oklch(0.65 0.130 75);
+    --ed-rule: oklch(0.78 0.025 50);
+  }
+  html { background: var(--ed-bg); }
+  body {
+    background: var(--ed-bg);
+    color: var(--ed-fg);
+    font-family: "Fraunces", "Instrument Serif", serif;
+    font-size: 17px;
+    line-height: 1.55;
+    font-optical-sizing: auto;
+    hanging-punctuation: first last;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Top masthead — runway show header */
+  .edd-top {
+    position: sticky; top: 0; z-index: 40;
+    background: color-mix(in oklch, var(--ed-bg) 85%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--ed-rule);
+    padding: 18px clamp(24px, 4vw, 48px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
+  }
+  .edd-top .back {
+    color: var(--ed-fg-muted);
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 17px;
+    transition: color 260ms;
+  }
+  .edd-top .back:hover { color: var(--ed-vermillion); }
+  .edd-top .back::before { content: '← '; }
+  .edd-top .logo {
+    justify-self: center;
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 24px;
+    color: var(--ed-fg);
+    letter-spacing: -0.015em;
+  }
+  .edd-top .logo .mark {
+    width: 26px; height: 30px;
+    background: var(--ed-vermillion);
+    mask-image: url('../assets/logo-mark.svg');
+    -webkit-mask-image: url('../assets/logo-mark.svg');
+    mask-size: contain; -webkit-mask-size: contain;
+    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+    mask-position: center; -webkit-mask-position: center;
+  }
+  .edd-top .meta {
+    justify-self: end;
+    display: inline-flex; align-items: center; gap: 16px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ed-fg-deep);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .edd-top .meta .hash { color: var(--ed-vermillion); }
+  .edd-theme {
+    width: 34px; height: 34px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--ed-rule);
+    color: var(--ed-fg-muted);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: border-color 220ms, color 220ms;
+  }
+  .edd-theme:hover { color: var(--ed-vermillion); border-color: var(--ed-vermillion); }
+  .edd-theme svg { width: 14px; height: 14px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* ====================================================
+     HERO — type as image, deliberate overflow
+     ==================================================== */
+  .edd-hero {
+    position: relative;
+    padding: clamp(70px, 12vw, 160px) clamp(24px, 4vw, 48px) clamp(40px, 6vw, 80px);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* The giant type word that overflows */
+  .edd-hero-giant {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(8rem, 28vw, 26rem);
+    line-height: 0.82;
+    letter-spacing: -0.07em;
+    color: transparent;
+    -webkit-text-stroke: 1px color-mix(in oklch, var(--ed-rose) 50%, transparent);
+    position: absolute;
+    top: 40%;
+    left: -4%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+
+  /* Meta strip — issue / season / n° */
+  .edd-hero-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    margin-bottom: clamp(40px, 8vw, 80px);
+    border-bottom: 1px solid var(--ed-rule);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--ed-fg-deep);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+  .edd-hero-meta .hash { color: var(--ed-vermillion); }
+  .edd-hero-meta .season {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ed-fg-muted);
+  }
+
+  /* Title block — the feature */
+  .edd-hero-title {
+    position: relative;
+    z-index: 1;
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(4.5rem, 12vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    color: var(--ed-fg);
+    max-width: 14ch;
+    text-wrap: balance;
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+  .edd-hero-title .rose {
+    color: var(--ed-rose);
+    font-style: italic;
+  }
+  .edd-hero-title .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: edd-word-in 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .edd-hero-title .word:nth-child(1) { animation-delay: 200ms; }
+  .edd-hero-title .word:nth-child(2) { animation-delay: 340ms; }
+  .edd-hero-title .word:nth-child(3) { animation-delay: 520ms; }
+  .edd-hero-title .word:nth-child(4) { animation-delay: 720ms; }
+  @keyframes edd-word-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); filter: blur(8px); }
+    to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edd-hero-title .word { opacity: 1; transform: none; animation: none; filter: none; }
+  }
+
+  .edd-hero-deck {
+    position: relative;
+    z-index: 1;
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    line-height: 1.35;
+    color: var(--ed-fg-muted);
+    max-width: 48ch;
+    margin-bottom: clamp(40px, 6vw, 64px);
+    text-wrap: balance;
+  }
+
+  /* Byline */
+  .edd-byline {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ed-rule);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ed-fg-deep);
+    position: relative;
+    z-index: 1;
+  }
+  .edd-byline .role { color: var(--ed-fg-muted); }
+  .edd-byline .sep { color: var(--ed-rule); margin: 0 6px; }
+
+  /* ====================================================
+     SECTIONS — feature blocks
+     ==================================================== */
+  .edd-section {
+    padding: clamp(60px, 10vw, 120px) clamp(24px, 4vw, 48px);
+    position: relative;
+    border-top: 1px solid var(--ed-rule);
+  }
+  .edd-plate-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ed-vermillion);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .edd-plate-label::before {
+    content: '— ';
+    color: var(--ed-rule);
+  }
+
+  /* ====================================================
+     QUOTE — oversized italic pull, type as image
+     ==================================================== */
+  .edd-quote {
+    padding: clamp(60px, 10vw, 120px) clamp(24px, 4vw, 48px);
+    text-align: center;
+    border-top: 1px solid var(--ed-rule);
+    position: relative;
+  }
+  .edd-quote::before {
+    content: '"';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 300px;
+    line-height: 1;
+    color: var(--ed-burgundy);
+    opacity: 0.25;
+    z-index: 0;
+  }
+  .edd-quote blockquote {
+    position: relative;
+    z-index: 1;
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(1.75rem, 4vw, 3.25rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: var(--ed-fg);
+    margin: 0 auto;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+  .edd-quote cite {
+    display: block;
+    margin-top: 28px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ed-fg-deep);
+    font-style: normal;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* ====================================================
+     PALETTE — couture lookbook, asymmetric grid
+     ==================================================== */
+  .edd-palette {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    background: var(--ed-rule);
+    padding: 2px;
+  }
+  @media (max-width: 720px) { .edd-palette { grid-template-columns: 1fr 1fr; } }
+  .edd-sw {
+    position: relative;
+    padding: 28px 24px;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .edd-sw:hover { transform: translateY(-4px); z-index: 2; }
+  .edd-sw.feature {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    min-height: 500px;
+  }
+  @media (max-width: 720px) {
+    .edd-sw.feature { grid-column: span 2; min-height: 280px; }
+  }
+  .edd-sw .plate {
+    position: absolute;
+    top: 18px;
+    left: 22px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    opacity: 0.55;
+  }
+  .edd-sw .label {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+  .edd-sw.feature .label { font-size: 56px; }
+  .edd-sw .val {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    opacity: 0.82;
+  }
+  .edd-sw .note {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 14px;
+    opacity: 0.82;
+    margin-top: 6px;
+  }
+
+  /* ====================================================
+     MOTION — editorial calendar, scroll-driven
+     ==================================================== */
+  .edd-motion-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--ed-rule);
+    border: 1px solid var(--ed-rule);
+  }
+  .edd-motion-row {
+    display: grid;
+    grid-template-columns: 80px 200px 1fr 140px;
+    gap: 20px;
+    background: var(--ed-bg);
+    padding: 22px 24px;
+    align-items: baseline;
+  }
+  @media (max-width: 720px) {
+    .edd-motion-row {
+      grid-template-columns: 60px 1fr;
+      gap: 8px;
+    }
+    .edd-motion-row .desc, .edd-motion-row .verdict {
+      grid-column: span 2;
+    }
+  }
+  .edd-motion-row .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ed-vermillion);
+    letter-spacing: 0.18em;
+  }
+  .edd-motion-row .name {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 22px;
+    color: var(--ed-fg);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .edd-motion-row .desc {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ed-fg-muted);
+    line-height: 1.5;
+  }
+  .edd-motion-row .verdict {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .edd-motion-row .verdict.yes { color: var(--ed-rose); }
+  .edd-motion-row .verdict.no { color: var(--ed-fg-deep); }
+
+  /* ====================================================
+     RULES — do/don't as editorial plates
+     ==================================================== */
+  .edd-rules {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(24px, 4vw, 48px);
+  }
+  @media (max-width: 720px) { .edd-rules { grid-template-columns: 1fr; } }
+  .edd-rule {
+    padding: 32px 28px;
+    border: 1px solid var(--ed-rule);
+    position: relative;
+    background: var(--ed-bg-soft);
+  }
+  .edd-rule .plate-num {
+    position: absolute;
+    top: -14px;
+    left: 24px;
+    padding: 3px 10px;
+    background: var(--ed-bg);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .edd-rule.yes .plate-num { color: var(--ed-rose); }
+  .edd-rule.no .plate-num { color: var(--ed-vermillion); }
+  .edd-rule-title {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ed-fg);
+    margin-bottom: 18px;
+    text-wrap: balance;
+  }
+  .edd-rule p {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--ed-fg-muted);
+    margin: 0 0 12px;
+  }
+  .edd-rule p:last-child { margin-bottom: 0; }
+
+  /* ====================================================
+     CANON — editorial index
+     ==================================================== */
+  .edd-canon {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .edd-canon-item {
+    display: grid;
+    grid-template-columns: 140px 1fr 60px;
+    gap: clamp(20px, 4vw, 48px);
+    padding: 28px 0;
+    border-top: 1px solid var(--ed-rule);
+    align-items: baseline;
+    position: relative;
+    transition: padding 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .edd-canon-item:last-child { border-bottom: 1px solid var(--ed-rule); }
+  .edd-canon-item:hover { padding-left: 12px; padding-right: 12px; }
+  .edd-canon-item .era {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ed-fg-deep);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .edd-canon-item .body .nm {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ed-fg);
+    margin-bottom: 8px;
+    text-wrap: balance;
+    transition: color 300ms;
+  }
+  .edd-canon-item:hover .body .nm { color: var(--ed-rose); }
+  .edd-canon-item .body .desc {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ed-fg-muted);
+    max-width: 54ch;
+  }
+  .edd-canon-item .mark {
+    align-self: center;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    color: var(--ed-fg-deep);
+    transition: color 300ms, transform 400ms cubic-bezier(0.16, 1, 0.3, 1);
+    justify-self: end;
+  }
+  .edd-canon-item:hover .mark {
+    color: var(--ed-rose);
+    transform: translateX(6px);
+  }
+  @media (max-width: 720px) {
+    .edd-canon-item { grid-template-columns: 1fr; gap: 4px; }
+    .edd-canon-item .mark { display: none; }
+  }
+
+  /* ====================================================
+     FOOTER NAV
+     ==================================================== */
+  .edd-nav {
+    margin-top: 0;
+    padding: clamp(60px, 8vw, 100px) clamp(24px, 4vw, 48px);
+    border-top: 1px solid var(--ed-rule);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  @media (max-width: 600px) { .edd-nav { grid-template-columns: 1fr; } }
+  .edd-nav a {
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: background 280ms;
+  }
+  .edd-nav a:hover { background: var(--ed-bg-soft); }
+  .edd-nav a.next { text-align: right; align-items: flex-end; }
+  .edd-nav a .dir {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ed-vermillion);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .edd-nav a .target {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ed-fg);
+    transition: color 300ms;
+  }
+  .edd-nav a:hover .target { color: var(--ed-rose); }
+
+  /* Scroll-driven reveals — type that arrives on scroll */
+  @supports (animation-timeline: view()) {
+    .edd-canon-item,
+    .edd-rule,
+    .edd-motion-row {
+      animation: edd-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 20%;
+    }
+    @keyframes edd-rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  }
+
+  ::selection { background: var(--ed-rose); color: var(--ed-bg); }
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
-      <span>Stit'Claude</span>
-    </a>
-    <span class="brand-mark">Houses · 08 · Editorial-Display</span>
-    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
-      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+<header class="edd-top">
+  <a class="back" href="../lab.html">Return to the Lab</a>
+  <a class="logo" href="../index.html">
+    <span class="mark" aria-hidden="true"></span>
+    <span>Stit&rsquo;Claude</span>
+  </a>
+  <div class="meta">
+    <span>Vol. <span class="hash">VIII</span></span>
+    <button class="edd-theme" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
       <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
         <circle cx="8" cy="8" r="3" />
         <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
@@ -36,109 +642,225 @@
 
 <main>
 
-  <section class="masthead">
-    <div class="mast-meta">
-      <span class="num">HOUSE № 08</span>
-      <span class="sep"></span>
-      <span>of eight</span>
+  <!-- HERO -->
+  <section class="edd-hero">
+    <span class="edd-hero-giant" aria-hidden="true">Display</span>
+
+    <div class="edd-hero-meta">
+      <span>House № <span class="hash">08</span> / 08</span>
+      <span class="season">Spring Collection · MMXXVI</span>
+      <span>PP. 64&ndash;81</span>
     </div>
-    <h1 class="mast-title">Editorial-<em>Display.</em></h1>
-    <p class="mast-subtitle">Editorial's extravagant sibling. Massive serifs. Hero-sized italics. Type as image. Awwwards-grade portfolios, fashion campaigns, agency pages that announce their author.</p>
+
+    <h1 class="edd-hero-title">
+      <span class="word">The</span>
+      <span class="word rose">runway</span><br/>
+      <span class="word">of</span>
+      <span class="word">type.</span>
+    </h1>
+
+    <p class="edd-hero-deck">
+      Editorial's extravagant sibling. Massive serifs. Hero-sized italics. Type as image.
+      Awwwards portfolios, fashion campaigns, agency pages that announce their author.
+    </p>
+
+    <div class="edd-byline">
+      <span class="role">Art direction</span>
+      <span>Stit'Claude Editorial</span>
+      <span class="sep">·</span>
+      <span class="role">Set</span>
+      <span>Fraunces &amp; Instrument</span>
+      <span class="sep">·</span>
+      <span class="role">Issue</span>
+      <span>MMXXVI</span>
+    </div>
   </section>
 
-  <section class="quote-block">
+  <!-- QUOTE -->
+  <section class="edd-quote">
     <blockquote>
-      Type is a <em>beautiful</em> group of letters, not a group of beautiful letters.
-      <cite>Matthew Carter · type designer</cite>
+      Type is a beautiful group of letters, not a group of beautiful letters.
+      <cite>— Matthew Carter, type designer</cite>
     </blockquote>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">01 · Palette</span>
-      <h2 class="bloc-title">The colors that define this house.</h2>
-    </div>
-    <p class="bloc-caption">Click any swatch or token to copy its OKLCH value. Six carefully chosen hues — no more, no less.</p>
-    <div class="bloc-body">
-      <div class="palette-row">
-        <div class="swatch" style="background: oklch(0.180 0.025 30); color: oklch(0.95 0.01 85);" data-val="oklch(0.180 0.025 30)"><span class="lbl">deep-ink</span></div>
-        <div class="swatch" style="background: oklch(0.970 0.015 82); color: oklch(0.2 0.01 40);" data-val="oklch(0.970 0.015 82)"><span class="lbl">cream</span></div>
-        <div class="swatch" style="background: oklch(0.905 0.030 75); color: oklch(0.2 0.01 40);" data-val="oklch(0.905 0.030 75)"><span class="lbl">cream-shade</span></div>
-        <div class="swatch" style="background: oklch(0.560 0.175 25); color: oklch(0.2 0.01 40);" data-val="oklch(0.560 0.175 25)"><span class="lbl">vermillion-deep</span></div>
-        <div class="swatch" style="background: oklch(0.400 0.040 25); color: oklch(0.95 0.01 85);" data-val="oklch(0.400 0.040 25)"><span class="lbl">burgundy</span></div>
-        <div class="swatch" style="background: oklch(0.640 0.040 30); color: oklch(0.2 0.01 40);" data-val="oklch(0.640 0.040 30)"><span class="lbl">dust-rose</span></div>
+  <!-- PALETTE -->
+  <section class="edd-section">
+    <div class="edd-plate-label">Plate I · the palette</div>
+
+    <h2 style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ed-fg); margin-bottom: 32px; max-width: 22ch; text-wrap: balance;">
+      Deep ink, cream, vermillion. A <span style="color: var(--ed-rose);">dust-rose</span> for the cover.
+    </h2>
+
+    <div class="edd-palette">
+      <div class="edd-sw feature" style="background: oklch(0.18 0.025 30); color: oklch(0.92 0.025 85);" data-val="oklch(0.18 0.025 30)">
+        <span class="plate">№ I.a</span>
+        <span class="label"><em>Deep ink.</em></span>
+        <span class="val">oklch(0.18 0.025 30)</span>
+        <span class="note">The ground. Everything rests on this.</span>
       </div>
-      <div class="palette-legend">
-        <button class="tok" data-val="oklch(0.180 0.025 30)"><span class="s" style="background: oklch(0.180 0.025 30)"></span><span class="n">--ed-deep</span></button>
-        <button class="tok" data-val="oklch(0.970 0.015 82)"><span class="s" style="background: oklch(0.970 0.015 82)"></span><span class="n">--ed-cream</span></button>
-        <button class="tok" data-val="oklch(0.905 0.030 75)"><span class="s" style="background: oklch(0.905 0.030 75)"></span><span class="n">--ed-shade</span></button>
-        <button class="tok" data-val="oklch(0.560 0.175 25)"><span class="s" style="background: oklch(0.560 0.175 25)"></span><span class="n">--ed-vermillion</span></button>
-        <button class="tok" data-val="oklch(0.400 0.040 25)"><span class="s" style="background: oklch(0.400 0.040 25)"></span><span class="n">--ed-burgundy</span></button>
-        <button class="tok" data-val="oklch(0.640 0.040 30)"><span class="s" style="background: oklch(0.640 0.040 30)"></span><span class="n">--ed-rose</span></button>
+      <div class="edd-sw" style="background: oklch(0.92 0.025 85); color: oklch(0.18 0.025 30);" data-val="oklch(0.92 0.025 85)">
+        <span class="plate">№ I.b</span>
+        <span class="label"><em>Paper.</em></span>
+        <span class="val">oklch(0.92 0.025 85)</span>
+      </div>
+      <div class="edd-sw" style="background: oklch(0.74 0.078 28); color: oklch(0.15 0.02 25);" data-val="oklch(0.74 0.078 28)">
+        <span class="plate">№ I.c</span>
+        <span class="label"><em>Dust rose.</em></span>
+        <span class="val">oklch(0.74 0.078 28)</span>
+      </div>
+      <div class="edd-sw" style="background: oklch(0.38 0.075 22); color: oklch(0.92 0.025 85);" data-val="oklch(0.38 0.075 22)">
+        <span class="plate">№ I.d</span>
+        <span class="label"><em>Burgundy.</em></span>
+        <span class="val">oklch(0.38 0.075 22)</span>
+      </div>
+      <div class="edd-sw" style="background: oklch(0.62 0.200 28); color: oklch(0.95 0.02 85);" data-val="oklch(0.62 0.200 28)">
+        <span class="plate">№ I.e</span>
+        <span class="label"><em>Vermillion.</em></span>
+        <span class="val">oklch(0.62 0.200 28)</span>
       </div>
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">02 · Motion</span>
-      <h2 class="bloc-title">How this house moves.</h2>
-    </div>
-    <p class="bloc-caption">Everything is about entrance. Scroll-driven type reveals, parallax, staggered characters. Durations are long (520–800ms) and easings are expo-out. This house is a runway show — the motion is the composition.</p>
-    <div class="bloc-body">
-      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-slow: 520ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">character reveal</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-slower: 800ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">hero entrance</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-expo-out</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">the theatrical ease</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">animation-timeline: view()</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">scroll drives everything</span></div>
+  <!-- MOTION -->
+  <section class="edd-section">
+    <div class="edd-plate-label">Plate II · the motion</div>
+
+    <h2 style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ed-fg); margin-bottom: 20px; max-width: 24ch; text-wrap: balance;">
+      Everything is <em style="color: var(--ed-rose);">entrance.</em>
+    </h2>
+
+    <p style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; line-height: 1.55; color: var(--ed-fg-muted); max-width: 56ch; margin-bottom: 40px;">
+      Scroll-driven character reveals. Parallax. Staggered letters. Long durations, expo-out.
+      This house is a runway show — the motion <em>is</em> the composition.
+    </p>
+
+    <div class="edd-motion-grid">
+      <div class="edd-motion-row">
+        <span class="num">01</span>
+        <span class="name">Stagger reveal</span>
+        <span class="desc">Each word of the headline arrives 140–200ms after the last, blurred in from below.</span>
+        <span class="verdict yes">Signature</span>
+      </div>
+      <div class="edd-motion-row">
+        <span class="num">02</span>
+        <span class="name">Scroll timeline</span>
+        <span class="desc"><code style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--ed-rose);">animation-timeline: view()</code> — each section rises on entry.</span>
+        <span class="verdict yes">Signature</span>
+      </div>
+      <div class="edd-motion-row">
+        <span class="num">03</span>
+        <span class="name">Type overflow</span>
+        <span class="desc">Giant display type lives partially off-canvas. Editorial signal, not a bug.</span>
+        <span class="verdict yes">Signature</span>
+      </div>
+      <div class="edd-motion-row">
+        <span class="num">04</span>
+        <span class="name">Body text animation</span>
+        <span class="desc">Paragraphs that reveal word-by-word on scroll. The reader has to <em>wait</em>.</span>
+        <span class="verdict no">Banned</span>
+      </div>
+      <div class="edd-motion-row">
+        <span class="num">05</span>
+        <span class="name">Bouncy spring</span>
+        <span class="desc">The Playful-Warm vocabulary. Editorial-Display is theatrical, not playful.</span>
+        <span class="verdict no">Banned</span>
       </div>
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">03 · The trap</span>
-      <h2 class="bloc-title">Do one thing, refuse another.</h2>
+  <!-- RULES -->
+  <section class="edd-section">
+    <div class="edd-plate-label">Plate III · the discipline</div>
+
+    <h2 style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ed-fg); margin-bottom: 40px; max-width: 22ch; text-wrap: balance;">
+      A fashion show, not a <em style="color: var(--ed-rose);">workplace.</em>
+    </h2>
+
+    <div class="edd-rules">
+      <div class="edd-rule yes">
+        <span class="plate-num">Do</span>
+        <h3 class="edd-rule-title">Let display type <em>overflow</em>.</h3>
+        <p>A headline that breaks its container is signal, not mistake. Fashion magazines have done this since 1962.</p>
+        <p>Use italic serif at 8rem and above. Fraunces, Canela, Ogg, GT Super — the canon. No sans-serif for display.</p>
+      </div>
+      <div class="edd-rule no">
+        <span class="plate-num">Don't</span>
+        <h3 class="edd-rule-title">Apply this house to a <em>dashboard.</em></h3>
+        <p>Editorial-Display is a runway show, not a workplace. Never ship it to a SaaS UI. There are seven other houses.</p>
+        <p>Animate body text. Reveals are for display. Body paragraphs are for reading — not for waiting.</p>
+      </div>
     </div>
-    <p class="bloc-caption">Every house has a characteristic failure mode. These are the traps to avoid.</p>
-    <div class="bloc-body">
-      <div class="do-dont">
-        <div class="dd-card do">
-          <div class="dd-label">Do</div>
-          <p>Let display type overflow its container. It's an editorial signal, not a bug.</p>
-          <p>Use italic serif for display at 8rem+. Instrument Serif, Canela, Ogg, GT Super — the canon.</p>
+  </section>
+
+  <!-- CANON -->
+  <section class="edd-section">
+    <div class="edd-plate-label">Plate IV · the index</div>
+
+    <h2 style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.03em; color: var(--ed-fg); margin-bottom: 40px; max-width: 22ch; text-wrap: balance;">
+      The canon, <em style="color: var(--ed-rose);">staged.</em>
+    </h2>
+
+    <div class="edd-canon">
+
+      <article class="edd-canon-item">
+        <span class="era">2021 → present</span>
+        <div class="body">
+          <div class="nm"><em>Linear.app</em> launch</div>
+          <div class="desc">
+            Editorial-Display serving SaaS. Massive serif italics narrating a product story.
+            The campaign that proved dev tools can have a voice.
+          </div>
         </div>
-        <div class="dd-card dont">
-          <div class="dd-label">Don't</div>
-          <p>Apply Editorial-Display to a SaaS dashboard. It's a fashion show, not a workplace.</p>
-          <p>Animate body text. Reveals are for display, never for the paragraphs someone has to read.</p>
+        <span class="mark">↗</span>
+      </article>
+
+      <article class="edd-canon-item">
+        <span class="era">2019 → present</span>
+        <div class="body">
+          <div class="nm"><em>Feed.so</em></div>
+          <div class="desc">
+            The agency portfolio that invented the modern editorial web. Scroll-driven type, asymmetry,
+            and a burgundy palette copied by a thousand studios since.
+          </div>
         </div>
-      </div>
+        <span class="mark">↗</span>
+      </article>
+
+      <article class="edd-canon-item">
+        <span class="era">2020 → present</span>
+        <div class="body">
+          <div class="nm"><em>Mubi</em></div>
+          <div class="desc">
+            Film streaming rendered with the typography of a festival catalog.
+            Proof that transactions can be beautiful.
+          </div>
+        </div>
+        <span class="mark">↗</span>
+      </article>
+
+      <article class="edd-canon-item">
+        <span class="era">2022 → present</span>
+        <div class="body">
+          <div class="nm"><em>Vercel</em> landing pages</div>
+          <div class="desc">
+            Developer tools refusing to look like developer tools.
+            Instrument Serif italic, oversized, confident.
+          </div>
+        </div>
+        <span class="mark">↗</span>
+      </article>
+
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">04 · In the world</span>
-      <h2 class="bloc-title">Where this house lives, outside the lab.</h2>
-    </div>
-    <p class="bloc-caption">The proof is in the products. These are the references to study when you want to understand this house deeply.</p>
-    <div class="bloc-body">
-      <div class="canon-grid">
-        <article class="canon-card"><div class="era">2021 — ongoing</div><div class="name">Linear launch page</div><div class="desc">Editorial-Display serving SaaS. Massive serif italics narrating a product story.</div></article>
-        <article class="canon-card"><div class="era">2019 — ongoing</div><div class="name">Feed.so</div><div class="desc">Agency portfolio that invented the modern editorial web aesthetic.</div></article>
-        <article class="canon-card"><div class="era">2020 — ongoing</div><div class="name">Mubi</div><div class="desc">Film streaming with the typography of a festival catalog. Proof that transactions can be beautiful.</div></article>
-        <article class="canon-card"><div class="era">2022 — ongoing</div><div class="name">Vercel landing pages</div><div class="desc">Developer tools refusing to look like developer tools.</div></article>
-      </div>
-    </div>
-  </section>
-
-  <nav class="house-nav" aria-label="House navigation">
-    <a class="house-nav-link" href="power-dense.html">
-      <span class="dir">← Previous · 07</span>
+  <!-- NAV -->
+  <nav class="edd-nav">
+    <a href="power-dense.html">
+      <span class="dir">Previous · 07</span>
       <span class="target"><em>Power-Dense</em></span>
     </a>
-    <a class="house-nav-link next" href="editorial.html">
+    <a href="editorial.html" class="next">
       <span class="dir">Next · 01 →</span>
       <span class="target"><em>Editorial</em></span>
     </a>
@@ -148,34 +870,23 @@
 
 <script>
   (function initTheme() {
-    let t = 'light';
+    let t = 'dark'; // Editorial-Display defaults to dark — stage lighting
     try {
       const s = localStorage.getItem('stit-lab-theme');
       if (s === 'light' || s === 'dark') t = s;
-      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
     } catch (e) {}
     document.documentElement.setAttribute('data-theme', t);
   })();
   function toggleTheme(event) {
-    const cx = event?.clientX ?? window.innerWidth / 2;
-    const cy = event?.clientY ?? window.innerHeight / 2;
-    document.documentElement.style.setProperty('--cx', cx + 'px');
-    document.documentElement.style.setProperty('--cy', cy + 'px');
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
-    function apply() {
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
-    }
-    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
-    else document.startViewTransition(() => apply());
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
   }
-  document.querySelectorAll('[data-val]').forEach(el => {
+
+  document.querySelectorAll('.edd-sw[data-val]').forEach(el => {
     el.addEventListener('click', () => {
-      const v = el.getAttribute('data-val');
-      navigator.clipboard?.writeText(v);
-      el.classList.add('copied');
-      setTimeout(() => el.classList.remove('copied'), 1200);
+      navigator.clipboard?.writeText(el.getAttribute('data-val'));
     });
   });
 </script>

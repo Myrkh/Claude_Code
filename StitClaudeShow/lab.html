@@ -56,8 +56,8 @@
           <svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4 L5 7 L8 4"/></svg>
         </button>
       </li>
-      <li><a href="#docs">Docs</a></li>
-      <li><a href="#github">GitHub</a></li>
+      <li><a href="docs.html">Docs</a></li>
+      <li><a href="github.html">GitHub</a></li>
     </ul>
 
     <div class="nav-actions">
@@ -397,16 +397,16 @@
 
       <div class="mp-philosophy">
         <ol class="mp-principles stagger">
-          <li>Good design is innovative.</li>
-          <li>Good design makes a product useful.</li>
-          <li>Good design is aesthetic.</li>
-          <li>Good design makes a product understandable.</li>
-          <li>Good design is unobtrusive.</li>
-          <li>Good design is honest.</li>
-          <li>Good design is long-lasting.</li>
-          <li>Good design is thorough down to the last detail.</li>
-          <li>Good design is environmentally-friendly.</li>
-          <li>Good design is as little design as possible.</li>
+          <li><a href="houses/apple-craft.html">Good design is innovative.</a></li>
+          <li><a href="houses/power-dense.html">Good design makes a product useful.</a></li>
+          <li><a href="houses/editorial-display.html">Good design is aesthetic.</a></li>
+          <li><a href="houses/swiss-quiet.html">Good design makes a product understandable.</a></li>
+          <li><a href="houses/japanese-ma.html">Good design is unobtrusive.</a></li>
+          <li><a href="houses/industrial-pro.html">Good design is honest.</a></li>
+          <li><a href="houses/editorial.html">Good design is long-lasting.</a></li>
+          <li><a href="tokens.html">Good design is thorough down to the last detail.</a></li>
+          <li><a href="essays/anatomy-of-a-stitch.html">Good design is environmentally-friendly.</a></li>
+          <li><a href="houses/swiss-quiet.html">Good design is as little design as possible.</a></li>
         </ol>
 
         <div class="mp-right">
@@ -417,26 +417,26 @@
 
           <div class="mp-phases stagger">
             <h4>The four phases</h4>
-            <div class="mp-phase-row">
+            <a class="mp-phase-row" href="essays/anatomy-of-a-stitch.html">
               <span class="step">01 · EXPLORE</span>
               <span class="label">Write the brief of intention.</span>
               <span class="meta">5 lines min.</span>
-            </div>
-            <div class="mp-phase-row">
+            </a>
+            <a class="mp-phase-row" href="tokens.html">
               <span class="step">02 · DISTILL</span>
               <span class="label">Detect or create the token system.</span>
               <span class="meta">OKLCH · 12 steps</span>
-            </div>
-            <div class="mp-phase-row">
+            </a>
+            <a class="mp-phase-row" href="essays/why-oklch-was-inevitable.html">
               <span class="step">03 · POLISH</span>
               <span class="label">Micro-typography. Concentricity. APCA.</span>
               <span class="meta">Lc ≥ 75</span>
-            </div>
-            <div class="mp-phase-row">
+            </a>
+            <a class="mp-phase-row" href="components.html">
               <span class="step">04 · SHIP</span>
               <span class="label">Run the 12-point checklist.</span>
               <span class="meta">Rams · Vignelli · Saarinen</span>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -611,8 +611,7 @@
             <button class="tab-btn" data-tab="motion">Motion</button>
           </div>
           <div class="tab-content" id="tab-content">
-            <h4 id="tab-title">The pantheon is the foundation.</h4>
-            <p id="tab-body">Stit'Claude inherits from Rams, Vignelli, Ive, Hara, Müller-Brockmann. The skill doesn't invent taste &mdash; it passes it down.</p>
+            <!-- Filled on load by setTab('philosophy') -->
           </div>
         </div>
       </div>
@@ -736,18 +735,18 @@
     <p class="cta-lede">One file. Copy into your project. Never ship generic again.</p>
     <div class="install-cmd">
       <span class="prompt">$</span>
-      <span class="cmd" id="install-cmd-text">git clone github.com/yoann/stitclaude ~/.claude/skills/stitclaude</span>
+      <span class="cmd" id="install-cmd-text">git clone github.com/Myrkh/Master_Claude ~/.claude/skills/stitclaude</span>
       <button class="copy" onclick="copyInstall(this)">Copy</button>
     </div>
     <div class="cta-actions">
-      <a class="btn btn-accent" href="#github">
+      <a class="btn btn-accent" href="https://github.com/Myrkh/Master_Claude" target="_blank" rel="noopener">
         View on GitHub
         <svg class="btn-arrow" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
           <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
         </svg>
       </a>
-      <a class="btn btn-outline" href="#docs">Read the docs</div>
-    </a>
+      <a class="btn btn-outline" href="docs.html">Read the docs</a>
+    </div>
   </div>
 </section>
 
@@ -767,8 +766,8 @@
     </div>
     <div class="right">
       <a href="essays/anatomy-of-a-stitch.html">field notes №001</a> &middot;
-      <a href="components.html">components</a> &middot;
-      <a href="#github">github</a> &middot;
+      <a href="docs.html">docs</a> &middot;
+      <a href="https://github.com/Myrkh/Master_Claude" target="_blank" rel="noopener">github</a> &middot;
       v2.0 · MIT
     </div>
   </div>
@@ -1101,10 +1100,120 @@ function dropBall(type) {
   const indicator = document.getElementById('tabs-indicator');
   const content = document.getElementById('tab-content');
 
+  const PRINCIPLES = [
+    {
+      id: 'less-better',
+      label: 'Less, but better',
+      quote: 'Weniger, aber besser. Less is not a sacrifice — it is the condition of better.',
+      cite: 'Dieter Rams · 1976',
+      deeper: { text: 'See House 06 · Japanese-Ma — where less is the entire subject', href: 'houses/japanese-ma.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">filled</span>
+          <div class="p-demo-indicator fill">Inbox</div>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">additive</span>
+          <div class="p-demo-indicator bar">Inbox</div>
+        </div>
+      </div>`
+    },
+    {
+      id: 'concentric',
+      label: 'Concentric radii',
+      quote: 'Child radius equals parent radius minus its padding. Nested corners align visually, which the eye reads as considered.',
+      cite: 'Apple HIG, internalized',
+      deeper: { text: 'See House 05 · Apple-Craft — three concentric demos at scale', href: 'houses/apple-craft.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">broken</span>
+          <div class="p-demo-concentric p-demo-broken">
+            <div class="p-demo-concentric-inner">14 → 14</div>
+          </div>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">concentric</span>
+          <div class="p-demo-concentric">
+            <div class="p-demo-concentric-inner">14 → 6</div>
+          </div>
+        </div>
+      </div>`
+    },
+    {
+      id: 'motion-reason',
+      label: 'Motion has a reason',
+      quote: 'There must be a reason for every animation. If you can remove it without losing meaning, remove it.',
+      cite: 'Rauno Freiberg · Vercel · 2023',
+      deeper: { text: 'See House 03 · Swiss-Quiet — where spring is banned, and House 04 · Playful-Warm — where it is reward', href: 'houses/swiss-quiet.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">generic ease</span>
+          <div class="p-demo-motion" style="--p-demo-dur: 1400ms; --p-demo-ease: ease-in-out;">
+            <span class="p-demo-dot"></span>
+          </div>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">spring-smooth</span>
+          <div class="p-demo-motion" style="--p-demo-dur: 900ms; --p-demo-ease: cubic-bezier(0.45, 1.4, 0.55, 1);">
+            <span class="p-demo-dot"></span>
+          </div>
+        </div>
+      </div>`
+    },
+    {
+      id: 'oklch',
+      label: 'Perceptual color',
+      quote: 'Two colors with the same L value read as equally bright. OKLCH makes this provable. HSL does not.',
+      cite: 'Björn Ottosson · 2020',
+      deeper: { text: 'Read Field Experiment N° 002 · the full demonstration with live sliders', href: 'essays/why-oklch-was-inevitable.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">rgb · uneven</span>
+          <div class="p-demo-ramp"><div class="ramp rgb"></div><span class="lbl">muddy middle</span></div>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">oklch · uniform</span>
+          <div class="p-demo-ramp"><div class="ramp oklch"></div><span class="lbl">perceptually even</span></div>
+        </div>
+      </div>`
+    },
+    {
+      id: 'tabular',
+      label: 'Tabular numerics',
+      quote: 'Columns of numbers must align on the decimal. It is not an aesthetic choice — it is a scanning requirement.',
+      cite: 'Tschichold · Asymmetric Typography · 1935',
+      deeper: { text: 'See House 02 · Industrial-Pro — tabular-nums on every column, as required', href: 'houses/industrial-pro.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">proportional</span>
+          <div class="p-demo-nums">
+            <div class="row"><span>SIF-001</span><span>0.0023</span></div>
+            <div class="row"><span>SIF-017</span><span>1.2400</span></div>
+            <div class="row"><span>SIF-204</span><span>11.870</span></div>
+          </div>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">tabular-nums</span>
+          <div class="p-demo-nums tabular">
+            <div class="row"><span>SIF-001</span><span>0.0023</span></div>
+            <div class="row"><span>SIF-017</span><span>1.2400</span></div>
+            <div class="row"><span>SIF-204</span><span>11.870</span></div>
+          </div>
+        </div>
+      </div>`
+    },
+    {
+      id: 'text-wrap',
+      label: 'Text-wrap: balance',
+      quote: 'A headline that breaks on a preposition is a failed headline. text-wrap: balance ships it correctly without hand-tuning.',
+      cite: 'CSS Text 4 · 2023',
+      deeper: { text: 'See House 01 · Editorial — where balanced headlines are non-negotiable', href: 'houses/editorial.html' },
+      demo: `<div class="p-demo">
+        <div class="p-demo-box wrong"><span class="p-tag">default</span>
+          <p class="p-demo-text">The anatomy of a stitch, in two pixels.</p>
+        </div>
+        <div class="p-demo-box right"><span class="p-tag">balance</span>
+          <p class="p-demo-text balance">The anatomy of a stitch, in two pixels.</p>
+        </div>
+      </div>`
+    }
+  ];
+
   const DATA = {
     philosophy: {
-      title: 'The pantheon is the foundation.',
-      body: 'Stit\'Claude inherits from Rams, Vignelli, Ive, Hara, Müller-Brockmann. The skill doesn\'t invent taste — it passes it down.'
+      title: 'Six principles, demonstrated.',
+      body: 'Click any chip to see the principle in action. Left is the default anyone ships. Right is the Stit\'Claude version.',
+      principles: true
     },
     tokens: {
       title: 'Tokens or nothing.',
@@ -1155,13 +1264,57 @@ function dropBall(type) {
     setTimeout(() => {
       const d = DATA[name];
       let html = `<h4>${d.title}</h4><p>${d.body}</p>`;
+      if (d.principles) {
+        html += `<div class="principles" id="principles-list">`;
+        PRINCIPLES.forEach((p, i) => {
+          const num = String(i + 1).padStart(2, '0');
+          html += `<button class="principle-chip" data-principle="${p.id}"><span class="num">${num}</span><span>${p.label}</span></button>`;
+        });
+        html += `</div>`;
+        html += `<div id="principle-panel-host"></div>`;
+      }
       if (d.code) {
         html += `<pre><code>${highlightCode(d.code)}</code></pre>`;
       }
       content.innerHTML = html;
       content.scrollTop = 0;
       content.classList.remove('fading');
+
+      // Wire up principle chips
+      if (d.principles) wirePrinciples();
     }, 120);
+  }
+
+  function wirePrinciples() {
+    const list = document.getElementById('principles-list');
+    const host = document.getElementById('principle-panel-host');
+    if (!list || !host) return;
+
+    list.addEventListener('click', (e) => {
+      const chip = e.target.closest('.principle-chip');
+      if (!chip) return;
+      const id = chip.dataset.principle;
+      const principle = PRINCIPLES.find(p => p.id === id);
+      if (!principle) return;
+
+      // Toggle: if already open, close; else open this one
+      const isOpen = chip.classList.contains('is-open');
+      list.querySelectorAll('.principle-chip').forEach(c => c.classList.remove('is-open'));
+      if (isOpen) {
+        host.innerHTML = '';
+        return;
+      }
+      chip.classList.add('is-open');
+      const deeperHTML = principle.deeper
+        ? `<a class="p-deeper" href="${principle.deeper.href}"><span class="p-deeper-arrow">→</span><span class="p-deeper-text">${principle.deeper.text}</span></a>`
+        : '';
+      host.innerHTML = `
+        <div class="principle-panel">
+          <p class="p-quote">${principle.quote}<cite>${principle.cite}</cite></p>
+          ${principle.demo}
+          ${deeperHTML}
+        </div>`;
+    });
   }
 
   root.addEventListener('click', (e) => {
@@ -1170,7 +1323,10 @@ function dropBall(type) {
   });
 
   // Initialise indicator on load + resize
-  requestAnimationFrame(() => moveIndicator(root.querySelector('.tab-btn.active')));
+  requestAnimationFrame(() => {
+    moveIndicator(root.querySelector('.tab-btn.active'));
+    setTab('philosophy'); // render initial content
+  });
   window.addEventListener('resize', () => {
     moveIndicator(root.querySelector('.tab-btn.active'));
   });

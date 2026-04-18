@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0b0c0f" />
+<meta name="description" content="Stit'Claude · Documentation. Install, use, extend the skill." />
+<title>Docs · Stit'Claude</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="assets/theme.css" />
+
+<style>
+  /* ==========================================================================
+     DOCS · Stit'Claude
+     Direction: modern technical docs (shadcn / Radix / Tailwind lineage)
+     Restraint, precision, invisible craft.
+     ========================================================================== */
+
+  :root[data-theme="dark"] {
+    --dx-bg: oklch(0.128 0.006 260);
+    --dx-panel: oklch(0.175 0.007 262);
+    --dx-panel-hi: oklch(0.215 0.008 260);
+    --dx-border: oklch(0.265 0.008 258);
+    --dx-border-hi: oklch(0.34 0.010 258);
+    --dx-fg: oklch(0.97 0.005 258);
+    --dx-fg-muted: oklch(0.78 0.008 260);
+    --dx-fg-subtle: oklch(0.55 0.010 262);
+    --dx-accent: oklch(0.68 0.165 30);
+    --dx-accent-hi: oklch(0.78 0.180 32);
+    --dx-accent-dim: oklch(0.45 0.130 28);
+    --dx-green: oklch(0.72 0.150 145);
+    --dx-blue: oklch(0.68 0.130 235);
+    --dx-mono-str: oklch(0.78 0.13 140);
+    --dx-mono-kw: oklch(0.74 0.155 300);
+    --dx-mono-num: oklch(0.78 0.135 60);
+    --dx-mono-fn: oklch(0.72 0.150 225);
+    --dx-mono-com: oklch(0.50 0.008 258);
+  }
+  :root[data-theme="light"] {
+    --dx-bg: oklch(0.998 0 0);
+    --dx-panel: oklch(0.975 0.002 260);
+    --dx-panel-hi: oklch(0.958 0.003 260);
+    --dx-border: oklch(0.88 0.003 258);
+    --dx-border-hi: oklch(0.75 0.005 258);
+    --dx-fg: oklch(0.125 0.005 258);
+    --dx-fg-muted: oklch(0.38 0.008 260);
+    --dx-fg-subtle: oklch(0.58 0.010 262);
+    --dx-accent: oklch(0.58 0.190 30);
+    --dx-accent-hi: oklch(0.50 0.200 30);
+    --dx-accent-dim: oklch(0.72 0.130 30);
+    --dx-green: oklch(0.52 0.150 145);
+    --dx-blue: oklch(0.48 0.150 235);
+    --dx-mono-str: oklch(0.50 0.14 140);
+    --dx-mono-kw: oklch(0.48 0.17 300);
+    --dx-mono-num: oklch(0.52 0.15 60);
+    --dx-mono-fn: oklch(0.48 0.17 225);
+    --dx-mono-com: oklch(0.60 0.008 258);
+  }
+
+  html { background: var(--dx-bg); }
+  body {
+    background: var(--dx-bg);
+    color: var(--dx-fg);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 14.5px;
+    line-height: 1.6;
+    letter-spacing: -0.003em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /* ================================================================
+     TOP BAR · quiet, utilitarian
+     ================================================================ */
+  .dx-top {
+    position: sticky; top: 0; z-index: 40;
+    height: 56px;
+    background: color-mix(in oklch, var(--dx-bg) 85%, transparent);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    border-bottom: 1px solid var(--dx-border);
+    display: flex;
+    align-items: center;
+    padding: 0 clamp(16px, 3vw, 28px);
+    gap: 20px;
+  }
+  .dx-brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--dx-fg);
+    letter-spacing: -0.015em;
+  }
+  .dx-brand .mark {
+    width: 22px; height: 26px;
+    background: var(--dx-accent);
+    mask-image: url('assets/logo-mark.svg');
+    -webkit-mask-image: url('assets/logo-mark.svg');
+    mask-size: contain; -webkit-mask-size: contain;
+    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+    mask-position: center; -webkit-mask-position: center;
+    transition: transform 280ms cubic-bezier(0.25, 1.6, 0.4, 1);
+  }
+  .dx-brand:hover .mark { transform: rotate(-6deg) scale(1.06); }
+  .dx-brand .sep {
+    color: var(--dx-border-hi);
+    margin-left: 6px;
+    font-weight: 400;
+  }
+  .dx-brand .tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--dx-fg-subtle);
+    letter-spacing: 0.04em;
+    padding: 2px 7px;
+    border: 1px solid var(--dx-border);
+    border-radius: 4px;
+    margin-left: 8px;
+  }
+  .dx-top .spacer { flex: 1; }
+  .dx-top-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+  }
+  .dx-top-nav a {
+    padding: 6px 10px;
+    color: var(--dx-fg-muted);
+    border-radius: 5px;
+    transition: color 120ms, background 120ms;
+  }
+  .dx-top-nav a:hover { color: var(--dx-fg); background: var(--dx-panel); }
+  .dx-top-nav a.active { color: var(--dx-accent); }
+  .dx-theme {
+    width: 32px; height: 32px;
+    border-radius: 5px;
+    background: transparent;
+    border: 1px solid var(--dx-border);
+    color: var(--dx-fg-muted);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: color 120ms, border-color 120ms, background 120ms;
+  }
+  .dx-theme:hover {
+    color: var(--dx-fg);
+    border-color: var(--dx-border-hi);
+    background: var(--dx-panel);
+  }
+  .dx-theme svg { width: 13px; height: 13px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* ================================================================
+     LAYOUT · 3 columns — sidebar, content, TOC
+     ================================================================ */
+  .dx-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr 200px;
+    max-width: 1360px;
+    margin-inline: auto;
+    gap: 32px;
+    padding: 0 clamp(16px, 3vw, 28px);
+  }
+  @media (max-width: 1080px) {
+    .dx-layout { grid-template-columns: 220px 1fr; }
+    .dx-toc { display: none; }
+  }
+  @media (max-width: 720px) {
+    .dx-layout { grid-template-columns: 1fr; }
+    .dx-side { display: none; }
+  }
+
+  /* SIDEBAR */
+  .dx-side {
+    position: sticky;
+    top: 56px;
+    align-self: start;
+    height: calc(100dvh - 56px);
+    overflow-y: auto;
+    padding: 28px 0;
+    font-size: 13px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dx-border-hi) transparent;
+  }
+  .dx-side::-webkit-scrollbar { width: 4px; }
+  .dx-side::-webkit-scrollbar-thumb { background: var(--dx-border-hi); border-radius: 2px; }
+
+  .dx-side-group { margin-bottom: 20px; }
+  .dx-side-group .heading {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dx-fg-muted);
+    letter-spacing: 0.02em;
+    padding: 0 10px 8px;
+  }
+  .dx-side-group a {
+    display: block;
+    padding: 5px 10px;
+    color: var(--dx-fg-muted);
+    border-radius: 5px;
+    font-size: 13.5px;
+    transition: color 80ms, background 80ms;
+  }
+  .dx-side-group a:hover { color: var(--dx-fg); background: var(--dx-panel); }
+  .dx-side-group a.active {
+    color: var(--dx-accent);
+    background: color-mix(in oklch, var(--dx-accent) 8%, transparent);
+  }
+  .dx-side-group a .badge {
+    float: right;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: color-mix(in oklch, var(--dx-blue) 14%, transparent);
+    color: var(--dx-blue);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  /* TOC right */
+  .dx-toc {
+    position: sticky;
+    top: 80px;
+    align-self: start;
+    padding: 28px 0;
+    font-size: 12px;
+  }
+  .dx-toc .heading {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--dx-fg-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .dx-toc a {
+    display: block;
+    padding: 4px 0 4px 12px;
+    color: var(--dx-fg-subtle);
+    border-left: 1px solid var(--dx-border);
+    transition: color 100ms, border-color 100ms;
+    font-size: 12.5px;
+  }
+  .dx-toc a:hover { color: var(--dx-fg); border-color: var(--dx-fg-muted); }
+  .dx-toc a.active { color: var(--dx-accent); border-color: var(--dx-accent); }
+
+  /* MAIN CONTENT */
+  .dx-main {
+    padding: 36px 0 80px;
+    min-width: 0;
+    max-width: 720px;
+  }
+
+  /* Breadcrumb */
+  .dx-crumbs {
+    font-size: 12px;
+    color: var(--dx-fg-subtle);
+    margin-bottom: 18px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .dx-crumbs a { color: var(--dx-fg-muted); }
+  .dx-crumbs a:hover { color: var(--dx-fg); }
+  .dx-crumbs .sep { color: var(--dx-border-hi); }
+  .dx-crumbs .active { color: var(--dx-fg); }
+
+  /* Title */
+  .dx-page-title {
+    font-size: clamp(32px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.028em;
+    line-height: 1.1;
+    color: var(--dx-fg);
+    margin-bottom: 12px;
+  }
+  .dx-page-lead {
+    font-size: 17px;
+    line-height: 1.55;
+    color: var(--dx-fg-muted);
+    margin-bottom: 36px;
+    max-width: 62ch;
+  }
+
+  /* H2 sections */
+  .dx-h2 {
+    font-size: 22px;
+    font-weight: 650;
+    letter-spacing: -0.018em;
+    color: var(--dx-fg);
+    margin: 48px 0 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--dx-border);
+    position: relative;
+    scroll-margin-top: 80px;
+  }
+  .dx-h2 .hash {
+    position: absolute;
+    left: -20px; top: 18px;
+    color: var(--dx-fg-subtle);
+    font-weight: 400;
+    opacity: 0;
+    transition: opacity 140ms;
+  }
+  .dx-h2:hover .hash { opacity: 1; }
+
+  .dx-h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--dx-fg);
+    margin: 28px 0 10px;
+  }
+
+  .dx-main p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--dx-fg-muted);
+    margin-bottom: 14px;
+    max-width: 72ch;
+  }
+  .dx-main p.lead {
+    font-size: 15.5px;
+    color: var(--dx-fg);
+  }
+  .dx-main a:not(.dx-brand):not(.dx-btn) {
+    color: var(--dx-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklch, var(--dx-accent) 40%, transparent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 120ms;
+  }
+  .dx-main a:not(.dx-brand):not(.dx-btn):hover {
+    text-decoration-color: var(--dx-accent);
+  }
+
+  /* Inline code */
+  .dx-main code:not(pre code) {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    padding: 1.5px 6px;
+    background: var(--dx-panel);
+    border: 1px solid var(--dx-border);
+    border-radius: 4px;
+    color: var(--dx-accent);
+    font-weight: 500;
+  }
+
+  /* ================================================================
+     CALLOUTS
+     ================================================================ */
+  .dx-callout {
+    margin: 22px 0;
+    padding: 14px 16px 14px 18px;
+    border: 1px solid var(--dx-border);
+    border-left: 3px solid var(--dx-blue);
+    border-radius: 6px;
+    background: color-mix(in oklch, var(--dx-blue) 5%, var(--dx-panel));
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--dx-fg-muted);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: start;
+  }
+  .dx-callout.tip { border-left-color: var(--dx-green); background: color-mix(in oklch, var(--dx-green) 5%, var(--dx-panel)); }
+  .dx-callout.warn { border-left-color: var(--dx-accent); background: color-mix(in oklch, var(--dx-accent) 5%, var(--dx-panel)); }
+  .dx-callout .icon {
+    flex-shrink: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--dx-blue);
+    padding-top: 3px;
+  }
+  .dx-callout.tip .icon { color: var(--dx-green); }
+  .dx-callout.warn .icon { color: var(--dx-accent); }
+  .dx-callout b { color: var(--dx-fg); font-weight: 600; }
+  .dx-callout p { margin: 0; color: var(--dx-fg-muted); font-size: 13.5px; }
+  .dx-callout p + p { margin-top: 6px; }
+
+  /* ================================================================
+     CODE BLOCKS — with language tabs and copy button
+     ================================================================ */
+  .dx-code {
+    margin: 18px 0 24px;
+    background: var(--dx-panel);
+    border: 1px solid var(--dx-border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+  }
+  .dx-code-head {
+    display: flex;
+    align-items: center;
+    padding: 0 4px 0 16px;
+    border-bottom: 1px solid var(--dx-border);
+    background: color-mix(in oklch, var(--dx-bg) 30%, var(--dx-panel));
+    height: 36px;
+    gap: 4px;
+  }
+  .dx-code-tabs {
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    align-items: stretch;
+    height: 100%;
+  }
+  .dx-code-tab {
+    padding: 0 12px;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    color: var(--dx-fg-subtle);
+    font-family: inherit;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: color 120ms, border-color 120ms;
+    display: inline-flex;
+    align-items: center;
+  }
+  .dx-code-tab.active {
+    color: var(--dx-fg);
+    border-bottom-color: var(--dx-accent);
+  }
+  .dx-code-tab:hover:not(.active) { color: var(--dx-fg-muted); }
+
+  .dx-code-filename {
+    font-size: 11px;
+    color: var(--dx-fg-subtle);
+    letter-spacing: 0.02em;
+    margin-right: auto;
+  }
+  .dx-code-filename::before { content: ' '; }
+
+  .dx-copy {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    color: var(--dx-fg-subtle);
+    cursor: pointer;
+    border-radius: 4px;
+    display: inline-grid; place-items: center;
+    transition: color 120ms, background 120ms;
+  }
+  .dx-copy:hover { color: var(--dx-fg); background: var(--dx-panel-hi); }
+  .dx-copy svg { width: 13px; height: 13px; }
+  .dx-copy.copied { color: var(--dx-green); }
+  .dx-copy.copied svg { display: none; }
+  .dx-copy.copied::after { content: '✓'; font-size: 13px; font-weight: 700; }
+
+  .dx-code pre {
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    line-height: 1.6;
+    background: transparent;
+  }
+  .dx-code code { color: var(--dx-fg); }
+  .dx-code pre[data-show="npm"] .t-pnpm, .dx-code pre[data-show="npm"] .t-yarn, .dx-code pre[data-show="npm"] .t-bash { display: none; }
+  .dx-code pre[data-show="pnpm"] .t-npm, .dx-code pre[data-show="pnpm"] .t-yarn, .dx-code pre[data-show="pnpm"] .t-bash { display: none; }
+  .dx-code pre[data-show="yarn"] .t-npm, .dx-code pre[data-show="yarn"] .t-pnpm, .dx-code pre[data-show="yarn"] .t-bash { display: none; }
+  .dx-code pre[data-show="bash"] .t-npm, .dx-code pre[data-show="bash"] .t-pnpm, .dx-code pre[data-show="bash"] .t-yarn { display: none; }
+
+  /* Syntax highlight */
+  .c-kw { color: var(--dx-mono-kw); }
+  .c-str { color: var(--dx-mono-str); }
+  .c-num { color: var(--dx-mono-num); }
+  .c-fn { color: var(--dx-mono-fn); }
+  .c-com { color: var(--dx-mono-com); font-style: italic; }
+  .c-cmd { color: var(--dx-accent); }
+  .c-arg { color: var(--dx-fg-muted); }
+
+  /* ================================================================
+     HOUSES TABLE — cheat sheet
+     ================================================================ */
+  .dx-table-wrap {
+    margin: 18px 0 24px;
+    border: 1px solid var(--dx-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .dx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .dx-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    background: var(--dx-panel);
+    color: var(--dx-fg-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--dx-border);
+  }
+  .dx-table tbody td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--dx-border);
+    color: var(--dx-fg-muted);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .dx-table tbody tr:last-child td { border-bottom: 0; }
+  .dx-table tbody tr:hover td { background: var(--dx-panel); }
+  .dx-table .n {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--dx-accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .dx-table .name {
+    font-weight: 600;
+    color: var(--dx-fg);
+  }
+  .dx-table .name a {
+    color: var(--dx-fg) !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid transparent;
+    transition: border-color 120ms, color 120ms;
+  }
+  .dx-table .name a:hover {
+    color: var(--dx-accent) !important;
+    border-bottom-color: var(--dx-accent);
+  }
+  .dx-table .when {
+    font-size: 12.5px;
+    color: var(--dx-fg-muted);
+    max-width: 28ch;
+  }
+  .dx-table .mood {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--dx-fg-subtle);
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 720px) {
+    .dx-table .mood { display: none; }
+  }
+
+  /* ================================================================
+     CHECKLIST — Stit'Claude signature
+     ================================================================ */
+  .dx-checklist {
+    margin: 22px 0;
+    list-style: none;
+    padding: 0;
+    border: 1px solid var(--dx-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .dx-checklist li {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--dx-border);
+    font-size: 13.5px;
+    color: var(--dx-fg);
+    transition: background 120ms;
+    cursor: pointer;
+  }
+  .dx-checklist li:last-child { border-bottom: 0; }
+  .dx-checklist li:hover { background: var(--dx-panel); }
+  .dx-checklist .cbox {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--dx-border-hi);
+    border-radius: 4px;
+    display: inline-grid;
+    place-items: center;
+    transition: border-color 120ms, background 120ms;
+  }
+  .dx-checklist li.done .cbox {
+    background: var(--dx-accent);
+    border-color: var(--dx-accent);
+  }
+  .dx-checklist .cbox::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+  .dx-checklist li.done .cbox::after { opacity: 1; }
+  .dx-checklist li.done .text { color: var(--dx-fg-subtle); text-decoration: line-through; text-decoration-color: var(--dx-fg-subtle); }
+  .dx-checklist .meta {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    color: var(--dx-fg-subtle);
+    letter-spacing: 0.04em;
+  }
+
+  /* ================================================================
+     ANATOMY TREE — file structure
+     ================================================================ */
+  .dx-tree {
+    margin: 18px 0 24px;
+    padding: 16px 20px;
+    background: var(--dx-panel);
+    border: 1px solid var(--dx-border);
+    border-radius: 8px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--dx-fg-muted);
+    overflow-x: auto;
+  }
+  .dx-tree .dir { color: var(--dx-blue); font-weight: 500; }
+  .dx-tree .file { color: var(--dx-fg); }
+  .dx-tree .note { color: var(--dx-fg-subtle); font-style: italic; }
+  .dx-tree .star { color: var(--dx-accent); }
+
+  /* ================================================================
+     BUTTONS — CTA pairs
+     ================================================================ */
+  .dx-cta {
+    display: flex;
+    gap: 10px;
+    margin: 24px 0;
+    flex-wrap: wrap;
+  }
+  .dx-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    border: 1px solid transparent;
+    text-decoration: none !important;
+    transition: background 140ms, border-color 140ms, color 140ms, transform 180ms cubic-bezier(0.3, 1.4, 0.5, 1);
+  }
+  .dx-btn.primary {
+    background: var(--dx-accent);
+    color: oklch(0.12 0.01 30);
+    border-color: var(--dx-accent);
+  }
+  .dx-btn.primary:hover {
+    background: var(--dx-accent-hi);
+    border-color: var(--dx-accent-hi);
+    transform: translateY(-1px);
+  }
+  .dx-btn.outline {
+    background: transparent;
+    color: var(--dx-fg) !important;
+    border-color: var(--dx-border-hi);
+  }
+  .dx-btn.outline:hover {
+    background: var(--dx-panel);
+    border-color: var(--dx-fg-subtle);
+  }
+  .dx-btn svg { width: 13px; height: 13px; }
+
+  /* ================================================================
+     PAGER
+     ================================================================ */
+  .dx-pager {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--dx-border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .dx-pager a {
+    padding: 14px 18px;
+    background: var(--dx-panel);
+    border: 1px solid var(--dx-border);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: background 120ms, border-color 120ms;
+    text-decoration: none !important;
+  }
+  .dx-pager a:hover { background: var(--dx-panel-hi); border-color: var(--dx-border-hi); }
+  .dx-pager a.next { text-align: right; align-items: flex-end; }
+  .dx-pager .dir {
+    font-size: 11.5px;
+    color: var(--dx-fg-subtle);
+    font-weight: 500;
+  }
+  .dx-pager .target {
+    color: var(--dx-accent) !important;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+
+  ::selection { background: var(--dx-accent); color: var(--dx-bg); }
+</style>
+</head>
+
+<body>
+
+<!-- ================================================================
+     TOP BAR
+     ================================================================ -->
+<header class="dx-top">
+  <a class="dx-brand" href="index.html">
+    <span class="mark" aria-hidden="true"></span>
+    <span>Stit'Claude</span>
+    <span class="sep">/</span>
+    <span class="tag">docs</span>
+  </a>
+  <span class="spacer"></span>
+  <nav class="dx-top-nav">
+    <a href="lab.html">Lab</a>
+    <a href="components.html">Components</a>
+    <a href="tokens.html">Tokens</a>
+    <a href="#" class="active">Docs</a>
+  </nav>
+  <button class="dx-theme" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+    </svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<!-- ================================================================
+     3-COLUMN LAYOUT
+     ================================================================ -->
+<div class="dx-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="dx-side" aria-label="Documentation navigation">
+
+    <div class="dx-side-group">
+      <div class="heading">Getting started</div>
+      <a href="#install" class="active">Install</a>
+      <a href="#invoke">Invoke the skill</a>
+      <a href="#anatomy">Anatomy</a>
+    </div>
+
+    <div class="dx-side-group">
+      <div class="heading">Reference</div>
+      <a href="tokens.html">Tokens <span class="badge">ref</span></a>
+      <a href="components.html">Components</a>
+      <a href="#houses-cheat">Houses cheat sheet</a>
+      <a href="#checklist">12-point checklist</a>
+    </div>
+
+    <div class="dx-side-group">
+      <div class="heading">Extend</div>
+      <a href="#add-house">Add your own house</a>
+      <a href="#contribute">Contribute</a>
+    </div>
+
+    <div class="dx-side-group">
+      <div class="heading">Meta</div>
+      <a href="#changelog">Changelog</a>
+      <a href="#faq">FAQ</a>
+      <a href="lab.html">← Back to Lab</a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="dx-main">
+
+    <div class="dx-crumbs">
+      <a href="index.html">Stit'Claude</a>
+      <span class="sep">/</span>
+      <span class="active">Docs</span>
+    </div>
+
+    <h1 class="dx-page-title">Install, use, extend.</h1>
+    <p class="dx-page-lead">
+      Stit'Claude is a <b>design discipline encoded as a Claude skill</b> — a structured folder
+      that gives any Claude model a direction when asked to design. This page shows how to install it,
+      how to invoke it, and how to extend it with your own houses.
+    </p>
+
+    <div class="dx-cta">
+      <a class="dx-btn primary" href="#install">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3 L8 13 M4 9 L8 13 L12 9"/></svg>
+        Install now
+      </a>
+      <a class="dx-btn outline" href="https://github.com/Myrkh/Master_Claude" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0 C3.58 0 0 3.58 0 8 C0 11.54 2.29 14.53 5.47 15.59 C5.87 15.66 6.02 15.42 6.02 15.21 L6.02 13.85 C3.8 14.33 3.33 12.78 3.33 12.78 C2.97 11.86 2.44 11.61 2.44 11.61 C1.72 11.12 2.5 11.13 2.5 11.13 C3.3 11.19 3.72 11.95 3.72 11.95 C4.43 13.17 5.59 12.82 6.05 12.61 C6.12 12.1 6.33 11.75 6.56 11.55 C4.79 11.35 2.93 10.66 2.93 7.59 C2.93 6.72 3.24 6 3.74 5.45 C3.66 5.25 3.39 4.44 3.82 3.33 C3.82 3.33 4.49 3.12 6.02 4.15 C6.66 3.97 7.34 3.88 8.02 3.88 C8.7 3.88 9.38 3.97 10.02 4.15 C11.55 3.12 12.21 3.33 12.21 3.33 C12.65 4.44 12.38 5.25 12.3 5.45 C12.81 6 13.11 6.72 13.11 7.59 C13.11 10.67 11.24 11.35 9.47 11.54 C9.76 11.79 10.02 12.28 10.02 13.03 L10.02 15.21 C10.02 15.42 10.16 15.66 10.57 15.59 C13.74 14.53 16.04 11.54 16.04 8 C16.04 3.58 12.46 0 8.04 0 L8 0 Z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+
+    <div class="dx-callout tip">
+      <span class="icon">TL;DR</span>
+      <div>
+        <p>Clone the repo into your Claude skills directory. Claude will load it automatically.
+        Invoke by asking <b>"design with Stit'Claude"</b> in any conversation.</p>
+      </div>
+    </div>
+
+    <!-- =============== INSTALL =============== -->
+    <h2 class="dx-h2" id="install"><span class="hash">#</span>Install</h2>
+
+    <p>One command. Three seconds. Stit'Claude lives as a folder in <code>~/.claude/skills/</code>.
+    When you ask Claude to design, it will pick up the skill automatically.</p>
+
+    <div class="dx-code">
+      <div class="dx-code-head">
+        <div class="dx-code-tabs">
+          <button class="dx-code-tab active" data-lang="bash">terminal</button>
+        </div>
+        <span class="dx-code-filename">~/.claude/skills/</span>
+        <button class="dx-copy" data-copy="git clone https://github.com/Myrkh/Master_Claude ~/.claude/skills/stitclaude" aria-label="Copy command">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M11 5 L11 3 A1 1 0 0 0 10 2 L3 2 A1 1 0 0 0 2 3 L2 10 A1 1 0 0 0 3 11 L5 11"/></svg>
+        </button>
+      </div>
+      <pre data-show="bash"><code><span class="t-bash"><span class="c-com"># Clone the skill into Claude's skills folder</span>
+<span class="c-cmd">git</span> <span class="c-arg">clone https://github.com/Myrkh/Master_Claude</span> <span class="c-str">~/.claude/skills/stitclaude</span>
+
+<span class="c-com"># Verify</span>
+<span class="c-cmd">ls</span> <span class="c-str">~/.claude/skills/stitclaude/SKILL.md</span></span></code></pre>
+    </div>
+
+    <div class="dx-callout warn">
+      <span class="icon">NOTE</span>
+      <div>
+        <p><b>Claude Desktop app users</b> — the skills folder lives inside the app's data directory.
+        On macOS: <code>~/Library/Application Support/Claude/skills/</code>.
+        On Windows: <code>%APPDATA%\Claude\skills\</code>. Claude Code users have the path above.</p>
+      </div>
+    </div>
+
+    <!-- =============== INVOKE =============== -->
+    <h2 class="dx-h2" id="invoke"><span class="hash">#</span>Invoke the skill</h2>
+
+    <p>Once installed, you <b>don't load it manually</b>. Claude reads the skill index on each
+    conversation and activates Stit'Claude when it recognizes a design intent in your prompt.</p>
+
+    <p>For reliable activation, use one of these phrasings:</p>
+
+    <div class="dx-code">
+      <div class="dx-code-head">
+        <div class="dx-code-tabs">
+          <button class="dx-code-tab active" data-lang="bash">prompt examples</button>
+        </div>
+        <span class="dx-code-filename">any conversation</span>
+      </div>
+      <pre data-show="bash"><code><span class="t-bash"><span class="c-com"># Direct invocation</span>
+<span class="c-str">"Design a dashboard using Stit'Claude, house Industrial-Pro."</span>
+
+<span class="c-com"># Indirect — Claude picks the house itself</span>
+<span class="c-str">"Build me a landing page for a fashion brand — use Stit'Claude."</span>
+
+<span class="c-com"># Token-level invocation</span>
+<span class="c-str">"Generate an OKLCH palette with Stit'Claude principles."</span></span></code></pre>
+    </div>
+
+    <!-- =============== ANATOMY =============== -->
+    <h2 class="dx-h2" id="anatomy"><span class="hash">#</span>Anatomy</h2>
+
+    <p>The skill folder is plain files — no build step, no runtime. Three top-level entries matter:</p>
+
+    <div class="dx-tree">
+<span class="dir">stitclaude/</span>
+<span>├── </span><span class="file">SKILL.md</span>                <span class="note">// the entry point Claude reads first</span>
+<span>├── </span><span class="dir">houses/</span>
+<span>│&nbsp;&nbsp; ├── </span><span class="file">editorial.md</span>        <span class="note">// one file per house</span>
+<span>│&nbsp;&nbsp; ├── </span><span class="file">industrial-pro.md</span>
+<span>│&nbsp;&nbsp; ├── </span><span class="file">swiss-quiet.md</span>
+<span>│&nbsp;&nbsp; └── </span><span class="file">... 5 more</span>
+<span>├── </span><span class="dir">references/</span>
+<span>│&nbsp;&nbsp; ├── </span><span class="file">tokens.css</span>          <span class="note">// OKLCH palette, motion, type scale</span>
+<span>│&nbsp;&nbsp; ├── </span><span class="file">checklist.md</span>        <span class="note">// 12-point pre-ship checklist</span>
+<span>│&nbsp;&nbsp; └── </span><span class="file">anti-patterns.md</span>    <span class="star">// 30 things the skill refuses</span>
+<span>└── </span><span class="dir">examples/</span>
+<span>&nbsp;&nbsp;&nbsp; ├── </span><span class="file">landing.html</span>
+<span>&nbsp;&nbsp;&nbsp; ├── </span><span class="file">dashboard.html</span>
+<span>&nbsp;&nbsp;&nbsp; └── </span><span class="file">... more</span>
+    </div>
+
+    <p>Claude loads <code>SKILL.md</code> first. That file references the houses, the checklist, and
+    the anti-patterns, and instructs Claude how to combine them on request.</p>
+
+    <!-- =============== HOUSES CHEAT SHEET =============== -->
+    <h2 class="dx-h2" id="houses-cheat"><span class="hash">#</span>Houses — cheat sheet</h2>
+
+    <p>Eight houses, each a complete visual direction. Pick one explicitly, or let Stit'Claude
+    infer from your context.</p>
+
+    <div class="dx-table-wrap">
+      <table class="dx-table">
+        <thead>
+          <tr>
+            <th style="width: 50px;">№</th>
+            <th>Name</th>
+            <th>When to use</th>
+            <th>Mood</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="n">01</td>
+            <td class="name"><a href="houses/editorial.html">Editorial</a></td>
+            <td class="when">Long-form content, articles, reading experiences, magazines.</td>
+            <td class="mood">serif · restraint</td>
+          </tr>
+          <tr>
+            <td class="n">02</td>
+            <td class="name"><a href="houses/industrial-pro.html">Industrial-Pro</a></td>
+            <td class="when">Trading, monitoring, dense data interfaces. Terminals, dashboards.</td>
+            <td class="mood">amber · terminal</td>
+          </tr>
+          <tr>
+            <td class="n">03</td>
+            <td class="name"><a href="houses/swiss-quiet.html">Swiss-Quiet</a></td>
+            <td class="when">Enterprise SaaS, developer tools, anything requiring absolute clarity.</td>
+            <td class="mood">grid · mono</td>
+          </tr>
+          <tr>
+            <td class="n">04</td>
+            <td class="name"><a href="houses/playful-warm.html">Playful-Warm</a></td>
+            <td class="when">Consumer apps, onboarding, fintech with personality.</td>
+            <td class="mood">peach · bounce</td>
+          </tr>
+          <tr>
+            <td class="n">05</td>
+            <td class="name"><a href="houses/apple-craft.html">Apple-Craft</a></td>
+            <td class="when">iOS-native feel. Settings, preferences, any Apple-adjacent product.</td>
+            <td class="mood">glass · spring</td>
+          </tr>
+          <tr>
+            <td class="n">06</td>
+            <td class="name"><a href="houses/japanese-ma.html">Japanese-Ma</a></td>
+            <td class="when">Marketing pages for calm, premium, or contemplative products.</td>
+            <td class="mood">void · italic</td>
+          </tr>
+          <tr>
+            <td class="n">07</td>
+            <td class="name"><a href="houses/power-dense.html">Power-Dense</a></td>
+            <td class="when">Pro tools, power-user software, keyboard-driven interfaces.</td>
+            <td class="mood">indigo · ⌘K</td>
+          </tr>
+          <tr>
+            <td class="n">08</td>
+            <td class="name"><a href="houses/editorial-display.html">Editorial-Display</a></td>
+            <td class="when">Hero campaigns, launch pages, portfolios, fashion/film.</td>
+            <td class="mood">display · runway</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =============== CHECKLIST =============== -->
+    <h2 class="dx-h2" id="checklist"><span class="hash">#</span>The 12-point checklist</h2>
+
+    <p>Before shipping anything Stit'Claude-authored, run through these. Click each to mark as done
+    — the state persists locally during your session.</p>
+
+    <ul class="dx-checklist" id="checklist-root">
+      <li data-id="c1"><span class="cbox"></span><span class="text">Tokens defined in a single <code>tokens.css</code>, no literal colors in components.</span><span class="meta">§ 1</span></li>
+      <li data-id="c2"><span class="cbox"></span><span class="text">Every radius is concentric: child = parent − padding.</span><span class="meta">§ 2</span></li>
+      <li data-id="c3"><span class="cbox"></span><span class="text">Tabular numerics on every column of data.</span><span class="meta">§ 3</span></li>
+      <li data-id="c4"><span class="cbox"></span><span class="text">All motion has a reason — remove anything you cannot justify.</span><span class="meta">§ 4</span></li>
+      <li data-id="c5"><span class="cbox"></span><span class="text">Headlines balanced: <code>text-wrap: balance</code> on H1–H3.</span><span class="meta">§ 5</span></li>
+      <li data-id="c6"><span class="cbox"></span><span class="text">Colors in OKLCH, never HSL, never hex for tokens.</span><span class="meta">§ 6</span></li>
+      <li data-id="c7"><span class="cbox"></span><span class="text">APCA Lc ≥ 75 for body text. Checked, not estimated.</span><span class="meta">§ 7</span></li>
+      <li data-id="c8"><span class="cbox"></span><span class="text">Dark mode tested, not derived. Every palette step verified.</span><span class="meta">§ 8</span></li>
+      <li data-id="c9"><span class="cbox"></span><span class="text">Focus states visible on every interactive element.</span><span class="meta">§ 9</span></li>
+      <li data-id="c10"><span class="cbox"></span><span class="text">Reduced motion respected: <code>prefers-reduced-motion</code> override.</span><span class="meta">§ 10</span></li>
+      <li data-id="c11"><span class="cbox"></span><span class="text">One house only per artifact. No cross-contamination.</span><span class="meta">§ 11</span></li>
+      <li data-id="c12"><span class="cbox"></span><span class="text">Something memorable: one detail the user will quote.</span><span class="meta">§ 12</span></li>
+    </ul>
+
+    <!-- =============== ADD YOUR OWN HOUSE =============== -->
+    <h2 class="dx-h2" id="add-house"><span class="hash">#</span>Add your own house</h2>
+
+    <p>Stit'Claude is designed to be forked. Each house is a single Markdown file with a fixed
+    anatomy — copy one, change its values, reference it from <code>SKILL.md</code>, and Claude
+    will pick it up on the next conversation.</p>
+
+    <div class="dx-code">
+      <div class="dx-code-head">
+        <div class="dx-code-tabs">
+          <button class="dx-code-tab active" data-lang="bash">terminal</button>
+        </div>
+        <span class="dx-code-filename">stitclaude/houses/my-house.md</span>
+        <button class="dx-copy" data-copy="cp houses/swiss-quiet.md houses/my-house.md" aria-label="Copy command">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M11 5 L11 3 A1 1 0 0 0 10 2 L3 2 A1 1 0 0 0 2 3 L2 10 A1 1 0 0 0 3 11 L5 11"/></svg>
+        </button>
+      </div>
+      <pre data-show="bash"><code><span class="t-bash"><span class="c-com"># Duplicate the closest existing house</span>
+<span class="c-cmd">cp</span> <span class="c-str">houses/swiss-quiet.md houses/my-house.md</span>
+
+<span class="c-com"># Edit the tokens, the voice, the canon references</span>
+<span class="c-cmd">$EDITOR</span> <span class="c-str">houses/my-house.md</span>
+
+<span class="c-com"># Register it in SKILL.md — add one line</span>
+<span class="c-cmd">echo</span> <span class="c-str">'- houses/my-house.md — when: [your context]'</span> <span class="c-arg">>> SKILL.md</span></span></code></pre>
+    </div>
+
+    <p>Each house file must expose five sections: <b>Palette</b>, <b>Typography</b>, <b>Motion</b>,
+    <b>Do / Don't</b>, <b>Canon references</b>. Keep the same schema as the shipped houses so Claude
+    can reason about them uniformly.</p>
+
+    <!-- =============== CONTRIBUTE =============== -->
+    <h2 class="dx-h2" id="contribute"><span class="hash">#</span>Contribute</h2>
+
+    <p>Pull requests are welcome. Before submitting, run the <a href="#checklist">12-point checklist</a>
+    against your changes. If your PR adds a new house, include a showcase page in <code>examples/</code>
+    — the design must be demonstrable, not just described.</p>
+
+    <div class="dx-callout">
+      <span class="icon">COC</span>
+      <div>
+        <p><b>Style, not opinion.</b> Stit'Claude argues for rigor, not for any particular taste.
+        A well-reasoned PR that widens the discipline is welcome. A PR that narrows it to personal
+        preference is not.</p>
+      </div>
+    </div>
+
+    <!-- =============== CHANGELOG =============== -->
+    <h2 class="dx-h2" id="changelog"><span class="hash">#</span>Changelog</h2>
+
+    <div class="dx-code">
+      <div class="dx-code-head">
+        <div class="dx-code-tabs">
+          <button class="dx-code-tab active" data-lang="bash">CHANGELOG.md</button>
+        </div>
+      </div>
+      <pre data-show="bash"><code><span class="t-bash"><span class="c-kw">## v2.0</span> <span class="c-com">· MMXXVI spring</span>
+<span class="c-arg">  + 8 houses, each with its own visual direction</span>
+<span class="c-arg">  + Field Experiment N° 002: OKLCH live demonstration</span>
+<span class="c-arg">  + Docs site (this page)</span>
+
+<span class="c-kw">## v1.2</span> <span class="c-com">· MMXXVI winter</span>
+<span class="c-arg">  + Philosophy tab with clickable principles</span>
+<span class="c-arg">  + 404 editorial page</span>
+
+<span class="c-kw">## v1.0</span> <span class="c-com">· MMXXVI</span>
+<span class="c-arg">  + Initial release: 6 houses, 12 components, tokens</span></span></code></pre>
+    </div>
+
+    <!-- =============== FAQ =============== -->
+    <h2 class="dx-h2" id="faq"><span class="hash">#</span>FAQ</h2>
+
+    <h3 class="dx-h3">Does Stit'Claude work with other LLMs?</h3>
+    <p>The skill format is specific to Anthropic Claude (Haiku, Sonnet, Opus). The house descriptions
+    and token tables are portable — any LLM can read them — but only Claude auto-loads them via the
+    skills mechanism.</p>
+
+    <h3 class="dx-h3">Why OKLCH for tokens?</h3>
+    <p>Perceptual uniformity. Two tokens with the same L value read as equally bright, regardless of
+    hue. See <a href="essays/why-oklch-was-inevitable.html">Field Experiment N° 002</a> for the
+    demonstration with live sliders.</p>
+
+    <h3 class="dx-h3">Can I use Stit'Claude without Claude?</h3>
+    <p>Yes — read the houses as a manual, apply them by hand. You'll lose the automated discipline
+    but gain the reference material. The <a href="components.html">components</a> and
+    <a href="tokens.html">tokens</a> work as a standalone library.</p>
+
+    <h3 class="dx-h3">Where is the license?</h3>
+    <p>MIT. Fork it, ship it, do not misrepresent its authorship.</p>
+
+    <!-- PAGER -->
+    <nav class="dx-pager">
+      <a href="components.html">
+        <span class="dir">← Components</span>
+        <span class="target">Browse 18 components</span>
+      </a>
+      <a href="lab.html" class="next">
+        <span class="dir">Back to lab →</span>
+        <span class="target">The Lab</span>
+      </a>
+    </nav>
+
+  </main>
+
+  <!-- TOC RIGHT -->
+  <aside class="dx-toc" aria-label="On this page">
+    <div class="heading">On this page</div>
+    <a href="#install" class="active">Install</a>
+    <a href="#invoke">Invoke the skill</a>
+    <a href="#anatomy">Anatomy</a>
+    <a href="#houses-cheat">Houses cheat sheet</a>
+    <a href="#checklist">12-point checklist</a>
+    <a href="#add-house">Add your own house</a>
+    <a href="#contribute">Contribute</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#faq">FAQ</a>
+  </aside>
+
+</div>
+
+<script>
+  (function initTheme() {
+    let t = 'dark';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+
+  function toggleTheme(event) {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+
+  // Copy buttons
+  document.querySelectorAll('.dx-copy[data-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard?.writeText(btn.getAttribute('data-copy'));
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1400);
+    });
+  });
+
+  // Checklist — persist state in localStorage
+  (function checklist() {
+    const root = document.getElementById('checklist-root');
+    if (!root) return;
+    const KEY = 'stit-docs-checklist';
+    let state = {};
+    try { state = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+    root.querySelectorAll('li').forEach(li => {
+      const id = li.dataset.id;
+      if (state[id]) li.classList.add('done');
+      li.addEventListener('click', () => {
+        li.classList.toggle('done');
+        state[id] = li.classList.contains('done');
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      });
+    });
+  })();
+
+  // TOC active state on scroll
+  (function toc() {
+    const links = document.querySelectorAll('.dx-toc a, .dx-side-group a[href^="#"]');
+    const headings = Array.from(document.querySelectorAll('.dx-h2[id]'));
+    if (!links.length || !headings.length) return;
+
+    function update() {
+      let activeId = headings[0].id;
+      const scrollY = window.scrollY + 120;
+      for (const h of headings) {
+        if (h.offsetTop <= scrollY) activeId = h.id;
+      }
+      links.forEach(l => {
+        const h = l.getAttribute('href').replace('#', '');
+        l.classList.toggle('active', h === activeId);
+      });
+    }
+    document.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+</script>
+
+</body>
+</html>

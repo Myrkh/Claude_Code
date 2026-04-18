@@ -1,0 +1,2019 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<meta name="description" content="Reveal-on-Hold · A Stit'Claude signature component for sensitive data. Press-and-hold mechanics, not click-to-reveal." />
+<title>Stit'Claude · Reveal-on-Hold</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/comp.css" />
+
+<style>
+  /* ==========================================================================
+     REVEAL-ON-HOLD · Stit'Claude signature component
+     ========================================================================== */
+
+  /* Base hidden state — blur + desaturate + noise overlay */
+  .roh {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    cursor: pointer;
+    user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+    vertical-align: baseline;
+    transition:
+      transform 240ms cubic-bezier(0.4, 1.25, 0.55, 1),
+      filter 260ms cubic-bezier(0.4, 1.3, 0.55, 1);
+  }
+  .roh:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 6px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* The covered content itself — blurred, desaturated, ready to reveal */
+  .roh-content {
+    display: inline-block;
+    filter: blur(10px) saturate(0.2);
+    opacity: 0.62;
+    transition:
+      filter 360ms cubic-bezier(0.4, 1.3, 0.55, 1),
+      opacity 300ms ease-out;
+    white-space: nowrap;
+  }
+  .roh[data-holding] .roh-content {
+    /* progressive unblur tied to JS-set --roh-p (0→1) */
+    filter: blur(calc(10px * (1 - var(--roh-p, 0)))) saturate(calc(0.2 + 0.8 * var(--roh-p, 0)));
+    opacity: calc(0.62 + 0.38 * var(--roh-p, 0));
+  }
+  .roh[data-revealed] .roh-content {
+    filter: blur(0) saturate(1);
+    opacity: 1;
+  }
+
+  /* Noise overlay — breaks the blur uniformity, signature brutalist touch */
+  .roh-noise {
+    position: absolute;
+    inset: -2px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='2' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.14 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    transition: opacity 300ms ease-out;
+  }
+  [data-theme="dark"] .roh-noise { mix-blend-mode: screen; opacity: 0.35; }
+  .roh[data-revealed] .roh-noise { opacity: 0; }
+  .roh[data-holding] .roh-noise { opacity: calc(0.5 * (1 - var(--roh-p, 0))); }
+
+  /* The hint text "Hold to reveal" */
+  .roh-hint {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    background: color-mix(in oklch, var(--surface) 60%, transparent);
+    backdrop-filter: blur(1px);
+    -webkit-backdrop-filter: blur(1px);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 280ms ease-out;
+  }
+  .roh-hint .h-arrow { margin-right: 6px; color: var(--accent); }
+  .roh-hint .h-kbd {
+    margin-left: 8px;
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    background: var(--surface);
+  }
+  .roh[data-holding] .roh-hint,
+  .roh[data-revealed] .roh-hint { opacity: 0; }
+
+  /* ==========================================================================
+     INLINE variant — for a value embedded in running prose
+     ========================================================================== */
+  .roh.inline {
+    padding: 3px 10px 3px 10px;
+    border-radius: 5px;
+    background: color-mix(in oklch, var(--surface) 70%, transparent);
+    border: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+    min-width: 4.5ch;
+    text-align: center;
+  }
+  .roh.inline[data-revealed] {
+    background: color-mix(in oklch, var(--accent) 5%, var(--surface));
+    border-color: color-mix(in oklch, var(--accent) 30%, var(--border));
+  }
+
+  /* Progress ring for INLINE — linear top bar (0→100% width) */
+  .roh.inline .roh-progress {
+    position: absolute;
+    bottom: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: color-mix(in oklch, var(--border) 60%, transparent);
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+    z-index: 3;
+  }
+  .roh.inline .roh-progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: calc(var(--roh-p, 0) * 100%);
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    transition: width 20ms linear;
+  }
+  .roh.inline[data-revealed] .roh-progress { opacity: 0; transition: opacity 200ms; }
+
+  /* ==========================================================================
+     BLOCK variant — entire card-sized block of data
+     ========================================================================== */
+  .roh.block {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 28px 28px 28px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-align: left;
+    cursor: pointer;
+  }
+  .roh.block[data-revealed] {
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+  }
+  .roh.block .roh-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    margin-bottom: 10px;
+    display: block;
+    white-space: normal;
+  }
+  .roh.block .roh-content {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: clamp(32px, 4vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    display: block;
+    white-space: nowrap;
+  }
+  .roh.block .roh-content em {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--fg-muted);
+    font-size: 0.6em;
+    margin-left: 6px;
+  }
+  .roh.block .roh-meta {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .roh.block .roh-meta .live {
+    color: var(--accent);
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .roh.block .roh-meta .live::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor;
+  }
+  .roh.block[data-revealed] .roh-meta .live::before {
+    animation: roh-blink 1.8s ease-in-out infinite;
+  }
+  @keyframes roh-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Concentric progress ring for BLOCK — follows the border-radius (child = parent - padding ~= 2px inset) */
+  .roh.block .roh-progress {
+    position: absolute;
+    inset: 2px;
+    border-radius: 14px;
+    pointer-events: none;
+    z-index: 3;
+    /* Conic gradient rotating based on --roh-p */
+    background:
+      conic-gradient(
+        from -90deg,
+        var(--accent) 0deg,
+        var(--accent) calc(var(--roh-p, 0) * 360deg),
+        transparent calc(var(--roh-p, 0) * 360deg),
+        transparent 360deg
+      );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    padding: 2px;
+    opacity: 0;
+    transition: opacity 180ms;
+  }
+  .roh.block[data-holding] .roh-progress { opacity: 1; }
+  .roh.block[data-revealed] .roh-progress { opacity: 0; }
+
+  /* Counter that ticks 000% → 100% in tabular nums */
+  .roh.block .roh-counter {
+    position: absolute;
+    top: 18px; right: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+  .roh.block[data-holding] .roh-counter { opacity: 1; }
+  .roh.block[data-revealed] .roh-counter { opacity: 0; }
+
+  /* Auto-rehide timer bar at the top of the block */
+  .roh.block .roh-decay {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 3;
+    border-radius: 16px 16px 0 0;
+  }
+  .roh.block[data-decaying] .roh-decay {
+    transform: scaleX(1);
+    transition: transform 8000ms linear;
+  }
+
+  /* ==========================================================================
+     REDACT variant — for long-form redacted prose
+     ========================================================================== */
+  .roh.redact {
+    display: inline;
+    padding: 1px 8px;
+    border-radius: 3px;
+    background: var(--fg);
+    color: transparent;
+    border: 0;
+    position: relative;
+    font-style: inherit;
+    white-space: normal;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    vertical-align: baseline;
+    /* Pretty conservation of underlying text width */
+    transition:
+      background 340ms cubic-bezier(0.4, 1.3, 0.55, 1),
+      color 340ms cubic-bezier(0.4, 1.3, 0.55, 1);
+  }
+  .roh.redact .roh-content {
+    filter: none;
+    opacity: 1;
+    color: inherit;
+  }
+  .roh.redact[data-holding] {
+    /* progressive unredact via color interpolation */
+    background: color-mix(in oklch, var(--fg) calc((1 - var(--roh-p, 0)) * 100%), transparent);
+    color: color-mix(in oklch, var(--fg) calc(var(--roh-p, 0) * 100%), transparent);
+  }
+  .roh.redact[data-revealed] {
+    background: color-mix(in oklch, var(--accent) 12%, transparent);
+    color: var(--fg);
+    padding: 1px 8px;
+    border-radius: 3px;
+  }
+  .roh.redact .roh-noise,
+  .roh.redact .roh-hint { display: none; }
+  .roh.redact .roh-progress {
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: color-mix(in oklch, var(--accent) 30%, transparent);
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+  .roh.redact[data-holding] .roh-progress { opacity: 1; }
+  .roh.redact .roh-progress::after {
+    content: '';
+    position: absolute; inset: 0;
+    width: calc(var(--roh-p, 0) * 100%);
+    background: var(--accent);
+    transition: width 20ms linear;
+  }
+
+  /* ==========================================================================
+     VARIANT 04 · CHAIN — sequential reveal, each depends on the previous
+     ========================================================================== */
+  .roh-chain {
+    display: grid;
+    gap: 14px;
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    position: relative;
+    counter-reset: chain;
+  }
+  .roh-chain-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 14px;
+    margin-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .roh-chain-head .title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--fg);
+    letter-spacing: -0.015em;
+  }
+  .roh-chain-head .status {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+    padding: 2px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+  }
+  .roh-chain-head .status.unlocked {
+    color: var(--accent);
+    border-color: color-mix(in oklch, var(--accent) 40%, transparent);
+    background: color-mix(in oklch, var(--accent) 8%, transparent);
+  }
+
+  .roh-chain-link {
+    display: grid;
+    grid-template-columns: 28px 1fr 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 18px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    position: relative;
+    transition:
+      opacity 280ms ease-out,
+      border-color 240ms ease-out,
+      filter 240ms ease-out;
+  }
+  @media (max-width: 520px) {
+    .roh-chain-link { grid-template-columns: 28px 1fr; }
+    .roh-chain-link .link-value { grid-column: 2; }
+  }
+  .roh-chain-link::before {
+    counter-increment: chain;
+    content: counter(chain, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.08em;
+    text-align: center;
+    align-self: center;
+    font-weight: 600;
+  }
+  /* Locked state — chain link before its predecessor is revealed */
+  .roh-chain-link[data-locked="true"] {
+    opacity: 0.45;
+    filter: saturate(0.4);
+    pointer-events: none;
+  }
+  .roh-chain-link[data-locked="true"]::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0;
+    width: 28px;
+    text-align: center;
+    transform: translateY(-50%);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--fg-subtle);
+  }
+  .roh-chain-link[data-locked="true"]::before {
+    color: var(--fg-deep);
+    opacity: 0.5;
+  }
+  /* Override the numeric counter with a lock glyph when locked */
+  .roh-chain-link[data-locked="true"] > .lock-glyph {
+    display: inline-block;
+  }
+  .roh-chain-link .lock-glyph {
+    display: none;
+    position: absolute;
+    top: 50%; left: 8px;
+    transform: translateY(-50%);
+    color: var(--fg-subtle);
+  }
+  .roh-chain-link .lock-glyph svg { width: 12px; height: 12px; }
+
+  .roh-chain-link .link-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fg-subtle);
+  }
+  .roh-chain-link .link-value {
+    justify-self: end;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+  }
+  .roh-chain-link.current { border-color: color-mix(in oklch, var(--accent) 35%, var(--border)); }
+  .roh-chain-link.current .link-label { color: var(--accent); }
+
+  .roh-chain-trace {
+    position: absolute;
+    left: 32px; top: -7px;
+    width: 1px;
+    height: 14px;
+    background: color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+  .roh-chain-link:first-of-type .roh-chain-trace { display: none; }
+
+  .roh-chain-foot {
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .roh-chain-foot .progress {
+    display: inline-block;
+    width: 80px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    margin: 0 8px;
+    vertical-align: middle;
+    overflow: hidden;
+    position: relative;
+  }
+  .roh-chain-foot .progress::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: calc(var(--chain-p, 0) * 100%);
+    background: var(--accent);
+    transition: width 280ms cubic-bezier(0.4, 1.3, 0.55, 1);
+  }
+
+  /* ==========================================================================
+     VARIANT 05 · DECOY — fake plausible value, morphs to truth on hold
+     ========================================================================== */
+  .roh.decoy {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--fg);
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    min-width: 11ch;
+    text-align: center;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+  }
+  .roh.decoy .decoy-value,
+  .roh.decoy .truth-value {
+    display: block;
+    transition:
+      transform 420ms cubic-bezier(0.55, 1.3, 0.5, 1),
+      opacity 240ms ease-out,
+      filter 380ms ease-out;
+  }
+  .roh.decoy .truth-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(100%);
+    opacity: 0;
+    color: var(--accent);
+    filter: blur(4px);
+  }
+  .roh.decoy[data-holding] .decoy-value {
+    transform: translateY(calc(-30px * var(--roh-p, 0)));
+    opacity: calc(1 - var(--roh-p, 0) * 0.8);
+    filter: blur(calc(2px * var(--roh-p, 0)));
+  }
+  .roh.decoy[data-holding] .truth-value {
+    transform: translateY(calc((1 - var(--roh-p, 0)) * 30px));
+    opacity: var(--roh-p, 0);
+    filter: blur(calc(4px * (1 - var(--roh-p, 0))));
+  }
+  .roh.decoy[data-revealed] {
+    background: color-mix(in oklch, var(--accent) 10%, var(--surface));
+    border-color: color-mix(in oklch, var(--accent) 35%, var(--border));
+  }
+  .roh.decoy[data-revealed] .decoy-value {
+    transform: translateY(-30px);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  .roh.decoy[data-revealed] .truth-value {
+    transform: translateY(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+  .roh.decoy .decoy-badge {
+    position: absolute;
+    top: -8px; right: -8px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--fg-subtle);
+    color: var(--surface);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 280ms, transform 320ms cubic-bezier(0.3, 1.8, 0.4, 1);
+  }
+  .roh.decoy[data-revealed] .decoy-badge {
+    opacity: 1;
+    transform: scale(1);
+    background: var(--accent);
+    color: var(--bg);
+  }
+  .roh.decoy .decoy-progress {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: color-mix(in oklch, var(--border) 50%, transparent);
+    overflow: hidden;
+  }
+  .roh.decoy .decoy-progress::after {
+    content: '';
+    position: absolute; inset: 0;
+    width: calc(var(--roh-p, 0) * 100%);
+    background: var(--accent);
+    transition: width 20ms linear;
+  }
+  .roh.decoy[data-revealed] .decoy-progress { opacity: 0; transition: opacity 300ms; }
+
+  /* ==========================================================================
+     VARIANT 06 · WITNESS — audit log of every reveal, GDPR-aware
+     ========================================================================== */
+  .roh-witness {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 720px) { .roh-witness { grid-template-columns: 1fr; } }
+
+  .roh-witness-target {
+    padding: 0;
+  }
+  .roh-witness-target .roh.block {
+    max-width: none;
+  }
+
+  .roh-witness-log {
+    background: oklch(0.11 0.008 260);
+    border: 1px solid oklch(0.26 0.010 258);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    color: oklch(0.78 0.010 260);
+    font-size: 11.5px;
+    min-height: 260px;
+    max-height: 340px;
+    display: flex;
+    flex-direction: column;
+  }
+  [data-theme="light"] .roh-witness-log {
+    background: oklch(0.13 0.008 260);
+    color: oklch(0.85 0.008 260);
+  }
+  .roh-witness-log-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: oklch(0.16 0.010 258);
+    border-bottom: 1px solid oklch(0.26 0.010 258);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: oklch(0.65 0.012 258);
+    font-weight: 600;
+  }
+  [data-theme="light"] .roh-witness-log-head {
+    background: oklch(0.18 0.010 258);
+  }
+  .roh-witness-log-head .live-dot {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: oklch(0.78 0.160 148);
+  }
+  .roh-witness-log-head .live-dot::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: currentColor;
+    animation: roh-blink 1.8s ease-in-out infinite;
+    box-shadow: 0 0 6px currentColor;
+  }
+  .roh-witness-log-body {
+    padding: 10px 14px;
+    overflow-y: auto;
+    flex: 1;
+    line-height: 1.65;
+    font-variant-numeric: tabular-nums;
+  }
+  .roh-witness-log-body::-webkit-scrollbar { width: 6px; }
+  .roh-witness-log-body::-webkit-scrollbar-thumb {
+    background: oklch(0.28 0.012 258);
+    border-radius: 3px;
+  }
+  .roh-witness-log-body .empty {
+    color: oklch(0.50 0.010 260);
+    font-style: italic;
+    font-size: 11px;
+    padding: 16px 4px;
+    text-align: center;
+  }
+  .roh-witness-log-entry {
+    display: grid;
+    grid-template-columns: 70px 56px 1fr;
+    gap: 10px;
+    padding: 4px 0;
+    font-size: 10.5px;
+    border-bottom: 1px dotted oklch(0.22 0.010 258);
+    animation: log-slide-in 360ms cubic-bezier(0.3, 1.3, 0.4, 1);
+  }
+  @keyframes log-slide-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  .roh-witness-log-entry:last-child { border-bottom: 0; }
+  .roh-witness-log-entry .ts {
+    color: oklch(0.55 0.012 258);
+  }
+  .roh-witness-log-entry .evt {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .roh-witness-log-entry .evt.start  { color: oklch(0.78 0.155 85); }   /* amber */
+  .roh-witness-log-entry .evt.reveal { color: oklch(0.78 0.160 148); }  /* green */
+  .roh-witness-log-entry .evt.abort  { color: oklch(0.68 0.195 28); }   /* coral */
+  .roh-witness-log-entry .evt.hide   { color: oklch(0.62 0.015 258); }  /* muted */
+  .roh-witness-log-entry .msg {
+    color: oklch(0.85 0.008 260);
+  }
+  .roh-witness-log-entry .msg .dur {
+    color: oklch(0.68 0.195 28);
+  }
+  [data-theme="light"] .roh-witness-log-entry .msg,
+  [data-theme="light"] .roh-witness-log-entry .ts { color: oklch(0.80 0.010 258); }
+
+  .roh-witness-log-foot {
+    padding: 8px 14px;
+    border-top: 1px solid oklch(0.26 0.010 258);
+    background: oklch(0.13 0.008 260);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: oklch(0.55 0.010 258);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  .roh-witness-log-foot button {
+    background: transparent;
+    border: 1px solid oklch(0.28 0.012 258);
+    color: oklch(0.65 0.012 258);
+    font-family: inherit;
+    font-size: 9.5px;
+    letter-spacing: 0.14em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: color 140ms, border-color 140ms;
+  }
+  .roh-witness-log-foot button:hover {
+    color: oklch(0.68 0.195 28);
+    border-color: oklch(0.68 0.195 28);
+  }
+  .roh-witness-log-foot .count .n { color: oklch(0.68 0.195 28); font-weight: 600; }
+
+  /* ==========================================================================
+     DEMO LAYOUT — preview stage and the side-by-side
+     ========================================================================== */
+  .demo-stage {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: clamp(32px, 5vw, 64px) clamp(20px, 3vw, 40px);
+  }
+
+  .demo-head {
+    text-align: center;
+    padding-bottom: var(--space-6);
+    border-bottom: 1px dashed var(--border);
+  }
+  .demo-head .label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .demo-head .label::before, .demo-head .label::after {
+    content: ' — ';
+    color: var(--border);
+  }
+  .demo-head .title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    max-width: 22ch;
+    margin: 0 auto 10px;
+    text-wrap: balance;
+  }
+  .demo-head .title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .demo-head .deck {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--fg-muted);
+    max-width: 54ch;
+    margin: 0 auto;
+  }
+
+  /* Variant card */
+  .variant {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .variant-head {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    background: color-mix(in oklch, var(--surface) 50%, var(--bg));
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .variant-head .v-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    font-weight: 600;
+  }
+  .variant-head .v-label .n { color: var(--fg-subtle); margin-right: 6px; }
+  .variant-head .v-title {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--fg);
+    letter-spacing: -0.015em;
+    flex: 1;
+    min-width: 200px;
+  }
+  .variant-head .v-meta {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.04em;
+  }
+  .variant-body {
+    padding: clamp(36px, 6vw, 72px) clamp(20px, 3vw, 40px);
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .variant-body::before {
+    content: '';
+    position: absolute;
+    inset: 16px;
+    border: 1px dashed color-mix(in oklch, var(--border) 70%, transparent);
+    border-radius: 10px;
+    pointer-events: none;
+  }
+
+  /* For the inline variant body → prose */
+  .variant-body.prose {
+    display: block;
+    max-width: 56ch;
+    margin: 0 auto;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--fg);
+  }
+  .variant-body.prose .line {
+    margin-bottom: 14px;
+  }
+  .variant-body.prose .line:last-child { margin-bottom: 0; }
+  .variant-body.prose .label-inline {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* For the redact variant body */
+  .variant-body.doc {
+    display: block;
+    max-width: 56ch;
+    margin: 0 auto;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--fg);
+    padding-left: clamp(20px, 3vw, 40px);
+    padding-right: clamp(20px, 3vw, 40px);
+  }
+  .variant-body.doc .doc-head {
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .variant-body.doc p { margin: 0 0 12px; text-wrap: pretty; }
+  .variant-body.doc p:last-child { margin-bottom: 0; }
+
+  /* Keyboard instruction strip at bottom of stage */
+  .demo-instructions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 18px 20px;
+    border-top: 1px dashed var(--border);
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    letter-spacing: 0.04em;
+  }
+  .demo-instructions .rule {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .demo-instructions .rule kbd {
+    padding: 2px 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-size: 10.5px;
+    color: var(--fg);
+    letter-spacing: 0;
+    font-family: var(--font-mono);
+    font-weight: 500;
+  }
+  .demo-instructions .rule.reset {
+    padding-left: 20px;
+    border-left: 1px solid var(--border);
+  }
+  .demo-instructions button {
+    padding: 3px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 140ms, border-color 140ms;
+  }
+  .demo-instructions button:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* ==========================================================================
+     COMPARISON · Reveal-on-Hold vs Click-to-Reveal
+     ========================================================================== */
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: clamp(24px, 4vw, 48px) clamp(20px, 3vw, 40px);
+  }
+  @media (max-width: 720px) { .comparison { grid-template-columns: 1fr; } }
+  .comp-cell {
+    padding: 32px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    text-align: center;
+    min-height: 240px;
+  }
+  .comp-cell.do { border-left: 3px solid oklch(0.62 0.16 145); }
+  .comp-cell.dont { border-left: 3px solid color-mix(in oklch, var(--fg-muted) 40%, transparent); }
+  .comp-cell .c-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .comp-cell.do .c-label { color: oklch(0.52 0.16 145); }
+  .comp-cell.dont .c-label { color: var(--fg-subtle); }
+  .comp-cell .c-demo {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 0;
+  }
+  .comp-cell .c-text {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--fg-muted);
+    line-height: 1.5;
+    max-width: 32ch;
+  }
+  .comp-cell .c-text em { color: var(--fg); font-style: italic; }
+
+  /* The "bad" click-to-reveal */
+  .click-reveal {
+    display: inline-block;
+    padding: 4px 12px;
+    background: color-mix(in oklch, var(--fg) 85%, transparent);
+    color: transparent;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .click-reveal.revealed {
+    background: color-mix(in oklch, var(--fg-subtle) 10%, transparent);
+    color: var(--fg);
+  }
+
+  /* ==========================================================================
+     API BOX — show the HTML snippet
+     ========================================================================== */
+  .api-box {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.65;
+    padding: 14px 18px;
+    background: color-mix(in oklch, var(--surface) 70%, var(--bg));
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg-muted);
+    overflow-x: auto;
+  }
+  .api-box .tag { color: var(--accent); }
+  .api-box .attr { color: oklch(0.55 0.12 235); }
+  [data-theme="dark"] .api-box .attr { color: oklch(0.75 0.12 235); }
+  .api-box .str { color: oklch(0.52 0.14 140); }
+  [data-theme="dark"] .api-box .str { color: oklch(0.74 0.14 140); }
+  .api-box .text { color: var(--fg); }
+</style>
+</head>
+
+<body class="comp-body">
+
+<!-- ========================================================================
+     TOP BAR
+     ======================================================================== -->
+<header class="comp-topbar">
+  <a class="comp-back" href="../lab.html" aria-label="Back to the lab">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 4 L4 8 L10 12" />
+    </svg>
+    <span>Back to the Lab</span>
+  </a>
+  <span class="comp-breadcrumb">
+    Components · <span class="current">Signature / Reveal-on-Hold</span>
+  </span>
+  <button class="theme-toggle-small" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+    </svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<!-- HEAD -->
+<header class="comp-head">
+  <div class="comp-meta">
+    <span>Signature</span>
+    <span class="chip new">new · flagship</span>
+  </div>
+  <h1 class="comp-title">Reveal-on-Hold.</h1>
+  <p class="comp-intro">
+    <em>A sensitive value is not revealed by a click.</em> It is revealed by a measurable
+    intention — six hundred milliseconds of deliberate pressure. The discipline of gesture,
+    applied to data.
+  </p>
+</header>
+
+<!-- TABS -->
+<nav class="comp-tabs" id="tabs" role="tablist">
+  <div class="comp-tab-indicator" id="tab-indicator"></div>
+  <button class="comp-tab active" data-panel="preview" role="tab">Preview</button>
+  <button class="comp-tab" data-panel="code" role="tab">Code</button>
+  <button class="comp-tab" data-panel="houses" role="tab">Houses</button>
+  <button class="comp-tab" data-panel="anti" role="tab">Anti-patterns</button>
+</nav>
+
+<!-- ==========================================================================
+     PREVIEW PANEL
+     ========================================================================== -->
+<section class="comp-panel active" data-panel="preview">
+
+  <div class="demo-head">
+    <div class="label">Three variants</div>
+    <h2 class="title">Gesture <em>as proof</em> of intention.</h2>
+    <p class="deck">
+      Press and hold for 600 ms. Release early — the reveal aborts, instantly. The component
+      falls back gracefully when reduced motion is preferred.
+    </p>
+  </div>
+
+  <!-- ==================== VARIANT 01 · INLINE ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">01 ·</span> INLINE</span>
+      <span class="v-title">A value inside a line of prose.</span>
+      <span class="v-meta">hold 600ms · ⎵ space</span>
+    </div>
+    <div class="variant-body prose">
+      <div class="line">
+        <span class="label-inline">Quarterly P&amp;L review · Q4 2025</span>
+        Total net income after adjustments reached
+        <span
+          class="roh inline"
+          data-duration="600"
+          data-label="net income"
+          tabindex="0"
+          role="button"
+          aria-label="Hold to reveal sensitive value"
+        >
+          <span class="roh-content" aria-hidden="true">€ 1 247 892</span>
+          <span class="roh-noise" aria-hidden="true"></span>
+          <span class="roh-hint" aria-hidden="true">
+            <span class="h-arrow">▸</span>HOLD<span class="h-kbd">600ms</span>
+          </span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        for the fiscal year, exceeding the internal forecast of
+        <span
+          class="roh inline"
+          data-duration="600"
+          tabindex="0"
+          role="button"
+          aria-label="Hold to reveal sensitive value"
+        >
+          <span class="roh-content" aria-hidden="true">€ 1 100 000</span>
+          <span class="roh-noise" aria-hidden="true"></span>
+          <span class="roh-hint" aria-hidden="true">
+            <span class="h-arrow">▸</span>HOLD<span class="h-kbd">600ms</span>
+          </span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        by approximately thirteen percent.
+      </div>
+
+      <div class="line" style="color: var(--fg-muted); font-size: 14px; font-family: var(--font-mono); letter-spacing: 0.02em; line-height: 1.5; margin-top: 20px;">
+        <span style="color: var(--fg-subtle); font-size: 10px; letter-spacing: 0.18em; display: block; margin-bottom: 4px;">API</span>
+        <div class="api-box">&lt;<span class="tag">span</span> <span class="attr">class</span>=<span class="str">"roh inline"</span> <span class="attr">data-duration</span>=<span class="str">"600"</span>&gt;<span class="text">€ 1 247 892</span>&lt;/<span class="tag">span</span>&gt;</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ==================== VARIANT 02 · BLOCK ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">02 ·</span> BLOCK</span>
+      <span class="v-title">An entire card held behind discipline.</span>
+      <span class="v-meta">concentric ring · auto-rehide 8s</span>
+    </div>
+    <div class="variant-body">
+      <div
+        class="roh block"
+        data-duration="700"
+        data-autohide="8000"
+        tabindex="0"
+        role="button"
+        aria-label="Hold to reveal annual compensation"
+      >
+        <span class="roh-decay" aria-hidden="true"></span>
+        <span class="roh-label">Annual compensation · gross</span>
+        <span class="roh-content" aria-hidden="true">€ 127 400 <em>/ year</em></span>
+        <span class="roh-noise" aria-hidden="true"></span>
+        <div class="roh-meta">
+          <span>Paid monthly · SMART contract</span>
+          <span class="live">LIVE</span>
+        </div>
+        <span class="roh-hint" aria-hidden="true">
+          <span class="h-arrow">▸</span>HOLD TO REVEAL<span class="h-kbd">700ms</span>
+        </span>
+        <span class="roh-counter" aria-hidden="true">000%</span>
+        <span class="roh-progress" aria-hidden="true"></span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ==================== VARIANT 03 · REDACT ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">03 ·</span> REDACT</span>
+      <span class="v-title">A classified paragraph, one phrase at a time.</span>
+      <span class="v-meta">inline redaction · classified-document feel</span>
+    </div>
+    <div class="variant-body doc">
+      <div class="doc-head">— Memo 004 / Classified · for internal review only —</div>
+      <p>
+        The system under audit was deployed in production on
+        <span class="roh redact" data-duration="500" tabindex="0" role="button" aria-label="Hold to reveal date">
+          <span class="roh-content">March 14, 2024</span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        and has since processed over
+        <span class="roh redact" data-duration="500" tabindex="0" role="button" aria-label="Hold to reveal figure">
+          <span class="roh-content">2.4 billion</span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        transactions. A latent fault in the
+        <span class="roh redact" data-duration="500" tabindex="0" role="button" aria-label="Hold to reveal component">
+          <span class="roh-content">reconciliation engine</span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        was identified during the SIL-2 review and corrected in patch
+        <span class="roh redact" data-duration="500" tabindex="0" role="button" aria-label="Hold to reveal patch id">
+          <span class="roh-content">v4.7.22-hotfix-b</span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+        on the 48h window required by the regulator.
+      </p>
+      <p style="margin-top: 20px; font-family: var(--font-mono); font-style: normal; font-size: 11.5px; color: var(--fg-subtle); letter-spacing: 0.04em;">
+        Hold any redaction to reveal. Release to re-redact.
+      </p>
+    </div>
+  </article>
+
+  <!-- ==================== VARIANT 04 · CHAIN ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">04 ·</span> CHAIN</span>
+      <span class="v-title">A cascade of holds. Each depends on the previous.</span>
+      <span class="v-meta">narrative reveal · 4 links</span>
+    </div>
+    <div class="variant-body">
+      <div class="roh-chain" id="demo-chain" style="width: 100%; max-width: 540px;">
+        <div class="roh-chain-head">
+          <span class="title"><em>Q4 · review</em> · locked sequence</span>
+          <span class="status" id="chain-status">0 / 4 unlocked</span>
+        </div>
+
+        <div class="roh-chain-link current" data-locked="false">
+          <span class="lock-glyph" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="6" height="5" rx="1"/><path d="M4 6 V4 A2 2 0 0 1 8 4 V6"/></svg>
+          </span>
+          <span class="link-label">Period</span>
+          <span class="link-value">
+            <span class="roh inline" data-duration="500" data-chain="1" tabindex="0" role="button" aria-label="Hold to reveal period">
+              <span class="roh-content" aria-hidden="true">Q4 · 2025</span>
+              <span class="roh-noise" aria-hidden="true"></span>
+              <span class="roh-hint" aria-hidden="true"><span class="h-arrow">▸</span>HOLD</span>
+              <span class="roh-progress" aria-hidden="true"></span>
+            </span>
+          </span>
+        </div>
+
+        <div class="roh-chain-link" data-locked="true">
+          <span class="lock-glyph" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="6" height="5" rx="1"/><path d="M4 6 V4 A2 2 0 0 1 8 4 V6"/></svg>
+          </span>
+          <span class="link-label">Revenue</span>
+          <span class="link-value">
+            <span class="roh inline" data-duration="500" data-chain="2" tabindex="0" role="button" aria-label="Hold to reveal revenue">
+              <span class="roh-content" aria-hidden="true">€ 4.2 M</span>
+              <span class="roh-noise" aria-hidden="true"></span>
+              <span class="roh-hint" aria-hidden="true"><span class="h-arrow">▸</span>HOLD</span>
+              <span class="roh-progress" aria-hidden="true"></span>
+            </span>
+          </span>
+        </div>
+
+        <div class="roh-chain-link" data-locked="true">
+          <span class="lock-glyph" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="6" height="5" rx="1"/><path d="M4 6 V4 A2 2 0 0 1 8 4 V6"/></svg>
+          </span>
+          <span class="link-label">Gross margin</span>
+          <span class="link-value">
+            <span class="roh inline" data-duration="500" data-chain="3" tabindex="0" role="button" aria-label="Hold to reveal margin">
+              <span class="roh-content" aria-hidden="true">42.8 %</span>
+              <span class="roh-noise" aria-hidden="true"></span>
+              <span class="roh-hint" aria-hidden="true"><span class="h-arrow">▸</span>HOLD</span>
+              <span class="roh-progress" aria-hidden="true"></span>
+            </span>
+          </span>
+        </div>
+
+        <div class="roh-chain-link" data-locked="true">
+          <span class="lock-glyph" aria-hidden="true">
+            <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="3" y="6" width="6" height="5" rx="1"/><path d="M4 6 V4 A2 2 0 0 1 8 4 V6"/></svg>
+          </span>
+          <span class="link-label">Net income</span>
+          <span class="link-value">
+            <span class="roh inline" data-duration="500" data-chain="4" tabindex="0" role="button" aria-label="Hold to reveal net income">
+              <span class="roh-content" aria-hidden="true">€ 1 247 892</span>
+              <span class="roh-noise" aria-hidden="true"></span>
+              <span class="roh-hint" aria-hidden="true"><span class="h-arrow">▸</span>HOLD</span>
+              <span class="roh-progress" aria-hidden="true"></span>
+            </span>
+          </span>
+        </div>
+
+        <div class="roh-chain-foot" id="chain-foot">
+          Context reconstructed
+          <span class="progress" style="--chain-p: 0;"></span>
+          step by step.
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ==================== VARIANT 05 · DECOY ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">05 ·</span> DECOY</span>
+      <span class="v-title">A plausible false value, until the gesture reveals the truth.</span>
+      <span class="v-meta">screenshot-resistant · morph</span>
+    </div>
+    <div class="variant-body" style="flex-direction: column; gap: 24px;">
+
+      <div style="display: flex; gap: 40px; align-items: center; flex-wrap: wrap; justify-content: center;">
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-subtle);">Salary</span>
+          <span class="roh decoy" data-duration="650" data-decoy="€ 45 000" tabindex="0" role="button" aria-label="Hold to reveal actual salary">
+            <span class="decoy-value">€ 45 000</span>
+            <span class="truth-value">€ 127 400</span>
+            <span class="decoy-badge">TRUTH</span>
+            <span class="decoy-progress" aria-hidden="true"></span>
+          </span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-subtle);">Bonus</span>
+          <span class="roh decoy" data-duration="650" data-decoy="€ 2 500" tabindex="0" role="button" aria-label="Hold to reveal actual bonus">
+            <span class="decoy-value">€ 2 500</span>
+            <span class="truth-value">€ 18 200</span>
+            <span class="decoy-badge">TRUTH</span>
+            <span class="decoy-progress" aria-hidden="true"></span>
+          </span>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+          <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--fg-subtle);">Stock options</span>
+          <span class="roh decoy" data-duration="650" data-decoy="1 200" tabindex="0" role="button" aria-label="Hold to reveal actual stock grant">
+            <span class="decoy-value">1 200</span>
+            <span class="truth-value">14 800</span>
+            <span class="decoy-badge">TRUTH</span>
+            <span class="decoy-progress" aria-hidden="true"></span>
+          </span>
+        </div>
+      </div>
+
+      <p style="font-family: var(--font-serif); font-style: italic; font-size: 15px; color: var(--fg-muted); line-height: 1.55; max-width: 56ch; text-align: center; margin: 0;">
+        A screenshot of a decoy looks <em>plausible</em>. Whoever takes it cannot know it's a decoy —
+        and whoever reads it cannot prove the value is real. The gesture is the only witness of truth.
+      </p>
+    </div>
+  </article>
+
+  <!-- ==================== VARIANT 06 · WITNESS ==================== -->
+  <article class="variant">
+    <div class="variant-head">
+      <span class="v-label"><span class="n">06 ·</span> WITNESS</span>
+      <span class="v-title">Every reveal is observed. Every abort is logged.</span>
+      <span class="v-meta">GDPR-aware · auditable</span>
+    </div>
+    <div class="variant-body" style="align-items: stretch;">
+      <div class="roh-witness" style="width: 100%; max-width: 780px;">
+
+        <div class="roh-witness-target">
+          <div
+            class="roh block"
+            data-duration="700"
+            data-autohide="8000"
+            data-witness="medical-record-A4739"
+            tabindex="0"
+            role="button"
+            aria-label="Hold to reveal medical record"
+          >
+            <span class="roh-decay" aria-hidden="true"></span>
+            <span class="roh-label">Medical record · A-4739</span>
+            <span class="roh-content" aria-hidden="true">HbA1c 7.2%</span>
+            <span class="roh-noise" aria-hidden="true"></span>
+            <div class="roh-meta">
+              <span>Patient ID obscured</span>
+              <span class="live">OBSERVED</span>
+            </div>
+            <span class="roh-hint" aria-hidden="true">
+              <span class="h-arrow">▸</span>HOLD TO OBSERVE<span class="h-kbd">700ms</span>
+            </span>
+            <span class="roh-counter" aria-hidden="true">000%</span>
+            <span class="roh-progress" aria-hidden="true"></span>
+          </div>
+
+          <p style="margin-top: 14px; font-family: var(--font-serif); font-style: italic; font-size: 14px; color: var(--fg-muted); line-height: 1.55; max-width: 42ch;">
+            Every interaction with this value is <em>recorded</em> in the audit log beside it. A
+            reveal that lasts too long, an abort that happens too fast — all traceable.
+          </p>
+        </div>
+
+        <aside class="roh-witness-log" id="witness-log">
+          <div class="roh-witness-log-head">
+            <span>Audit · medical-record-A4739</span>
+            <span class="live-dot">LISTENING</span>
+          </div>
+          <div class="roh-witness-log-body" id="witness-body">
+            <div class="empty">No event yet. Hold the value to observe.</div>
+          </div>
+          <div class="roh-witness-log-foot">
+            <span class="count"><span class="n" id="witness-count">0</span> EVENTS</span>
+            <button onclick="clearWitnessLog()">CLEAR</button>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </article>
+
+  <!-- KEYBOARD + RESET -->
+  <div class="demo-instructions">
+    <span class="rule">Pointer: <kbd>press &amp; hold</kbd></span>
+    <span class="rule">Keyboard: focus + hold <kbd>Space</kbd></span>
+    <span class="rule">Release: aborts the reveal</span>
+    <span class="rule reset">
+      <button onclick="resetAll()">Reset all</button>
+    </span>
+  </div>
+
+  <!-- ==================== COMPARISON ==================== -->
+  <div class="demo-head" style="margin-top: 48px;">
+    <div class="label">vs click-to-reveal</div>
+    <h2 class="title">Why <em>hold</em>, not <em>click</em>?</h2>
+    <p class="deck">
+      A click is a reflex. A hold is a decision. The two gestures look alike — they produce
+      radically different relationships to the information they reveal.
+    </p>
+  </div>
+
+  <div class="comparison">
+    <div class="comp-cell do">
+      <span class="c-label">Stit'Claude · hold</span>
+      <div class="c-demo">
+        <span
+          class="roh inline"
+          data-duration="600"
+          tabindex="0"
+          role="button"
+          aria-label="Hold to reveal"
+        >
+          <span class="roh-content" aria-hidden="true">€ 127 400</span>
+          <span class="roh-noise" aria-hidden="true"></span>
+          <span class="roh-hint" aria-hidden="true">
+            <span class="h-arrow">▸</span>HOLD<span class="h-kbd">600ms</span>
+          </span>
+          <span class="roh-progress" aria-hidden="true"></span>
+        </span>
+      </div>
+      <p class="c-text">
+        <em>Intentional.</em> You had to decide. A screenshot taken mid-scroll catches only the
+        blur. A colleague glancing over your shoulder catches nothing.
+      </p>
+    </div>
+
+    <div class="comp-cell dont">
+      <span class="c-label">Everyone else · click</span>
+      <div class="c-demo">
+        <span class="click-reveal" onclick="this.classList.toggle('revealed')">
+          € 127 400
+        </span>
+      </div>
+      <p class="c-text">
+        <em>Reflexive.</em> A click is a reflex. Any cursor passing over, any accidental tap,
+        any partial screenshot — all reveal. The gesture carries no weight.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==========================================================================
+     CODE PANEL
+     ========================================================================== -->
+<section class="comp-panel" data-panel="code">
+  <div class="demo-head">
+    <div class="label">The API</div>
+    <h2 class="title">Vanilla. <em>No framework.</em></h2>
+    <p class="deck">
+      A single custom element registers itself on load. Wrap any content, specify a duration,
+      respect reduced motion. The rest is a well-behaved button.
+    </p>
+  </div>
+
+  <div style="padding: 0 clamp(20px, 3vw, 40px) 48px;">
+    <div class="code-wrap">
+      <button class="copy-code" onclick="copyCode(this)">Copy</button>
+      <pre><code>&lt;!-- 1. INLINE · for a value inside prose --&gt;
+&lt;span class="roh inline" data-duration="600"&gt;
+  &lt;span class="roh-content"&gt;€ 1 247 892&lt;/span&gt;
+  &lt;span class="roh-noise"&gt;&lt;/span&gt;
+  &lt;span class="roh-hint"&gt;▸ HOLD&lt;/span&gt;
+  &lt;span class="roh-progress"&gt;&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- 2. BLOCK · for a full card --&gt;
+&lt;div class="roh block" data-duration="700" data-autohide="8000"&gt;
+  &lt;span class="roh-decay"&gt;&lt;/span&gt;
+  &lt;span class="roh-label"&gt;Annual compensation&lt;/span&gt;
+  &lt;span class="roh-content"&gt;€ 127 400 &lt;em&gt;/ year&lt;/em&gt;&lt;/span&gt;
+  &lt;span class="roh-noise"&gt;&lt;/span&gt;
+  &lt;span class="roh-counter"&gt;000%&lt;/span&gt;
+  &lt;span class="roh-progress"&gt;&lt;/span&gt;
+  &lt;span class="roh-hint"&gt;▸ HOLD TO REVEAL&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;!-- 3. REDACT · for redacted inline text --&gt;
+&lt;span class="roh redact" data-duration="500"&gt;
+  &lt;span class="roh-content"&gt;March 14, 2024&lt;/span&gt;
+  &lt;span class="roh-progress"&gt;&lt;/span&gt;
+&lt;/span&gt;
+
+&lt;!-- JavaScript — auto-wires all .roh elements on the page --&gt;
+&lt;script&gt;
+  // See component source for the 60-line controller.
+  // Attributes:
+  //   data-duration  hold time in ms (default 600)
+  //   data-autohide  auto re-hide after N ms once revealed
+  //
+  // Events dispatched on the element:
+  //   roh:start     hold begins
+  //   roh:progress  detail: { p: 0..1 }
+  //   roh:reveal    fully revealed
+  //   roh:abort     released before completion
+  //   roh:hide      rehidden (auto or manual)
+&lt;/script&gt;</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     HOUSES PANEL
+     ========================================================================== -->
+<section class="comp-panel" data-panel="houses">
+  <div class="demo-head">
+    <div class="label">Per house</div>
+    <h2 class="title">One gesture, <em>eight dialects.</em></h2>
+    <p class="deck">
+      The mechanic stays the same; the visual vocabulary shifts per house. Here's how the block
+      variant behaves in four of them.
+    </p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 0 clamp(20px, 3vw, 40px) 48px;">
+
+    <div style="padding: 24px; background: oklch(0.148 0.015 260); border: 1px solid oklch(0.30 0.012 255); border-radius: 6px; color: oklch(0.85 0.015 250); font-family: 'JetBrains Mono', monospace; font-size: 12.5px;">
+      <div style="font-size: 10px; color: oklch(0.835 0.155 85); letter-spacing: 0.18em; margin-bottom: 10px;">HOUSE 02 · INDUSTRIAL-PRO</div>
+      <div style="font-weight: 600; color: oklch(0.96 0.010 248); font-size: 14px; margin-bottom: 6px;">The terminal variant</div>
+      <div style="line-height: 1.55; color: oklch(0.58 0.015 252); font-size: 12px;">
+        Amber progress bar, no spring, no blur. Just a 600ms amber rectangle that fills left-to-right at 120ms-step resolution. Reveal fires with a subtle <code style="color: oklch(0.835 0.155 85);">BEEP</code>.
+      </div>
+    </div>
+
+    <div style="padding: 24px; background: oklch(0.96 0.020 78); border: 1px solid oklch(0.85 0.025 72); border-radius: 0; color: oklch(0.18 0.020 40); font-family: 'Playfair Display', Georgia, serif;">
+      <div style="font-size: 10px; color: oklch(0.565 0.190 25); letter-spacing: 0.18em; margin-bottom: 10px; font-family: monospace;">HOUSE 01 · EDITORIAL</div>
+      <div style="font-weight: 700; font-size: 17px; margin-bottom: 6px; font-style: italic;">The editorial variant</div>
+      <div style="line-height: 1.55; color: oklch(0.38 0.025 45); font-size: 13px; font-style: italic;">
+        Redaction bar drawn with a serif <em>lettraset</em> feel. Noise overlay coarser, printed-paper-like. Vermillion counter. No haptic — that would be vulgar.
+      </div>
+    </div>
+
+    <div style="padding: 24px; background: oklch(0.9 0.01 70); border: 1px solid oklch(0.88 0.030 60); border-radius: 24px; color: oklch(0.22 0.040 30); font-family: 'Inter', sans-serif;">
+      <div style="font-size: 10px; color: oklch(0.65 0.200 25); letter-spacing: 0.18em; margin-bottom: 10px; font-family: monospace;">HOUSE 04 · PLAYFUL-WARM</div>
+      <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">The fluffy variant 🧵</div>
+      <div style="line-height: 1.55; color: oklch(0.40 0.040 30); font-size: 13px;">
+        Ring morphs into a coral <em>hearts-meter</em>. On reveal, a discrete <code style="background: #fff; padding: 1px 4px; border-radius: 3px;">✨</code> sparkle. Kept brief — playful, never silly.
+      </div>
+    </div>
+
+    <div style="padding: 24px; background: oklch(0.115 0.008 265); border: 1px solid oklch(0.245 0.010 260); border-radius: 6px; color: oklch(0.96 0.008 260); font-family: 'Inter', sans-serif;">
+      <div style="font-size: 10px; color: oklch(0.68 0.165 268); letter-spacing: 0.14em; margin-bottom: 10px; font-family: monospace;">HOUSE 07 · POWER-DENSE</div>
+      <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px;">The keyboard-first variant</div>
+      <div style="line-height: 1.55; color: oklch(0.76 0.010 262); font-size: 12.5px;">
+        <kbd style="background: oklch(0.158 0.009 265); padding: 1px 6px; border: 1px solid oklch(0.245 0.010 260); border-radius: 3px; font-family: 'JetBrains Mono', monospace; font-size: 11px;">Space</kbd> held 500ms. Indigo ring. Tooltip appears with shortcut hint after 2s hover.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==========================================================================
+     ANTI-PATTERNS PANEL
+     ========================================================================== -->
+<section class="comp-panel" data-panel="anti">
+  <div class="demo-head">
+    <div class="label">What to avoid</div>
+    <h2 class="title">Five ways <em>to break it.</em></h2>
+    <p class="deck">
+      Every signature component has a short list of things that void its purpose. Here's what
+      Reveal-on-Hold refuses to be.
+    </p>
+  </div>
+
+  <div style="display: grid; gap: 12px; padding: 0 clamp(20px, 3vw, 40px) 48px; max-width: 820px; margin: 0 auto;">
+
+    <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid oklch(0.65 0.195 28); border-radius: 6px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; color: oklch(0.65 0.195 28); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">01 · DO NOT</div>
+      <div style="font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Use it on trivial data.</div>
+      <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">Reveal-on-Hold exists <em>because</em> the data has weight. A username, a public date, a public status — these must be visible immediately. The gesture loses meaning the moment it's applied to everything.</div>
+    </div>
+
+    <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid oklch(0.65 0.195 28); border-radius: 6px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; color: oklch(0.65 0.195 28); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">02 · DO NOT</div>
+      <div style="font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Set the duration below 400 ms.</div>
+      <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">Below 400 ms, a hold is indistinguishable from a slow click. The <em>measurability</em> of the gesture is the entire point. 600 ms is the calibrated default. Shorter is a different component.</div>
+    </div>
+
+    <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid oklch(0.65 0.195 28); border-radius: 6px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; color: oklch(0.65 0.195 28); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">03 · DO NOT</div>
+      <div style="font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Persist the revealed state.</div>
+      <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">A revealed value must re-hide — either on blur, or after a short inactivity window, or on navigation. Persisted reveal defeats the surveillance case for which the component exists.</div>
+    </div>
+
+    <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid oklch(0.65 0.195 28); border-radius: 6px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; color: oklch(0.65 0.195 28); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">04 · DO NOT</div>
+      <div style="font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Omit the reduced-motion fallback.</div>
+      <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">Users with vestibular or motor conditions must get a single-tap reveal at <code style="font-family: var(--font-mono); font-size: 12px; padding: 1px 5px; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; color: var(--accent);">prefers-reduced-motion: reduce</code>. The privacy benefit is preserved; the effort is reduced.</div>
+    </div>
+
+    <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid oklch(0.65 0.195 28); border-radius: 6px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; color: oklch(0.65 0.195 28); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">05 · DO NOT</div>
+      <div style="font-family: var(--font-serif); font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Stack three reveals in the same viewport.</div>
+      <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">A page with five <em>Reveal-on-Hold</em> blocks is a page with no signal. If every number requires a gesture, no number is special. One or two per view is the ceiling.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRINCIPLES FOOTER -->
+<footer class="comp-principles">
+  <div class="comp-principles-title">Principles applied</div>
+  <div class="comp-principles-list">
+    <span class="comp-principle"><span class="p-name">Motion has a reason</span><span class="p-how">The 600ms duration <em>is</em> the gesture. Not decoration — commitment.</span></span>
+    <span class="comp-principle"><span class="p-name">Concentric radii</span><span class="p-how">Block variant's progress ring sits at <code>inset: 2px</code>, radius <code>parent − 2px</code>.</span></span>
+    <span class="comp-principle"><span class="p-name">Honest</span><span class="p-how">The blur is visible. The value is not faked behind it — it is genuinely obscured.</span></span>
+    <span class="comp-principle"><span class="p-name">Environmentally friendly</span><span class="p-how">Auto-rehides after 8s. The revealed state is never the default.</span></span>
+    <span class="comp-principle"><span class="p-name">Tabular numerics</span><span class="p-how">The <code>000% → 100%</code> counter uses <code>font-variant-numeric: tabular-nums</code>.</span></span>
+    <span class="comp-principle"><span class="p-name">As little design as possible</span><span class="p-how">No decorative glow. No particles on reveal. The gesture is the effect.</span></span>
+  </div>
+</footer>
+
+<!-- ==========================================================================
+     SCRIPTS
+     ========================================================================== -->
+<script>
+  /* Theme init */
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+
+  /* Tabs */
+  (function initTabs() {
+    const root = document.getElementById('tabs');
+    if (!root) return;
+    const indicator = document.getElementById('tab-indicator');
+    const tabs = root.querySelectorAll('.comp-tab');
+    const panels = document.querySelectorAll('.comp-panel');
+    function moveIndicator(btn) {
+      if (!btn || !indicator) return;
+      const r = btn.getBoundingClientRect();
+      const rootR = root.getBoundingClientRect();
+      indicator.style.width = r.width + 'px';
+      indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+    }
+    function setTab(name) {
+      const btn = root.querySelector(`[data-panel="${name}"]`);
+      if (!btn) return;
+      tabs.forEach(t => t.classList.toggle('active', t === btn));
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+      moveIndicator(btn);
+    }
+    tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.panel)));
+    requestAnimationFrame(() => moveIndicator(root.querySelector('.comp-tab.active')));
+    window.addEventListener('resize', () => moveIndicator(root.querySelector('.comp-tab.active')));
+  })();
+
+  /* Copy code */
+  function copyCode(btn) {
+    const pre = btn.nextElementSibling?.querySelector('code') || btn.parentElement.querySelector('code');
+    if (!pre) return;
+    navigator.clipboard?.writeText(pre.textContent);
+    const orig = btn.textContent;
+    btn.classList.add('copied'); btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  }
+</script>
+
+<script>
+  /* ==========================================================================
+     REVEAL-ON-HOLD · controller
+     Auto-wires all .roh elements on the page.
+     ========================================================================== */
+  (function () {
+    const DEFAULT_DURATION = 600;
+    const AUTOHIDE_INACTIVITY = 8000;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setProgress(el, p) {
+      el.style.setProperty('--roh-p', p);
+      const counter = el.querySelector('.roh-counter');
+      if (counter) {
+        const pct = Math.round(p * 100);
+        counter.textContent = String(pct).padStart(3, '0') + '%';
+      }
+    }
+
+    function hide(el) {
+      delete el.dataset.revealed;
+      delete el.dataset.decaying;
+      setProgress(el, 0);
+      if (el._autohideTimer) { clearTimeout(el._autohideTimer); el._autohideTimer = null; }
+      el.dispatchEvent(new CustomEvent('roh:hide'));
+    }
+
+    function reveal(el) {
+      el.dataset.revealed = 'true';
+      delete el.dataset.holding;
+      setProgress(el, 1);
+
+      // schedule auto-rehide
+      const autohide = parseInt(el.dataset.autohide, 10) || AUTOHIDE_INACTIVITY;
+      if (autohide > 0) {
+        el.dataset.decaying = 'true';
+        el._autohideTimer = setTimeout(() => hide(el), autohide);
+      }
+      el.dispatchEvent(new CustomEvent('roh:reveal'));
+
+      // haptic on supported devices
+      if ('vibrate' in navigator) navigator.vibrate([6, 30, 12]);
+    }
+
+    function wire(el) {
+      if (el._rohWired) return;
+      el._rohWired = true;
+
+      const duration = parseInt(el.dataset.duration, 10) || DEFAULT_DURATION;
+
+      // Reduced motion: single tap toggles
+      if (reducedMotion) {
+        el.addEventListener('click', () => {
+          if (el.dataset.revealed) hide(el); else reveal(el);
+        });
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (el.dataset.revealed) hide(el); else reveal(el);
+          }
+        });
+        return;
+      }
+
+      let startTime = 0;
+      let rafId = 0;
+      let haptic20 = false, haptic40 = false, haptic60 = false, haptic80 = false;
+
+      function start(e) {
+        if (el.dataset.revealed) {
+          // click a revealed element re-hides it
+          hide(el);
+          return;
+        }
+        e.preventDefault?.();
+        el.dataset.holding = 'true';
+        startTime = performance.now();
+        haptic20 = haptic40 = haptic60 = haptic80 = false;
+        el.dispatchEvent(new CustomEvent('roh:start'));
+        tick();
+      }
+
+      function tick() {
+        const elapsed = performance.now() - startTime;
+        const p = Math.min(1, elapsed / duration);
+        setProgress(el, p);
+        el.dispatchEvent(new CustomEvent('roh:progress', { detail: { p } }));
+
+        // haptic pulses at 20/40/60/80%
+        if ('vibrate' in navigator) {
+          if (!haptic20 && p >= 0.2) { navigator.vibrate(4); haptic20 = true; }
+          if (!haptic40 && p >= 0.4) { navigator.vibrate(4); haptic40 = true; }
+          if (!haptic60 && p >= 0.6) { navigator.vibrate(4); haptic60 = true; }
+          if (!haptic80 && p >= 0.8) { navigator.vibrate(6); haptic80 = true; }
+        }
+
+        if (p >= 1) {
+          reveal(el);
+          return;
+        }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function abort() {
+        if (!el.dataset.holding) return;
+        cancelAnimationFrame(rafId);
+        delete el.dataset.holding;
+        setProgress(el, 0);
+        el.dispatchEvent(new CustomEvent('roh:abort'));
+      }
+
+      // Pointer events — cover mouse, touch, pen
+      el.addEventListener('pointerdown', start);
+      el.addEventListener('pointerup', abort);
+      el.addEventListener('pointerleave', abort);
+      el.addEventListener('pointercancel', abort);
+
+      // Keyboard — Space to hold
+      let spaceDown = false;
+      el.addEventListener('keydown', (e) => {
+        if (e.key === ' ' && !spaceDown) {
+          spaceDown = true;
+          e.preventDefault();
+          start(e);
+        }
+        if (e.key === 'Escape' && el.dataset.revealed) hide(el);
+      });
+      el.addEventListener('keyup', (e) => {
+        if (e.key === ' ') {
+          spaceDown = false;
+          abort();
+        }
+      });
+
+      // Blur hides revealed state (security)
+      el.addEventListener('blur', () => {
+        if (el.dataset.revealed) hide(el);
+      });
+    }
+
+    function initAll() {
+      document.querySelectorAll('.roh').forEach(wire);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+
+    // Expose reset helper for the demo page
+    window.resetAll = function () {
+      document.querySelectorAll('.roh').forEach(hide);
+      // Also reset the chain state
+      const chainLinks = document.querySelectorAll('.roh-chain-link');
+      chainLinks.forEach((link, i) => {
+        link.classList.toggle('current', i === 0);
+        link.dataset.locked = i === 0 ? 'false' : 'true';
+      });
+      const status = document.getElementById('chain-status');
+      if (status) { status.textContent = '0 / 4 unlocked'; status.classList.remove('unlocked'); }
+      const foot = document.getElementById('chain-foot');
+      if (foot) { foot.querySelector('.progress').style.setProperty('--chain-p', 0); }
+    };
+  })();
+
+  /* ==========================================================================
+     VARIANT 04 · CHAIN · controller
+     Listens to roh:reveal events on elements with data-chain="N" and unlocks
+     the next link in the sequence.
+     ========================================================================== */
+  (function () {
+    const chain = document.getElementById('demo-chain');
+    if (!chain) return;
+
+    const links = Array.from(chain.querySelectorAll('.roh-chain-link'));
+    const status = document.getElementById('chain-status');
+    const foot = document.getElementById('chain-foot');
+    const total = links.length;
+    let unlocked = 0;
+
+    function updateStatus() {
+      if (!status) return;
+      status.textContent = `${unlocked} / ${total} unlocked`;
+      status.classList.toggle('unlocked', unlocked === total);
+      if (foot) {
+        foot.querySelector('.progress').style.setProperty('--chain-p', unlocked / total);
+      }
+    }
+
+    // Each inner .roh listens to its own reveal and cascades to the next link
+    chain.querySelectorAll('.roh[data-chain]').forEach((rohEl) => {
+      const rank = parseInt(rohEl.dataset.chain, 10);
+      rohEl.addEventListener('roh:reveal', () => {
+        const nextLink = links[rank]; // rank is 1-indexed; links[rank] is the NEXT link
+        if (nextLink) {
+          nextLink.dataset.locked = 'false';
+          nextLink.classList.add('current');
+          // remove current from the previous
+          const prevLink = links[rank - 1];
+          if (prevLink) prevLink.classList.remove('current');
+        } else {
+          // Last link — keep current on itself
+        }
+        unlocked = Math.max(unlocked, rank);
+        updateStatus();
+      });
+
+      rohEl.addEventListener('roh:hide', () => {
+        // When a link re-hides, lock everything after it again
+        links.forEach((link, i) => {
+          if (i > rank - 1) {
+            link.dataset.locked = 'true';
+            link.classList.remove('current');
+            // Also hide any revealed downstream
+            const childRoh = link.querySelector('.roh[data-chain]');
+            if (childRoh && childRoh.dataset.revealed) {
+              delete childRoh.dataset.revealed;
+              childRoh.style.setProperty('--roh-p', 0);
+            }
+          }
+        });
+        // Mark the re-hidden link as the current one
+        const thisLink = links[rank - 1];
+        if (thisLink) thisLink.classList.add('current');
+        unlocked = rank - 1;
+        updateStatus();
+      });
+    });
+
+    updateStatus();
+  })();
+
+  /* ==========================================================================
+     VARIANT 06 · WITNESS · controller
+     Logs every roh:* event from elements with data-witness into the panel.
+     ========================================================================== */
+  (function () {
+    const logBody = document.getElementById('witness-body');
+    const counterEl = document.getElementById('witness-count');
+    if (!logBody) return;
+
+    let count = 0;
+    let activeHolds = new Map(); // witnessId → holdStartTime
+
+    function now() {
+      const d = new Date();
+      const p = n => String(n).padStart(2, '0');
+      const ms = String(d.getMilliseconds()).padStart(3, '0').slice(0, 2);
+      return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}.${ms}`;
+    }
+
+    function append(event, message) {
+      // Clear empty state on first event
+      const empty = logBody.querySelector('.empty');
+      if (empty) empty.remove();
+
+      const entry = document.createElement('div');
+      entry.className = 'roh-witness-log-entry';
+      entry.innerHTML = `
+        <span class="ts">${now()}</span>
+        <span class="evt ${event}">${event.toUpperCase()}</span>
+        <span class="msg">${message}</span>
+      `;
+      logBody.appendChild(entry);
+      logBody.scrollTop = logBody.scrollHeight;
+      count++;
+      if (counterEl) counterEl.textContent = count;
+    }
+
+    document.querySelectorAll('.roh[data-witness]').forEach((el) => {
+      const id = el.dataset.witness;
+
+      el.addEventListener('roh:start', () => {
+        activeHolds.set(id, performance.now());
+        append('start', `hold begin on <span style="color: oklch(0.78 0.155 85);">${id}</span>`);
+      });
+
+      el.addEventListener('roh:abort', () => {
+        const start = activeHolds.get(id);
+        const elapsed = start ? Math.round(performance.now() - start) : 0;
+        activeHolds.delete(id);
+        append('abort', `released after <span class="dur">${elapsed}ms</span> — no reveal`);
+      });
+
+      el.addEventListener('roh:reveal', () => {
+        const start = activeHolds.get(id);
+        const elapsed = start ? Math.round(performance.now() - start) : 0;
+        activeHolds.delete(id);
+        append('reveal', `<span style="color: oklch(0.78 0.160 148);">granted</span> — held for <span class="dur">${elapsed}ms</span>`);
+      });
+
+      el.addEventListener('roh:hide', () => {
+        append('hide', `value concealed — session ended`);
+      });
+    });
+
+    window.clearWitnessLog = function () {
+      logBody.innerHTML = '<div class="empty">No event yet. Hold the value to observe.</div>';
+      count = 0;
+      if (counterEl) counterEl.textContent = '0';
+    };
+  })();
+</script>
+
+</body>
+</html>

@@ -4,28 +4,609 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
-<meta name="theme-color" content="#faf7f0" />
+<meta name="theme-color" content="#fff3ed" />
 <title>Stit'Claude · Houses · Playful-Warm</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="../assets/theme.css" />
-<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* ==========================================================================
+     HOUSE · PLAYFUL-WARM — the hospitable
+     Stripe · Duolingo · Arc · Airbnb
+     ========================================================================== */
+  :root[data-theme="light"] {
+    --pw-cream: oklch(0.980 0.016 75);
+    --pw-cream-warm: oklch(0.95 0.040 62);
+    --pw-peach: oklch(0.76 0.145 55);
+    --pw-peach-deep: oklch(0.68 0.170 45);
+    --pw-coral: oklch(0.65 0.200 25);
+    --pw-magenta: oklch(0.585 0.180 340);
+    --pw-indigo: oklch(0.445 0.165 285);
+    --pw-ink: oklch(0.22 0.040 30);
+    --pw-ink-muted: oklch(0.40 0.040 30);
+    --pw-ink-light: oklch(0.58 0.035 35);
+    --pw-border: oklch(0.88 0.030 60);
+    --pw-surface: oklch(0.98 0.02 70);
+  }
+  :root[data-theme="dark"] {
+    --pw-cream: oklch(0.165 0.025 30);
+    --pw-cream-warm: oklch(0.215 0.035 38);
+    --pw-peach: oklch(0.78 0.150 55);
+    --pw-peach-deep: oklch(0.72 0.170 45);
+    --pw-coral: oklch(0.70 0.210 25);
+    --pw-magenta: oklch(0.65 0.190 340);
+    --pw-indigo: oklch(0.65 0.170 285);
+    --pw-ink: oklch(0.96 0.015 60);
+    --pw-ink-muted: oklch(0.75 0.030 50);
+    --pw-ink-light: oklch(0.55 0.035 45);
+    --pw-border: oklch(0.30 0.030 40);
+    --pw-surface: oklch(0.19 0.03 35);
+  }
+  html { background: var(--pw-cream); }
+  body {
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 0%, color-mix(in oklch, var(--pw-peach) 25%, transparent) 0%, transparent 50%),
+      radial-gradient(ellipse 70% 50% at 80% 30%, color-mix(in oklch, var(--pw-magenta) 18%, transparent) 0%, transparent 45%),
+      radial-gradient(ellipse 90% 50% at 50% 100%, color-mix(in oklch, var(--pw-indigo) 15%, transparent) 0%, transparent 55%),
+      var(--pw-cream);
+    color: var(--pw-ink);
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /* Topbar */
+  .pw-top {
+    position: sticky; top: 12px; z-index: 40;
+    max-width: 1200px; margin: 12px auto 0;
+    padding: 12px 18px;
+    background: color-mix(in oklch, var(--pw-cream) 80%, transparent);
+    border: 1px solid var(--pw-border);
+    border-radius: 28px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    box-shadow:
+      0 2px 4px oklch(0 0 0 / 0.04),
+      0 16px 40px color-mix(in oklch, var(--pw-peach) 12%, transparent);
+  }
+  .pw-top .back {
+    color: var(--pw-ink-muted);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 18px;
+    transition: color 180ms, background 180ms, transform 300ms cubic-bezier(0.25, 1.9, 0.35, 1);
+  }
+  .pw-top .back:hover {
+    color: var(--pw-coral);
+    background: color-mix(in oklch, var(--pw-coral) 10%, transparent);
+    transform: translateX(-2px);
+  }
+  .pw-top .back::before { content: '←  '; }
+  .pw-top .logo {
+    justify-self: center;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--pw-ink);
+    letter-spacing: -0.02em;
+  }
+  .pw-top .logo .mark {
+    width: 24px; height: 28px;
+    background: var(--pw-coral);
+    mask-image: url('../assets/logo-mark.svg');
+    -webkit-mask-image: url('../assets/logo-mark.svg');
+    mask-size: contain; -webkit-mask-size: contain;
+    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+    mask-position: center; -webkit-mask-position: center;
+    transition: transform 400ms cubic-bezier(0.25, 1.9, 0.35, 1);
+  }
+  .pw-top .logo:hover .mark { transform: rotate(-12deg) scale(1.15); }
+  .pw-top .actions {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .pw-top .pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--pw-coral) 14%, transparent);
+    color: var(--pw-coral);
+    letter-spacing: 0.04em;
+  }
+  .pw-top .pill::before { content: '🧵  '; }
+  .pw-theme {
+    width: 34px; height: 34px;
+    border-radius: 999px;
+    border: 0;
+    background: color-mix(in oklch, var(--pw-peach) 16%, transparent);
+    color: var(--pw-ink-muted);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: background 200ms, transform 300ms cubic-bezier(0.25, 1.9, 0.35, 1);
+  }
+  .pw-theme:hover { background: color-mix(in oklch, var(--pw-peach) 30%, transparent); transform: rotate(15deg); }
+  .pw-theme svg { width: 14px; height: 14px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* Container */
+  .pw-wrap {
+    max-width: 1160px;
+    margin-inline: auto;
+    padding: 0 var(--space-5) 80px;
+  }
+
+  /* Hero — big hello */
+  .pw-hero {
+    padding-block: clamp(60px, 10vw, 140px);
+    position: relative;
+  }
+  .pw-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px 8px 10px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pw-ink-muted);
+    margin-bottom: 24px;
+    box-shadow: 0 2px 0 oklch(0 0 0 / 0.03);
+    animation: pw-wave 3.2s ease-in-out infinite;
+  }
+  .pw-badge .sticker {
+    display: inline-grid; place-items: center;
+    width: 24px; height: 24px;
+    border-radius: 999px;
+    background: var(--pw-coral);
+    color: white;
+    font-size: 13px;
+  }
+  @keyframes pw-wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .pw-hero-title {
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-size: clamp(3rem, 9vw, 8rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    color: var(--pw-ink);
+    max-width: 14ch;
+    margin-bottom: 24px;
+  }
+  .pw-hero-title em {
+    font-style: italic;
+    background: linear-gradient(120deg, var(--pw-coral), var(--pw-magenta));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .pw-hero-deck {
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.5;
+    color: var(--pw-ink-muted);
+    max-width: 54ch;
+    font-weight: 400;
+  }
+
+  /* Floating sticker decorations */
+  .pw-float {
+    position: absolute;
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 32px;
+    animation: pw-float 5s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .pw-float-1 {
+    top: 5%; right: 8%;
+    background: color-mix(in oklch, var(--pw-peach) 30%, var(--pw-surface));
+    animation-delay: -1s;
+  }
+  .pw-float-2 {
+    top: 45%; right: 14%;
+    background: color-mix(in oklch, var(--pw-magenta) 20%, var(--pw-surface));
+    animation-delay: -2.5s;
+    width: 54px; height: 54px;
+    font-size: 22px;
+  }
+  .pw-float-3 {
+    top: 75%; right: 4%;
+    background: color-mix(in oklch, var(--pw-indigo) 20%, var(--pw-surface));
+    animation-delay: -4s;
+    width: 60px; height: 60px;
+    font-size: 26px;
+  }
+  @keyframes pw-float {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50% { transform: translateY(-16px) rotate(6deg); }
+  }
+  @media (max-width: 820px) {
+    .pw-float-1, .pw-float-2, .pw-float-3 { display: none; }
+  }
+
+  /* Quote — a speech bubble */
+  .pw-quote {
+    margin: clamp(40px, 6vw, 80px) 0;
+    padding: clamp(32px, 4vw, 48px);
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-radius: 32px;
+    position: relative;
+    box-shadow:
+      0 2px 0 oklch(0 0 0 / 0.03),
+      0 24px 48px color-mix(in oklch, var(--pw-peach) 15%, transparent);
+  }
+  .pw-quote::before {
+    content: '';
+    position: absolute;
+    top: -16px; left: 50px;
+    width: 30px; height: 30px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-bottom-color: transparent;
+    border-right-color: transparent;
+    transform: rotate(45deg);
+    border-radius: 4px 0 0 0;
+  }
+  .pw-quote .tag {
+    display: inline-flex;
+    align-items: center; gap: 6px;
+    padding: 4px 12px 4px 8px;
+    background: color-mix(in oklch, var(--pw-magenta) 14%, transparent);
+    color: var(--pw-magenta);
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .pw-quote .tag::before {
+    content: ''; width: 6px; height: 6px;
+    background: currentColor; border-radius: 50%;
+  }
+  .pw-quote blockquote {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(22px, 2.8vw, 32px);
+    line-height: 1.3;
+    color: var(--pw-ink);
+    margin: 0;
+    letter-spacing: -0.015em;
+    max-width: 44ch;
+    text-wrap: balance;
+  }
+  .pw-quote cite {
+    display: block;
+    margin-top: 16px;
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pw-ink-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Section */
+  .pw-section {
+    padding-block: clamp(48px, 6vw, 80px);
+  }
+  .pw-section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .pw-section-num {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    color: var(--pw-coral);
+  }
+  .pw-section-title {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--pw-ink);
+  }
+  .pw-section-caption {
+    flex: 1;
+    min-width: 300px;
+    font-size: 15px;
+    color: var(--pw-ink-muted);
+    line-height: 1.55;
+    max-width: 50ch;
+  }
+
+  /* Palette — big fluffy cards */
+  .pw-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+  }
+  .pw-sw {
+    aspect-ratio: 1 / 1.1;
+    border-radius: 24px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: white;
+    box-shadow: 0 2px 0 oklch(0 0 0 / 0.04);
+    cursor: pointer;
+    transition: transform 400ms cubic-bezier(0.25, 1.9, 0.35, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  .pw-sw:hover { transform: translateY(-6px) rotate(-1deg); }
+  .pw-sw .emoji {
+    font-size: 32px;
+    line-height: 1;
+  }
+  .pw-sw .body {
+    font-family: "Fraunces", serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .pw-sw .val {
+    font-size: 10.5px;
+    font-weight: 500;
+    font-family: ui-monospace, monospace;
+    opacity: 0.85;
+    margin-top: 6px;
+  }
+
+  /* Motion row — chips with bounce demo */
+  .pw-motion-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+  .pw-motion-card {
+    padding: 22px 24px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 320ms cubic-bezier(0.25, 1.9, 0.35, 1);
+  }
+  .pw-motion-card:hover { transform: translateY(-4px); }
+  .pw-motion-card .lbl {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: color-mix(in oklch, var(--pw-coral) 14%, transparent);
+    color: var(--pw-coral);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .pw-motion-card .cue {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--pw-ink);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin-bottom: 8px;
+  }
+  .pw-motion-card .desc {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--pw-ink-muted);
+  }
+  .pw-motion-card .demo-track {
+    margin-top: 16px;
+    height: 8px;
+    background: color-mix(in oklch, var(--pw-coral) 8%, transparent);
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pw-motion-card .demo-dot {
+    position: absolute;
+    top: 50%; left: 0;
+    width: 16px; height: 16px;
+    background: var(--pw-coral);
+    border-radius: 50%;
+    transform: translate(0, -50%);
+    animation: pw-bounce var(--pw-dur, 900ms) var(--pw-ease, cubic-bezier(0.25, 1.9, 0.35, 1)) infinite alternate;
+  }
+  @keyframes pw-bounce {
+    from { left: 0; }
+    to { left: calc(100% - 16px); }
+  }
+
+  /* Do/don't as friendly cards */
+  .pw-dd {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 720px) { .pw-dd { grid-template-columns: 1fr; } }
+  .pw-dd-card {
+    padding: 28px;
+    border-radius: 28px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+  }
+  .pw-dd-card.do {
+    background: color-mix(in oklch, oklch(0.75 0.15 145) 12%, var(--pw-surface));
+    border-color: color-mix(in oklch, oklch(0.75 0.15 145) 40%, var(--pw-border));
+  }
+  .pw-dd-card.dont {
+    background: color-mix(in oklch, var(--pw-coral) 10%, var(--pw-surface));
+    border-color: color-mix(in oklch, var(--pw-coral) 35%, var(--pw-border));
+  }
+  .pw-dd-card .emoji {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .pw-dd-card .lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .pw-dd-card.do .lbl { color: oklch(0.5 0.12 145); }
+  .pw-dd-card.dont .lbl { color: var(--pw-coral); }
+  .pw-dd-card p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--pw-ink);
+    margin: 0 0 10px;
+  }
+  .pw-dd-card p:last-child { color: var(--pw-ink-muted); font-size: 13px; margin-bottom: 0; }
+
+  /* Canon as colorful cards */
+  .pw-canon {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .pw-canon-card {
+    padding: 24px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-radius: 24px;
+    transition: transform 400ms cubic-bezier(0.25, 1.9, 0.35, 1), border-color 200ms;
+    position: relative;
+    overflow: hidden;
+  }
+  .pw-canon-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: var(--pw-canon-color, var(--pw-peach));
+    opacity: 0.15;
+    transition: transform 500ms cubic-bezier(0.25, 1.9, 0.35, 1);
+  }
+  .pw-canon-card:hover { transform: translateY(-6px) rotate(-1deg); border-color: var(--pw-canon-color); }
+  .pw-canon-card:hover::before { transform: scale(1.4) rotate(45deg); }
+  .pw-canon-card .era {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pw-canon-color, var(--pw-coral));
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .pw-canon-card .nm {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--pw-ink);
+    margin-bottom: 8px;
+    letter-spacing: -0.015em;
+    position: relative;
+  }
+  .pw-canon-card .desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--pw-ink-muted);
+    position: relative;
+  }
+
+  /* Nav footer — friendly big buttons */
+  .pw-nav {
+    margin-top: 60px;
+    padding-top: 32px;
+    border-top: 1px solid var(--pw-border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 600px) { .pw-nav { grid-template-columns: 1fr; } }
+  .pw-nav a {
+    padding: 24px 28px;
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border);
+    border-radius: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 200ms, transform 350ms cubic-bezier(0.25, 1.9, 0.35, 1), border-color 200ms;
+  }
+  .pw-nav a:hover {
+    background: color-mix(in oklch, var(--pw-peach) 14%, var(--pw-surface));
+    transform: translateY(-4px);
+    border-color: color-mix(in oklch, var(--pw-coral) 40%, var(--pw-border));
+  }
+  .pw-nav a.next { text-align: right; align-items: flex-end; }
+  .pw-nav a .dir {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pw-coral);
+  }
+  .pw-nav a .target {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--pw-ink);
+    letter-spacing: -0.015em;
+  }
+
+  ::selection { background: var(--pw-coral); color: white; }
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
-      <span>Stit'Claude</span>
-    </a>
-    <span class="brand-mark">Houses · 04 · Playful-Warm</span>
-    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
-      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+<header class="pw-top">
+  <a class="back" href="../lab.html">Back to Lab</a>
+  <a class="logo" href="../index.html">
+    <span class="mark" aria-hidden="true"></span>
+    <span>Stit'Claude</span>
+  </a>
+  <div class="actions">
+    <span class="pill">House 04 · Playful-Warm</span>
+    <button class="pw-theme" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
       <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
         <circle cx="8" cy="8" r="3" />
         <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
@@ -34,113 +615,199 @@
   </div>
 </header>
 
-<main>
+<main class="pw-wrap">
 
-  <section class="masthead">
-    <div class="mast-meta">
-      <span class="num">HOUSE № 04</span>
-      <span class="sep"></span>
-      <span>of eight</span>
-    </div>
-    <h1 class="mast-title">Playful-<em>Warm.</em></h1>
-    <p class="mast-subtitle">Rounded everything. Saturated accents. Generous animations. The house that remembers software can be friendly without being childish.</p>
+  <section class="pw-hero">
+    <div class="pw-float pw-float-1" aria-hidden="true">🧵</div>
+    <div class="pw-float pw-float-2" aria-hidden="true">✦</div>
+    <div class="pw-float pw-float-3" aria-hidden="true">◆</div>
+
+    <span class="pw-badge">
+      <span class="sticker">👋</span>
+      House 04 of eight · Say hello
+    </span>
+    <h1 class="pw-hero-title">Friendly, but never <em>trying</em> to be.</h1>
+    <p class="pw-hero-deck">
+      Saturated warmth. Big, confident radii. Bounce springs reserved for reward moments.
+      The house that remembers software can be hospitable without becoming childish.
+    </p>
   </section>
 
-  <section class="quote-block">
+  <aside class="pw-quote">
+    <div class="tag">Founding principle</div>
     <blockquote>
-      Seriousness of expression, but not of tone. It's <em>friendly</em>, but it's not <em>trying</em> to be friendly.
-      <cite>Stripe design team · on the Stripe aesthetic</cite>
+      Seriousness of expression, but not of tone. It's friendly &mdash; but it's not
+      <em>trying</em> to be friendly.
+      <cite>— Stripe design team, on the Stripe aesthetic</cite>
     </blockquote>
-  </section>
+  </aside>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">01 · Palette</span>
-      <h2 class="bloc-title">The colors that define this house.</h2>
+  <!-- PALETTE -->
+  <section class="pw-section">
+    <div class="pw-section-head">
+      <span class="pw-section-num">01 ·</span>
+      <h2 class="pw-section-title">The palette.</h2>
+      <p class="pw-section-caption">
+        Six saturated hues that feel warm even at low chroma. Peach leads. Coral closes.
+        Indigo balances. Click any card to copy.
+      </p>
     </div>
-    <p class="bloc-caption">Click any swatch or token to copy its OKLCH value. Six carefully chosen hues — no more, no less.</p>
-    <div class="bloc-body">
-      <div class="palette-row">
-        <div class="swatch" style="background: oklch(0.975 0.015 75); color: oklch(0.2 0.01 40);" data-val="oklch(0.975 0.015 75)"><span class="lbl">warm-cream</span></div>
-        <div class="swatch" style="background: oklch(0.935 0.045 65); color: oklch(0.2 0.01 40);" data-val="oklch(0.935 0.045 65)"><span class="lbl">peach-light</span></div>
-        <div class="swatch" style="background: oklch(0.760 0.145 55); color: oklch(0.2 0.01 40);" data-val="oklch(0.760 0.145 55)"><span class="lbl">peach</span></div>
-        <div class="swatch" style="background: oklch(0.650 0.200 25); color: oklch(0.2 0.01 40);" data-val="oklch(0.650 0.200 25)"><span class="lbl">coral</span></div>
-        <div class="swatch" style="background: oklch(0.585 0.180 340); color: oklch(0.2 0.01 40);" data-val="oklch(0.585 0.180 340)"><span class="lbl">magenta</span></div>
-        <div class="swatch" style="background: oklch(0.445 0.145 285); color: oklch(0.95 0.01 85);" data-val="oklch(0.445 0.145 285)"><span class="lbl">indigo-warm</span></div>
-      </div>
-      <div class="palette-legend">
-        <button class="tok" data-val="oklch(0.975 0.015 75)"><span class="s" style="background: oklch(0.975 0.015 75)"></span><span class="n">--pw-cream</span></button>
-        <button class="tok" data-val="oklch(0.935 0.045 65)"><span class="s" style="background: oklch(0.935 0.045 65)"></span><span class="n">--pw-peach-light</span></button>
-        <button class="tok" data-val="oklch(0.760 0.145 55)"><span class="s" style="background: oklch(0.760 0.145 55)"></span><span class="n">--pw-peach</span></button>
-        <button class="tok" data-val="oklch(0.650 0.200 25)"><span class="s" style="background: oklch(0.650 0.200 25)"></span><span class="n">--pw-coral</span></button>
-        <button class="tok" data-val="oklch(0.585 0.180 340)"><span class="s" style="background: oklch(0.585 0.180 340)"></span><span class="n">--pw-magenta</span></button>
-        <button class="tok" data-val="oklch(0.445 0.145 285)"><span class="s" style="background: oklch(0.445 0.145 285)"></span><span class="n">--pw-indigo</span></button>
-      </div>
-    </div>
-  </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">02 · Motion</span>
-      <h2 class="bloc-title">How this house moves.</h2>
-    </div>
-    <p class="bloc-caption">Bouncy springs encouraged. Generous durations (340–520ms). Rewards matter in this house — animate the success moment, the checkmark, the confetti. But pick your moments: one bounce per screen.</p>
-    <div class="bloc-body">
-      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-moderate: 340ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">hover, press</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-spring-bouncy</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.25, 1.9, 0.35, 1)</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-spring-snappy</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">user input</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-standard</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">non-reward transitions</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">03 · The trap</span>
-      <h2 class="bloc-title">Do one thing, refuse another.</h2>
-    </div>
-    <p class="bloc-caption">Every house has a characteristic failure mode. These are the traps to avoid.</p>
-    <div class="bloc-body">
-      <div class="do-dont">
-        <div class="dd-card do">
-          <div class="dd-label">Do</div>
-          <p>Reward user actions with a celebratory bounce. The first time they complete an onboarding step.</p>
-          <p>Use big radii — 20–32px on cards. Tight radii on small elements. Concentric.</p>
+    <div class="pw-palette">
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.93 0.04 70), oklch(0.86 0.08 60)); color: oklch(0.25 0.04 30);" data-val="oklch(0.93 0.04 70)">
+        <span class="emoji">🌾</span>
+        <div>
+          <div class="body">Cream warm</div>
+          <div class="val">oklch(0.93 0.04 70)</div>
         </div>
-        <div class="dd-card dont">
-          <div class="dd-label">Don't</div>
-          <p>Bounce everything. Every button, every modal, every list item. It becomes noise fast.</p>
-          <p>Confuse 'playful' with 'unprofessional.' Duolingo is playful and handles language learning at scale.</p>
+      </div>
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.82 0.12 55), oklch(0.72 0.16 50));" data-val="oklch(0.76 0.145 55)">
+        <span class="emoji">🍑</span>
+        <div>
+          <div class="body">Peach</div>
+          <div class="val">oklch(0.76 0.145 55)</div>
+        </div>
+      </div>
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.70 0.19 30), oklch(0.60 0.22 22));" data-val="oklch(0.65 0.200 25)">
+        <span class="emoji">🔥</span>
+        <div>
+          <div class="body">Coral</div>
+          <div class="val">oklch(0.65 0.200 25)</div>
+        </div>
+      </div>
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.65 0.17 340), oklch(0.55 0.20 340));" data-val="oklch(0.585 0.180 340)">
+        <span class="emoji">💜</span>
+        <div>
+          <div class="body">Magenta</div>
+          <div class="val">oklch(0.585 0.180 340)</div>
+        </div>
+      </div>
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.50 0.16 285), oklch(0.38 0.18 280));" data-val="oklch(0.445 0.165 285)">
+        <span class="emoji">🌌</span>
+        <div>
+          <div class="body">Indigo</div>
+          <div class="val">oklch(0.445 0.165 285)</div>
+        </div>
+      </div>
+      <div class="pw-sw" style="background: linear-gradient(135deg, oklch(0.28 0.04 30), oklch(0.16 0.03 30));" data-val="oklch(0.22 0.040 30)">
+        <span class="emoji">🌰</span>
+        <div>
+          <div class="body">Warm ink</div>
+          <div class="val">oklch(0.22 0.040 30)</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">04 · In the world</span>
-      <h2 class="bloc-title">Where this house lives, outside the lab.</h2>
+  <!-- MOTION -->
+  <section class="pw-section">
+    <div class="pw-section-head">
+      <span class="pw-section-num">02 ·</span>
+      <h2 class="pw-section-title">Motion with a little magic.</h2>
+      <p class="pw-section-caption">
+        Bouncy springs encouraged, but <em>earned</em>. Generous durations (340–520ms).
+        Reward moments: the first completion, the checkmark. Pick your moments — one bounce per screen.
+      </p>
     </div>
-    <p class="bloc-caption">The proof is in the products. These are the references to study when you want to understand this house deeply.</p>
-    <div class="bloc-body">
-      <div class="canon-grid">
-        <article class="canon-card"><div class="era">2011 — ongoing</div><div class="name">Stripe</div><div class="desc">Warm peach gradients, rounded corners, serious infrastructure. The founding example.</div></article>
-        <article class="canon-card"><div class="era">2011 — ongoing</div><div class="name">Duolingo</div><div class="desc">Proof that gamification can be tasteful. Every motion has a reason. The bird has opinions.</div></article>
-        <article class="canon-card"><div class="era">2020 — ongoing</div><div class="name">Arc Browser</div><div class="desc">Playful where it helps (tab hovers), serious where it matters (address bar).</div></article>
-        <article class="canon-card"><div class="era">2014 — ongoing</div><div class="name">Airbnb</div><div class="desc">Rounded imagery, warm reds, hospitable typography. The whole product feels like an invitation.</div></article>
+
+    <div class="pw-motion-list">
+      <div class="pw-motion-card">
+        <span class="lbl">default</span>
+        <div class="cue">spring-smooth</div>
+        <p class="desc">cubic-bezier(0.45, 1.4, 0.55, 1). For hover, press, the everyday interactions.</p>
+        <div class="demo-track">
+          <span class="demo-dot" style="--pw-dur: 900ms; --pw-ease: cubic-bezier(0.45, 1.4, 0.55, 1);"></span>
+        </div>
+      </div>
+      <div class="pw-motion-card">
+        <span class="lbl">snappy</span>
+        <div class="cue">spring-snappy</div>
+        <p class="desc">cubic-bezier(0.3, 1.6, 0.5, 1). For user input — tab switches, toggle flips.</p>
+        <div class="demo-track">
+          <span class="demo-dot" style="--pw-dur: 700ms; --pw-ease: cubic-bezier(0.3, 1.6, 0.5, 1);"></span>
+        </div>
+      </div>
+      <div class="pw-motion-card">
+        <span class="lbl">celebrate</span>
+        <div class="cue">spring-bouncy</div>
+        <p class="desc">cubic-bezier(0.25, 1.9, 0.35, 1). Reserved for reward. Overshoot allowed.</p>
+        <div class="demo-track">
+          <span class="demo-dot" style="--pw-dur: 1000ms; --pw-ease: cubic-bezier(0.25, 1.9, 0.35, 1);"></span>
+        </div>
       </div>
     </div>
   </section>
 
-  <nav class="house-nav" aria-label="House navigation">
-    <a class="house-nav-link" href="swiss-quiet.html">
+  <!-- DO/DONT -->
+  <section class="pw-section">
+    <div class="pw-section-head">
+      <span class="pw-section-num">03 ·</span>
+      <h2 class="pw-section-title">The trap.</h2>
+      <p class="pw-section-caption">
+        Playful without discipline becomes a toy store. Keep the warmth. Keep the confidence.
+        Never mistake one for the other.
+      </p>
+    </div>
+
+    <div class="pw-dd">
+      <div class="pw-dd-card do">
+        <span class="emoji">✅</span>
+        <div class="lbl">Do</div>
+        <p>Reward user actions with a bounce. The first onboarding completion. The 7-day streak. The "you're done" moment.</p>
+        <p>Use big radii on cards — 24–32px for most surfaces, tight 6–8px on small elements. Concentric, always.</p>
+      </div>
+      <div class="pw-dd-card dont">
+        <span class="emoji">🚫</span>
+        <div class="lbl">Don't</div>
+        <p>Bounce everything. Every button, every modal, every list item. Delight becomes noise in under ten minutes.</p>
+        <p>Confuse "playful" with "unprofessional." Duolingo handles language learning at scale. Stripe processes global payments. Don't condescend.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CANON -->
+  <section class="pw-section">
+    <div class="pw-section-head">
+      <span class="pw-section-num">04 ·</span>
+      <h2 class="pw-section-title">Canon.</h2>
+      <p class="pw-section-caption">
+        Four products that got Playful-Warm right. Study how they use saturation, radii, and motion
+        without ever appearing frivolous.
+      </p>
+    </div>
+
+    <div class="pw-canon">
+      <article class="pw-canon-card" style="--pw-canon-color: var(--pw-peach);">
+        <div class="era">2011 → present</div>
+        <div class="nm">Stripe</div>
+        <p class="desc">Warm peach gradients, rounded corners, serious infrastructure. The founding example of this house.</p>
+      </article>
+      <article class="pw-canon-card" style="--pw-canon-color: oklch(0.70 0.15 145);">
+        <div class="era">2011 → present</div>
+        <div class="nm">Duolingo</div>
+        <p class="desc">Proof that gamification can be tasteful. Every motion has a reason. The bird has opinions.</p>
+      </article>
+      <article class="pw-canon-card" style="--pw-canon-color: var(--pw-magenta);">
+        <div class="era">2020 → present</div>
+        <div class="nm">Arc Browser</div>
+        <p class="desc">Playful where it helps (tab hovers), serious where it matters (the address bar).</p>
+      </article>
+      <article class="pw-canon-card" style="--pw-canon-color: var(--pw-coral);">
+        <div class="era">2014 → present</div>
+        <div class="nm">Airbnb</div>
+        <p class="desc">Rounded imagery, warm reds, hospitable typography. The whole product feels like an invitation.</p>
+      </article>
+    </div>
+  </section>
+
+  <nav class="pw-nav">
+    <a href="swiss-quiet.html">
       <span class="dir">← Previous · 03</span>
-      <span class="target"><em>Swiss-Quiet</em></span>
+      <span class="target">Swiss-Quiet</span>
     </a>
-    <a class="house-nav-link next" href="apple-craft.html">
+    <a href="apple-craft.html" class="next">
       <span class="dir">Next · 05 →</span>
-      <span class="target"><em>Apple-Craft</em></span>
+      <span class="target">Apple-Craft</span>
     </a>
   </nav>
 
@@ -157,25 +824,15 @@
     document.documentElement.setAttribute('data-theme', t);
   })();
   function toggleTheme(event) {
-    const cx = event?.clientX ?? window.innerWidth / 2;
-    const cy = event?.clientY ?? window.innerHeight / 2;
-    document.documentElement.style.setProperty('--cx', cx + 'px');
-    document.documentElement.style.setProperty('--cy', cy + 'px');
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
-    function apply() {
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
-    }
-    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
-    else document.startViewTransition(() => apply());
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
   }
-  document.querySelectorAll('[data-val]').forEach(el => {
+
+  document.querySelectorAll('.pw-sw[data-val]').forEach(el => {
     el.addEventListener('click', () => {
-      const v = el.getAttribute('data-val');
-      navigator.clipboard?.writeText(v);
-      el.classList.add('copied');
-      setTimeout(() => el.classList.remove('copied'), 1200);
+      navigator.clipboard?.writeText(el.getAttribute('data-val'));
     });
   });
 </script>

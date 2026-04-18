@@ -1,0 +1,5 @@
+{
+  "trailingSlash": false,
+  "cleanUrls": true,
+  "errorPage": "/404.html"
+}

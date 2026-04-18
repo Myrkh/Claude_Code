@@ -1,181 +1,547 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
-<meta name="theme-color" content="#faf7f0" />
+<meta name="theme-color" content="#0c0c10" />
 <title>Stit'Claude · Houses · Industrial-Pro</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="../assets/theme.css" />
-<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* ==========================================================================
+     HOUSE · INDUSTRIAL-PRO — the terminal
+     ========================================================================== */
+  :root[data-theme="dark"] {
+    --ip-bg: oklch(0.148 0.015 260);
+    --ip-panel: oklch(0.205 0.015 258);
+    --ip-separator: oklch(0.30 0.012 255);
+    --ip-separator-bright: oklch(0.42 0.012 255);
+    --ip-text: oklch(0.85 0.015 250);
+    --ip-text-dim: oklch(0.58 0.015 252);
+    --ip-text-bright: oklch(0.96 0.010 248);
+    --ip-amber: oklch(0.835 0.155 85);
+    --ip-green: oklch(0.72 0.175 145);
+    --ip-red: oklch(0.65 0.210 25);
+    --ip-cyan: oklch(0.75 0.115 210);
+  }
+  html { background: var(--ip-bg); }
+  body {
+    background:
+      repeating-linear-gradient(to bottom, transparent 0, transparent 2px, oklch(1 0 0 / 0.008) 2px, oklch(1 0 0 / 0.008) 3px),
+      var(--ip-bg);
+    color: var(--ip-text);
+    min-height: 100dvh;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .ip-topbar {
+    position: sticky; top: 0; z-index: 40;
+    height: 36px;
+    background: oklch(0.11 0.012 260);
+    border-bottom: 1px solid var(--ip-separator);
+    display: flex; align-items: center;
+    padding: 0 var(--space-4); gap: var(--space-5);
+  }
+  .ip-topbar .back {
+    color: var(--ip-text-dim);
+    font-size: 11px; letter-spacing: 0.04em;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: color 100ms;
+  }
+  .ip-topbar .back:hover { color: var(--ip-amber); }
+  .ip-topbar .back::before { content: '←'; }
+  .ip-topbar .center {
+    flex: 1; text-align: center;
+    font-size: 10px; color: var(--ip-text-dim);
+    letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .ip-topbar .center .sep { color: var(--ip-separator-bright); margin: 0 10px; }
+  .ip-topbar .center .house-id { color: var(--ip-amber); font-weight: 500; }
+  .ip-topbar .status {
+    font-size: 10px; letter-spacing: 0.12em; color: var(--ip-green);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ip-topbar .status::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--ip-green); border-radius: 50%;
+    animation: ip-blink 1.8s steps(1) infinite;
+    box-shadow: 0 0 6px var(--ip-green);
+  }
+  @keyframes ip-blink {
+    0%, 60% { opacity: 1; }
+    61%, 100% { opacity: 0.3; }
+  }
+  .ip-wrap {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding: 0 var(--space-5) var(--space-16);
+  }
+  .ip-statbar {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--ip-separator);
+    border: 1px solid var(--ip-separator);
+    border-top: 0;
+    font-size: 10px;
+  }
+  .ip-statbar .cell {
+    background: var(--ip-bg); padding: 8px 12px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ip-statbar .cell .k {
+    color: var(--ip-text-dim);
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .ip-statbar .cell .v {
+    color: var(--ip-text-bright);
+    font-variant-numeric: tabular-nums; font-weight: 500; font-size: 12px;
+  }
+  .ip-statbar .cell .v.up { color: var(--ip-green); }
+  .ip-statbar .cell .v.down { color: var(--ip-red); }
+  .ip-statbar .cell .v.amber { color: var(--ip-amber); }
+  @media (max-width: 900px) { .ip-statbar { grid-template-columns: repeat(3, 1fr); } }
+  .ip-masthead {
+    padding-block: clamp(3rem, 7vw, 5.5rem);
+    border-bottom: 1px solid var(--ip-separator);
+    position: relative;
+  }
+  .ip-masthead::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 1px;
+    background: repeating-linear-gradient(to right, var(--ip-amber) 0, var(--ip-amber) 4px, transparent 4px, transparent 10px);
+  }
+  .ip-meta {
+    font-size: 10px; color: var(--ip-text-dim);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: var(--space-5);
+    display: flex; align-items: baseline; gap: var(--space-4);
+  }
+  .ip-meta .tag { color: var(--ip-amber); font-weight: 600; }
+  .ip-meta .fill {
+    flex: 1; height: 1px;
+    background: repeating-linear-gradient(to right, var(--ip-separator) 0, var(--ip-separator) 2px, transparent 2px, transparent 6px);
+  }
+  .ip-meta .ts { font-variant-numeric: tabular-nums; font-size: 10px; color: var(--ip-text-dim); }
+  .ip-title {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 700;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ip-text-bright);
+    margin-bottom: var(--space-5);
+    text-transform: uppercase;
+  }
+  .ip-title .accent { color: var(--ip-amber); }
+  .ip-title .accent::after {
+    content: '_'; color: var(--ip-amber);
+    animation: ip-cursor 1s steps(1) infinite;
+  }
+  @keyframes ip-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .ip-subtitle {
+    font-size: 14px; line-height: 1.55;
+    color: var(--ip-text); max-width: 70ch;
+  }
+  .ip-subtitle em { color: var(--ip-amber); font-style: normal; }
+  .ip-block {
+    padding-block: clamp(3rem, 6vw, 5rem);
+    border-bottom: 1px solid var(--ip-separator);
+  }
+  .ip-block-head {
+    display: flex; align-items: baseline; gap: var(--space-4);
+    margin-bottom: var(--space-6); padding-bottom: var(--space-3);
+    border-bottom: 1px dashed var(--ip-separator);
+  }
+  .ip-block-num {
+    color: var(--ip-amber); font-size: 11px;
+    font-weight: 600; letter-spacing: 0.1em; min-width: 70px;
+  }
+  .ip-block-title {
+    font-size: 16px; font-weight: 500;
+    color: var(--ip-text-bright); letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .ip-block-ts {
+    margin-left: auto; font-size: 10px; color: var(--ip-text-dim);
+    font-variant-numeric: tabular-nums; letter-spacing: 0.08em;
+  }
+  .ip-block-caption {
+    font-size: 13px; line-height: 1.6; color: var(--ip-text);
+    max-width: 68ch; margin-bottom: var(--space-5);
+  }
+  .ip-palette {
+    display: grid;
+    grid-template-columns: 200px 1fr 100px 80px 110px;
+    border: 1px solid var(--ip-separator);
+    font-size: 11px;
+  }
+  .ip-palette > * {
+    padding: 10px 14px;
+    border-right: 1px solid var(--ip-separator);
+    border-bottom: 1px solid var(--ip-separator);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ip-palette > *:nth-child(5n) { border-right: 0; }
+  .ip-palette > *:nth-last-child(-n+5) { border-bottom: 0; }
+  .ip-palette .head {
+    background: var(--ip-panel); color: var(--ip-amber);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 500;
+  }
+  .ip-palette .sw {
+    width: 14px; height: 14px;
+    border: 1px solid oklch(1 0 0 / 0.2); flex-shrink: 0;
+  }
+  .ip-palette .tok { color: var(--ip-text-bright); }
+  .ip-palette .val {
+    color: var(--ip-text-dim); font-variant-numeric: tabular-nums; font-size: 10px;
+  }
+  .ip-palette .chr {
+    color: var(--ip-text-dim); font-variant-numeric: tabular-nums;
+    justify-content: flex-end;
+  }
+  .ip-palette .l {
+    color: var(--ip-amber); font-variant-numeric: tabular-nums;
+    justify-content: flex-end;
+  }
+  .ip-palette .status { color: var(--ip-green); }
+  .ip-palette .status::before { content: '●'; margin-right: 4px; }
+  .ip-palette .row-trigger { cursor: pointer; transition: background 100ms; }
+  .ip-palette .row-trigger:hover { background: var(--ip-panel); }
+  @media (max-width: 720px) {
+    .ip-palette { grid-template-columns: 1fr; }
+    .ip-palette > * { border-right: 0 !important; }
+  }
+  .ip-log {
+    font-size: 12px;
+    border: 1px solid var(--ip-separator);
+    background: oklch(0.115 0.015 260);
+    padding: var(--space-4);
+    line-height: 1.9;
+    font-variant-numeric: tabular-nums;
+  }
+  .ip-log .line {
+    display: grid;
+    grid-template-columns: 110px 80px 1fr;
+    gap: var(--space-3);
+    padding: 2px 0;
+  }
+  .ip-log .ts { color: var(--ip-text-dim); font-size: 11px; }
+  .ip-log .lvl { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ip-log .lvl.ok { color: var(--ip-green); }
+  .ip-log .lvl.warn { color: var(--ip-amber); }
+  .ip-log .lvl.err { color: var(--ip-red); }
+  .ip-log .msg { color: var(--ip-text); }
+  .ip-log .msg .key { color: var(--ip-cyan); }
+  .ip-dd {
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);
+  }
+  @media (max-width: 720px) { .ip-dd { grid-template-columns: 1fr; } }
+  .ip-dd-cell {
+    border: 1px solid var(--ip-separator); padding: var(--space-4);
+    background: oklch(0.115 0.015 260);
+  }
+  .ip-dd-cell .label {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: var(--space-3); padding-bottom: var(--space-2);
+    border-bottom: 1px dashed var(--ip-separator);
+  }
+  .ip-dd-cell.ok .label { color: var(--ip-green); }
+  .ip-dd-cell.err .label { color: var(--ip-red); }
+  .ip-dd-cell .label::before { content: '['; margin-right: 4px; }
+  .ip-dd-cell .label::after { content: ']'; margin-left: 4px; }
+  .ip-dd-cell p {
+    font-size: 12px; line-height: 1.6; color: var(--ip-text);
+    margin: 0 0 var(--space-3) 0;
+  }
+  .ip-dd-cell p:last-child { margin-bottom: 0; font-size: 11px; color: var(--ip-text-dim); }
+  .ip-canon {
+    display: grid;
+    grid-template-columns: 140px 200px 1fr;
+    font-size: 12px;
+    border: 1px solid var(--ip-separator);
+  }
+  .ip-canon > * {
+    padding: 12px 14px;
+    border-right: 1px solid var(--ip-separator);
+    border-bottom: 1px solid var(--ip-separator);
+  }
+  .ip-canon > *:nth-child(3n) { border-right: 0; }
+  .ip-canon > *:nth-last-child(-n+3) { border-bottom: 0; }
+  .ip-canon .head {
+    background: var(--ip-panel); color: var(--ip-amber);
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;
+  }
+  .ip-canon .era { color: var(--ip-text-dim); font-variant-numeric: tabular-nums; font-size: 11px; }
+  .ip-canon .nm { color: var(--ip-amber); font-weight: 500; }
+  .ip-canon .desc { color: var(--ip-text); font-size: 11px; line-height: 1.5; }
+  @media (max-width: 720px) {
+    .ip-canon { grid-template-columns: 1fr; }
+    .ip-canon > * { border-right: 0 !important; }
+  }
+  .ip-quote {
+    padding: var(--space-6) 0;
+    border-top: 1px dashed var(--ip-separator);
+    border-bottom: 1px dashed var(--ip-separator);
+  }
+  .ip-quote .tag {
+    font-size: 10px; color: var(--ip-amber);
+    letter-spacing: 0.14em; margin-bottom: var(--space-3);
+  }
+  .ip-quote .tag::before { content: '▶ '; }
+  .ip-quote blockquote {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 500; line-height: 1.35;
+    color: var(--ip-text-bright); margin: 0;
+    letter-spacing: -0.01em; max-width: 52ch;
+  }
+  .ip-quote cite {
+    display: block; margin-top: var(--space-3);
+    font-size: 11px; color: var(--ip-text-dim);
+    font-style: normal; letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .ip-nav {
+    margin-top: var(--space-10);
+    display: flex; justify-content: space-between;
+    gap: var(--space-5);
+    border-top: 1px solid var(--ip-separator);
+    padding-top: var(--space-5);
+    font-size: 11px;
+  }
+  .ip-nav a {
+    display: flex; flex-direction: column; gap: 4px;
+    color: var(--ip-text-dim);
+    padding: var(--space-2) var(--space-3);
+    transition: color 100ms, background 100ms;
+  }
+  .ip-nav a:hover { color: var(--ip-amber); background: var(--ip-panel); }
+  .ip-nav a .dir { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .ip-nav a .target { color: var(--ip-text-bright); font-size: 14px; font-weight: 500; }
+  .ip-nav a.next { text-align: right; align-items: flex-end; }
+  .ip-nav a:hover .target { color: var(--ip-amber); }
+  ::selection { background: var(--ip-amber); color: var(--ip-bg); }
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
-      <span>Stit'Claude</span>
-    </a>
-    <span class="brand-mark">Houses · 02 · Industrial-Pro</span>
-    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
-      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
-      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
-        <circle cx="8" cy="8" r="3" />
-        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
-      </svg>
-    </button>
+<header class="ip-topbar">
+  <a class="back" href="../lab.html">STIT'CLAUDE/LAB</a>
+  <div class="center">
+    <span>HOUSES</span>
+    <span class="sep">//</span>
+    <span class="house-id">02 · INDUSTRIAL-PRO</span>
+    <span class="sep">//</span>
+    <span>v2.0.1</span>
   </div>
+  <div class="status">SESSION ACTIVE</div>
 </header>
 
-<main>
+<div class="ip-statbar">
+  <div class="cell"><span class="k">House</span><span class="v amber">02/08</span></div>
+  <div class="cell"><span class="k">Palette</span><span class="v">6 hues</span></div>
+  <div class="cell"><span class="k">Duration</span><span class="v">120 ms</span></div>
+  <div class="cell"><span class="k">Spring</span><span class="v down">BANNED</span></div>
+  <div class="cell"><span class="k">Density</span><span class="v up">HIGH</span></div>
+  <div class="cell"><span class="k">Uptime</span><span class="v">∞</span></div>
+</div>
 
-  <section class="masthead">
-    <div class="mast-meta">
-      <span class="num">HOUSE № 02</span>
-      <span class="sep"></span>
-      <span>of eight</span>
+<main class="ip-wrap">
+
+  <section class="ip-masthead">
+    <div class="ip-meta">
+      <span class="tag">[ HOUSE 02 ]</span>
+      <span>INDUSTRIAL · TERMINAL · DENSE</span>
+      <span class="fill"></span>
+      <span class="ts" id="ts-now">—</span>
     </div>
-    <h1 class="mast-title">Industrial-<em>Pro.</em></h1>
-    <p class="mast-subtitle">Bloomberg terminals, flight decks, trading floors. Dense data, tabular numerics, signal colors. No room for decoration — every pixel carries information.</p>
+    <h1 class="ip-title">INDUSTRIAL<br/>-<span class="accent">PRO</span></h1>
+    <p class="ip-subtitle">
+      Bloomberg terminals, flight decks, trading floors. Dense data, tabular numerics,
+      signal colors. <em>No room for decoration</em> — every pixel carries information.
+    </p>
   </section>
 
-  <section class="quote-block">
+  <section class="ip-quote">
+    <div class="tag">BROADCAST · FOUNDING PRINCIPLE</div>
     <blockquote>
-      When the data is the point, <em>everything else is noise</em>.
-      <cite>Edward Tufte · <em>The Visual Display of Quantitative Information</em> · 1983</cite>
+      When the data <em style="color: var(--ip-amber); font-style: normal;">is</em> the point, everything else is noise.
+      <cite>— Edward Tufte, The Visual Display of Quantitative Information, 1983</cite>
     </blockquote>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">01 · Palette</span>
-      <h2 class="bloc-title">The colors that define this house.</h2>
+  <section class="ip-block">
+    <div class="ip-block-head">
+      <span class="ip-block-num">01</span>
+      <span class="ip-block-title">PALETTE · 6 signals</span>
+      <span class="ip-block-ts">READOUT / CHANNEL-01</span>
     </div>
-    <p class="bloc-caption">Click any swatch or token to copy its OKLCH value. Six carefully chosen hues — no more, no less.</p>
-    <div class="bloc-body">
-      <div class="palette-row">
-        <div class="swatch" style="background: oklch(0.150 0.015 260); color: oklch(0.95 0.01 85);" data-val="oklch(0.150 0.015 260)"><span class="lbl">terminal-bg</span></div>
-        <div class="swatch" style="background: oklch(0.205 0.015 258); color: oklch(0.95 0.01 85);" data-val="oklch(0.205 0.015 258)"><span class="lbl">panel</span></div>
-        <div class="swatch" style="background: oklch(0.295 0.012 255); color: oklch(0.95 0.01 85);" data-val="oklch(0.295 0.012 255)"><span class="lbl">separator</span></div>
-        <div class="swatch" style="background: oklch(0.785 0.160 85); color: oklch(0.2 0.01 40);" data-val="oklch(0.785 0.160 85)"><span class="lbl">signal-amber</span></div>
-        <div class="swatch" style="background: oklch(0.670 0.170 145); color: oklch(0.2 0.01 40);" data-val="oklch(0.670 0.170 145)"><span class="lbl">signal-green</span></div>
-        <div class="swatch" style="background: oklch(0.610 0.195 25); color: oklch(0.2 0.01 40);" data-val="oklch(0.610 0.195 25)"><span class="lbl">signal-red</span></div>
+    <p class="ip-block-caption">
+      Six OKLCH values — five signals and one neutral. Each channel earns its presence.
+      Amber is system; green is success; red is critical. Click any row to copy.
+    </p>
+
+    <div class="ip-palette">
+      <div class="head">TOKEN</div>
+      <div class="head">VALUE</div>
+      <div class="head" style="justify-content: flex-end;">L</div>
+      <div class="head" style="justify-content: flex-end;">C</div>
+      <div class="head">STATUS</div>
+
+      <div class="row-trigger" data-val="oklch(0.148 0.015 260)"><div class="sw" style="background: oklch(0.148 0.015 260);"></div><span class="tok">--ip-terminal</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.148 0.015 260)</span></div>
+      <div class="l">0.148</div><div class="chr">0.015</div><div class="status">ACTIVE</div>
+
+      <div class="row-trigger" data-val="oklch(0.205 0.015 258)"><div class="sw" style="background: oklch(0.205 0.015 258);"></div><span class="tok">--ip-panel</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.205 0.015 258)</span></div>
+      <div class="l">0.205</div><div class="chr">0.015</div><div class="status">ACTIVE</div>
+
+      <div class="row-trigger" data-val="oklch(0.30 0.012 255)"><div class="sw" style="background: oklch(0.30 0.012 255);"></div><span class="tok">--ip-separator</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.30 0.012 255)</span></div>
+      <div class="l">0.300</div><div class="chr">0.012</div><div class="status">ACTIVE</div>
+
+      <div class="row-trigger" data-val="oklch(0.835 0.155 85)"><div class="sw" style="background: oklch(0.835 0.155 85);"></div><span class="tok" style="color: var(--ip-amber);">--ip-amber</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.835 0.155 85)</span></div>
+      <div class="l">0.835</div><div class="chr">0.155</div><div class="status">ACTIVE</div>
+
+      <div class="row-trigger" data-val="oklch(0.72 0.175 145)"><div class="sw" style="background: oklch(0.72 0.175 145);"></div><span class="tok" style="color: var(--ip-green);">--ip-green</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.72 0.175 145)</span></div>
+      <div class="l">0.720</div><div class="chr">0.175</div><div class="status">ACTIVE</div>
+
+      <div class="row-trigger" data-val="oklch(0.65 0.210 25)"><div class="sw" style="background: oklch(0.65 0.210 25);"></div><span class="tok" style="color: var(--ip-red);">--ip-red</span></div>
+      <div class="row-trigger"><span class="val">oklch(0.65 0.210 25)</span></div>
+      <div class="l">0.650</div><div class="chr">0.210</div><div class="status">ACTIVE</div>
+    </div>
+  </section>
+
+  <section class="ip-block">
+    <div class="ip-block-head">
+      <span class="ip-block-num">02</span>
+      <span class="ip-block-title">MOTION · system log</span>
+      <span class="ip-block-ts">LIVE / PID-4471</span>
+    </div>
+    <p class="ip-block-caption">
+      Instant, or almost. Motion here is <em style="color: var(--ip-amber); font-style: normal;">feedback</em>, not storytelling.
+      120ms max. No spring. No overshoot. A button press registers within one frame.
+    </p>
+
+    <div class="ip-log">
+      <div class="line"><span class="ts">00:00:00.120</span><span class="lvl ok">OK</span><span class="msg">motion.duration.default <span class="key">=</span> 120ms <span style="color: var(--ip-text-dim);">// hover, press, commit</span></span></div>
+      <div class="line"><span class="ts">00:00:00.200</span><span class="lvl ok">OK</span><span class="msg">motion.duration.max <span class="key">=</span> 200ms <span style="color: var(--ip-text-dim);">// layout transitions</span></span></div>
+      <div class="line"><span class="ts">00:00:00.000</span><span class="lvl ok">OK</span><span class="msg">motion.ease <span class="key">=</span> cubic-bezier(0.2, 0, 0, 1) <span style="color: var(--ip-text-dim);">// standard only</span></span></div>
+      <div class="line"><span class="ts">00:00:00.000</span><span class="lvl err">DENY</span><span class="msg">motion.spring <span class="key">=</span> <span style="color: var(--ip-red);">BANNED</span> <span style="color: var(--ip-text-dim);">// no overshoot, no bounce</span></span></div>
+      <div class="line"><span class="ts">00:00:00.000</span><span class="lvl err">DENY</span><span class="msg">motion.decorative <span class="key">=</span> <span style="color: var(--ip-red);">BANNED</span> <span style="color: var(--ip-text-dim);">// animation must carry signal</span></span></div>
+      <div class="line"><span class="ts">00:00:00.120</span><span class="lvl warn">WARN</span><span class="msg">motion.parallax <span class="key">=</span> deny <span style="color: var(--ip-text-dim);">// unless tied to data</span></span></div>
+    </div>
+  </section>
+
+  <section class="ip-block">
+    <div class="ip-block-head">
+      <span class="ip-block-num">03</span>
+      <span class="ip-block-title">RULES · trap / exit</span>
+      <span class="ip-block-ts">POLICY-REV.02</span>
+    </div>
+    <p class="ip-block-caption">
+      The density can become illegible if the discipline breaks. These are the two rules that separate
+      a Bloomberg terminal from a "dashboard template."
+    </p>
+
+    <div class="ip-dd">
+      <div class="ip-dd-cell ok">
+        <div class="label">ALLOW</div>
+        <p>Use tabular numerics on every column of data. <code style="color: var(--ip-cyan);">font-variant-numeric: tabular-nums</code> is not optional.</p>
+        <p>Signal-coded colors carry semantic meaning — green is success, red is critical, amber is system. Respect the convention.</p>
       </div>
-      <div class="palette-legend">
-        <button class="tok" data-val="oklch(0.150 0.015 260)"><span class="s" style="background: oklch(0.150 0.015 260)"></span><span class="n">--ip-terminal</span></button>
-        <button class="tok" data-val="oklch(0.205 0.015 258)"><span class="s" style="background: oklch(0.205 0.015 258)"></span><span class="n">--ip-panel</span></button>
-        <button class="tok" data-val="oklch(0.295 0.012 255)"><span class="s" style="background: oklch(0.295 0.012 255)"></span><span class="n">--ip-separator</span></button>
-        <button class="tok" data-val="oklch(0.785 0.160 85)"><span class="s" style="background: oklch(0.785 0.160 85)"></span><span class="n">--ip-amber</span></button>
-        <button class="tok" data-val="oklch(0.670 0.170 145)"><span class="s" style="background: oklch(0.670 0.170 145)"></span><span class="n">--ip-green</span></button>
-        <button class="tok" data-val="oklch(0.610 0.195 25)"><span class="s" style="background: oklch(0.610 0.195 25)"></span><span class="n">--ip-red</span></button>
+      <div class="ip-dd-cell err">
+        <div class="label">DENY</div>
+        <p>Decorative gradients on data tables. If the data is good, it does not need help. If it isn't, a gradient won't save it.</p>
+        <p>Fonts below 12px, ever. Dense does not mean small — dense means <em style="color: var(--ip-amber); font-style: normal;">information-rich</em>.</p>
       </div>
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">02 · Motion</span>
-      <h2 class="bloc-title">How this house moves.</h2>
+  <section class="ip-block">
+    <div class="ip-block-head">
+      <span class="ip-block-num">04</span>
+      <span class="ip-block-title">CANON · reference products</span>
+      <span class="ip-block-ts">VETTED / N=04</span>
     </div>
-    <p class="bloc-caption">Instant, or almost. Motion in Industrial-Pro is feedback, not storytelling. 120ms max. No spring. No overshoot. A button press registers in a frame.</p>
-    <div class="bloc-body">
-      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-fast: 120ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">most interactions</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-normal: 200ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">upper limit</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-standard</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.2, 0, 0, 1)</span></div>
-        <div style="padding: 12px 16px; background: color-mix(in oklch, var(--accent) 5%, var(--surface)); border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border)); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✕</span><code style="color: var(--fg);">any spring</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">banned — no overshoot</span></div>
-      </div>
+    <p class="ip-block-caption">
+      Products that embody the discipline. Study these when you're unsure whether you've built
+      Industrial-Pro or you've built "a dark dashboard."
+    </p>
+
+    <div class="ip-canon">
+      <div class="head">ERA</div>
+      <div class="head">NAME</div>
+      <div class="head">NOTE</div>
+
+      <div class="era">1981 → *</div>
+      <div class="nm">Bloomberg Terminal</div>
+      <div class="desc">The reference. Amber-on-black, keyboard-first, density absolute. Still looks like the future 44 years later.</div>
+
+      <div class="era">2011 → *</div>
+      <div class="nm">TradingView</div>
+      <div class="desc">Charts professional traders actually use. Every pixel contributes. Dark by default, not by choice.</div>
+
+      <div class="era">2010 → *</div>
+      <div class="nm">Datadog</div>
+      <div class="desc">Dashboards that embrace density instead of hiding behind 'beautiful visualizations'. Signal-coded alerts.</div>
+
+      <div class="era">2016 → *</div>
+      <div class="nm">Vercel CLI</div>
+      <div class="desc">Terminal-native dev tooling where the CLI is the product. Typography as interface.</div>
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">03 · The trap</span>
-      <h2 class="bloc-title">Do one thing, refuse another.</h2>
-    </div>
-    <p class="bloc-caption">Every house has a characteristic failure mode. These are the traps to avoid.</p>
-    <div class="bloc-body">
-      <div class="do-dont">
-        <div class="dd-card do">
-          <div class="dd-label">Do</div>
-          <p>Use tabular numerics on every column of data. <code>font-variant-numeric: tabular-nums</code>.</p>
-          <p>Signal-coded colors carry meaning — green good, red bad, amber warning. Don't reinvent them.</p>
-        </div>
-        <div class="dd-card dont">
-          <div class="dd-label">Don't</div>
-          <p>Add decorative gradients to data tables. If the data is good, it does not need help.</p>
-          <p>Use fonts below 12px, ever. Dense does not mean small — dense means information-rich.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">04 · In the world</span>
-      <h2 class="bloc-title">Where this house lives, outside the lab.</h2>
-    </div>
-    <p class="bloc-caption">The proof is in the products. These are the references to study when you want to understand this house deeply.</p>
-    <div class="bloc-body">
-      <div class="canon-grid">
-        <article class="canon-card"><div class="era">1981 — ongoing</div><div class="name">Bloomberg Terminal</div><div class="desc">The reference. Amber on black, density, keyboard-first. Still looks like the future 44 years later.</div></article>
-        <article class="canon-card"><div class="era">2005 — ongoing</div><div class="name">TradingView</div><div class="desc">Charts that professional traders actually use. Every pixel contributes.</div></article>
-        <article class="canon-card"><div class="era">1998 — ongoing</div><div class="name">GitHub</div><div class="desc">Not always industrial, but the commit graph and issue lists carry the DNA. Diff viewers especially.</div></article>
-        <article class="canon-card"><div class="era">2010 — ongoing</div><div class="name">Datadog</div><div class="desc">Dashboards that embrace density instead of hiding it behind 'beautiful visualizations'.</div></article>
-      </div>
-    </div>
-  </section>
-
-  <nav class="house-nav" aria-label="House navigation">
-    <a class="house-nav-link" href="editorial.html">
-      <span class="dir">← Previous · 01</span>
-      <span class="target"><em>Editorial</em></span>
+  <nav class="ip-nav">
+    <a href="editorial.html">
+      <span class="dir">◂ PREV · HOUSE 01</span>
+      <span class="target">Editorial</span>
     </a>
-    <a class="house-nav-link next" href="swiss-quiet.html">
-      <span class="dir">Next · 03 →</span>
-      <span class="target"><em>Swiss-Quiet</em></span>
+    <a href="swiss-quiet.html" class="next">
+      <span class="dir">NEXT · HOUSE 03 ▸</span>
+      <span class="target">Swiss-Quiet</span>
     </a>
   </nav>
 
 </main>
 
 <script>
-  (function initTheme() {
-    let t = 'light';
-    try {
-      const s = localStorage.getItem('stit-lab-theme');
-      if (s === 'light' || s === 'dark') t = s;
-      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
-    } catch (e) {}
-    document.documentElement.setAttribute('data-theme', t);
-  })();
-  function toggleTheme(event) {
-    const cx = event?.clientX ?? window.innerWidth / 2;
-    const cy = event?.clientY ?? window.innerHeight / 2;
-    document.documentElement.style.setProperty('--cx', cx + 'px');
-    document.documentElement.style.setProperty('--cy', cy + 'px');
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    function apply() {
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  (function tickClock() {
+    const el = document.getElementById('ts-now');
+    if (!el) return;
+    function update() {
+      const d = new Date();
+      const p = n => String(n).padStart(2, '0');
+      el.textContent = `${d.getUTCFullYear()}-${p(d.getUTCMonth()+1)}-${p(d.getUTCDate())} / ${p(d.getUTCHours())}:${p(d.getUTCMinutes())}:${p(d.getUTCSeconds())} UTC`;
     }
-    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
-    else document.startViewTransition(() => apply());
-  }
-  document.querySelectorAll('[data-val]').forEach(el => {
+    update();
+    setInterval(update, 1000);
+  })();
+
+  document.documentElement.setAttribute('data-theme', 'dark');
+
+  document.querySelectorAll('.row-trigger[data-val]').forEach(el => {
     el.addEventListener('click', () => {
       const v = el.getAttribute('data-val');
-      navigator.clipboard?.writeText(v);
-      el.classList.add('copied');
-      setTimeout(() => el.classList.remove('copied'), 1200);
+      if (v) navigator.clipboard?.writeText(v);
     });
   });
 </script>

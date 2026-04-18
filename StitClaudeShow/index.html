@@ -63,35 +63,35 @@
     position: sticky;
     top: 0;
     z-index: 40;
-    height: 56px;
+    height: 68px;
     backdrop-filter: blur(14px) saturate(1.2);
     -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    background: color-mix(in oklch, var(--bg) 70%, transparent);
+    background: color-mix(in oklch, var(--bg) 72%, transparent);
     border-bottom: 1px solid color-mix(in oklch, var(--fg) 5%, transparent);
   }
   .topbar-inner {
-    max-width: 1160px;
+    max-width: 1200px;
     margin-inline: auto;
     height: 100%;
     padding-inline: var(--gutter);
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-5);
   }
   .brand {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
+    gap: var(--space-3);
     font-family: var(--font-serif);
     font-style: italic;
-    font-size: 22px;
-    letter-spacing: -0.01em;
+    font-size: 26px;
+    letter-spacing: -0.015em;
     color: var(--fg);
   }
   .brand .mark {
-    width: 24px;
-    height: 28px;
+    width: 34px;
+    height: 40px;
     color: var(--accent);
     display: inline-block;
     background-color: currentColor;
@@ -103,21 +103,112 @@
     -webkit-mask-repeat: no-repeat;
     mask-position: center;
     -webkit-mask-position: center;
+    transition:
+      color var(--duration-normal) var(--ease-standard),
+      transform var(--duration-moderate) var(--ease-spring-smooth);
+    animation: stit-mark-in 900ms var(--ease-decelerate) 200ms both;
   }
-  .top-nav {
+  .brand:hover .mark {
+    color: var(--fg);
+    transform: rotate(-3deg) scale(1.08);
+  }
+  @keyframes stit-mark-in {
+    from {
+      opacity: 0;
+      transform: translateY(-3px) scale(0.92);
+    }
+    60% { opacity: 1; }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Central nav links — inline, with hover carets */
+  .top-nav-center {
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .top-nav-center a {
+    position: relative;
+    padding: 8px 14px;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--fg-muted);
+    border-radius: var(--radius-sm);
+    transition:
+      color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard);
+  }
+  .top-nav-center a:hover {
+    color: var(--fg);
+    background: var(--surface);
+  }
+  .top-nav-center a::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    transition: width var(--duration-moderate) var(--ease-spring-smooth);
+  }
+  .top-nav-center a:hover::after { width: 16px; }
+
+  /* Actions cluster on the right */
+  .top-actions {
     justify-self: end;
     display: flex;
     align-items: center;
     gap: var(--space-2);
   }
-  .top-nav a {
-    padding: 6px 12px;
-    font-size: var(--step--1);
-    color: var(--fg-muted);
-    border-radius: var(--radius-sm);
-    transition: color var(--duration-fast), background var(--duration-fast);
+
+  /* CMDK-style search trigger — matches lab */
+  .search-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    color: var(--fg-subtle);
+    font-size: var(--step--2);
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-standard),
+      background var(--duration-fast) var(--ease-standard),
+      color var(--duration-fast) var(--ease-standard);
+    min-width: 220px;
   }
-  .top-nav a:hover { color: var(--fg); background: var(--surface); }
+  .search-trigger:hover {
+    border-color: var(--border-strong);
+    color: var(--fg-muted);
+    background: var(--card);
+  }
+  .search-trigger svg { width: 13px; height: 13px; flex-shrink: 0; }
+  .search-trigger .label { flex: 1; text-align: left; letter-spacing: -0.005em; }
+  .search-trigger .kbd {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--fg-subtle);
+    padding: 2px 6px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  @media (max-width: 720px) {
+    .search-trigger .label,
+    .search-trigger .kbd { display: none; }
+    .search-trigger { min-width: auto; padding: 7px; }
+  }
   .theme-toggle-btn {
     width: 34px; height: 34px;
     display: inline-grid; place-items: center;
@@ -153,31 +244,76 @@
 
   /* ============ Layout ============ */
   main {
-    max-width: 1160px;
+    max-width: 1200px;
     margin-inline: auto;
-    padding: var(--space-8) var(--gutter) 0;
+    padding: 0 var(--gutter);
   }
 
-  /* ============ Hero ============ */
+  /* ============ Hero — editorial, restrained ============ */
   .hero {
-    padding-block: clamp(4rem, 12vw, 10rem) clamp(3rem, 8vw, 6rem);
+    padding-block: clamp(5rem, 14vw, 12rem) clamp(4rem, 8vw, 7rem);
     text-align: center;
     position: relative;
+    overflow: hidden;
+    isolation: isolate;
   }
+
+  /* Soft coral glow — the single atmospheric element */
   .hero::before {
     content: '';
     position: absolute;
-    top: 0; left: 50%;
+    top: 5%; left: 50%;
     transform: translateX(-50%);
-    width: min(100%, 900px);
-    height: 600px;
+    width: min(140%, 1300px);
+    height: 800px;
     background: radial-gradient(
-      ellipse 60% 50% at 50% 40%,
-      color-mix(in oklch, var(--accent) 10%, transparent) 0%,
-      transparent 70%
+      ellipse 50% 45% at 50% 40%,
+      color-mix(in oklch, var(--accent) 18%, transparent) 0%,
+      color-mix(in oklch, var(--accent) 6%, transparent) 40%,
+      transparent 72%
     );
     pointer-events: none;
-    z-index: -1;
+    z-index: 0;
+  }
+  [data-theme="dark"] .hero::before {
+    background: radial-gradient(
+      ellipse 50% 45% at 50% 40%,
+      color-mix(in oklch, var(--accent) 42%, transparent) 0%,
+      color-mix(in oklch, var(--accent) 18%, transparent) 40%,
+      transparent 72%
+    );
+  }
+
+  /* The single signature element: the mark, massive, in the deep background */
+  .hero-watermark {
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 42vw, 520px);
+    height: clamp(328px, 50vw, 610px);
+    background-color: var(--fg);
+    mask-image: url('assets/logo-mark.svg');
+    -webkit-mask-image: url('assets/logo-mark.svg');
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 0;
+  }
+  [data-theme="dark"] .hero-watermark {
+    opacity: 0.06;
+  }
+  .hero-corner.tl { top: 28px; left: 28px; }
+  .hero-corner.tr { top: 28px; right: 28px; transform: rotate(90deg); }
+  .hero-corner.bl { bottom: 28px; left: 28px; transform: rotate(-90deg); }
+  .hero-corner.br { bottom: 28px; right: 28px; transform: rotate(180deg); }
+  @media (max-width: 720px) {
+    .hero-corner { display: none; }
   }
 
   .hero-eyebrow {
@@ -189,11 +325,15 @@
     color: var(--fg-subtle);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    margin-bottom: var(--space-8);
-    padding: 6px 14px;
+    margin-bottom: var(--space-10);
+    padding: 7px 16px;
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);
-    background: color-mix(in oklch, var(--bg) 70%, transparent);
+    background: color-mix(in oklch, var(--bg) 72%, transparent);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    position: relative;
+    z-index: 1;
   }
   .hero-eyebrow .dot {
     width: 5px; height: 5px; border-radius: 50%;
@@ -210,18 +350,53 @@
     font-family: var(--font-serif);
     font-style: italic;
     font-weight: 400;
-    font-size: clamp(3.5rem, 11vw, 9rem);
-    line-height: 0.9;
+    font-size: clamp(3.25rem, 11vw, 9.5rem);
+    line-height: 0.95;
     letter-spacing: -0.04em;
     color: var(--fg);
-    max-width: 14ch;
+    max-width: 18ch;
     margin-inline: auto;
-    text-wrap: balance;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title .line {
+    display: block;
   }
   .hero-title em {
     font-style: italic;
     color: var(--accent);
     display: inline-block;
+  }
+
+  /* The "Again." punch — arrives late, pulls its letter-spacing tight */
+  .hero-title .again {
+    display: inline-block;
+    color: var(--accent);
+    font-style: italic;
+    opacity: 0;
+    letter-spacing: 0.02em;
+    transform: translateY(8px);
+    animation: again-arrive 700ms cubic-bezier(0.16, 1, 0.3, 1) 780ms forwards;
+  }
+  @keyframes again-arrive {
+    from {
+      opacity: 0;
+      letter-spacing: 0.02em;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      letter-spacing: -0.045em;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title .again {
+      animation: none;
+      opacity: 1;
+      letter-spacing: -0.045em;
+      transform: none;
+    }
   }
 
   .hero-lede {
@@ -234,6 +409,8 @@
     margin: var(--space-8) auto 0;
     text-wrap: balance;
     letter-spacing: -0.008em;
+    position: relative;
+    z-index: 1;
   }
 
   .hero-actions {
@@ -242,6 +419,8 @@
     justify-content: center;
     margin-top: var(--space-10);
     flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
   }
   .btn {
     display: inline-flex;
@@ -295,6 +474,8 @@
     font-size: 11px;
     color: var(--fg-subtle);
     letter-spacing: 0.08em;
+    position: relative;
+    z-index: 1;
   }
   .hero-meta .stat {
     display: flex;
@@ -464,6 +645,55 @@
   .entry:hover .entry-visual { opacity: 0.55; }
   .entry-visual svg { width: 100%; height: 100%; }
 
+  /* ============ Section: Signature mark ============ */
+  .mark-signature {
+    padding-block: clamp(5rem, 10vw, 9rem);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+    text-align: center;
+  }
+  .mark-signature-mark {
+    width: clamp(80px, 14vw, 140px);
+    height: clamp(95px, 16vw, 164px);
+    background-color: var(--accent);
+    mask-image: url('assets/logo-mark.svg');
+    -webkit-mask-image: url('assets/logo-mark.svg');
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+    transition:
+      background-color var(--duration-slow) var(--ease-decelerate),
+      transform var(--duration-slow) var(--ease-spring-smooth),
+      filter var(--duration-slow) var(--ease-standard);
+    filter: drop-shadow(0 2px 24px color-mix(in oklch, var(--accent) 20%, transparent));
+  }
+  .mark-signature:hover .mark-signature-mark {
+    background-color: var(--fg);
+    transform: rotate(-3deg) scale(1.05);
+    filter: drop-shadow(0 2px 24px color-mix(in oklch, var(--fg) 20%, transparent));
+  }
+  .mark-signature-line {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .mark-signature-name {
+    color: var(--fg);
+    font-weight: 500;
+  }
+  .mark-signature-year {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
   /* ============ Section: Philosophy ============ */
   .philosophy {
     padding-block: clamp(5rem, 10vw, 8rem);
@@ -576,10 +806,21 @@
       <span class="mark" aria-hidden="true"></span>
       <span>Stit'Claude</span>
     </a>
-    <nav class="top-nav">
+    <nav class="top-nav-center">
       <a href="lab.html">Lab</a>
+      <a href="components.html">Components</a>
       <a href="tokens.html">Tokens</a>
       <a href="essays/anatomy-of-a-stitch.html">Field Notes</a>
+    </nav>
+    <div class="top-actions">
+      <button class="search-trigger" onclick="window.location.href='lab.html'" aria-label="Search">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <circle cx="7" cy="7" r="4.5" />
+          <path d="M10.5 10.5 L14 14" stroke-linecap="round" />
+        </svg>
+        <span class="label">Search the lab…</span>
+        <span class="kbd">⌘K</span>
+      </button>
       <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
         <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
           <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
@@ -589,7 +830,7 @@
           <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
         </svg>
       </button>
-    </nav>
+    </div>
   </div>
 </header>
 
@@ -597,11 +838,18 @@
 
   <!-- ========== HERO ========== -->
   <section class="hero">
+
+    <!-- A single signature element: the mark, massive, as a watermark -->
+    <div class="hero-watermark" aria-hidden="true"></div>
+
     <div class="hero-eyebrow">
       <span class="dot"></span>
       <span>A design skill for Claude · MMXXVI</span>
     </div>
-    <h1 class="hero-title">Less, but <em>better.</em> Again.</h1>
+    <h1 class="hero-title">
+      <span class="line">Less, but <em>better.</em></span>
+      <span class="line"><span class="again">Again.</span></span>
+    </h1>
     <p class="hero-lede">
       A design discipline encoded as a Claude skill.
       OKLCH tokens, motion with a reason, eight houses, thirty anti-patterns refused.
@@ -759,6 +1007,16 @@
       Stit'Claude does not.
     </p>
     <p class="philosophy-cite">Dieter Rams · 1976 · adapted</p>
+  </section>
+
+  <!-- ========== SIGNATURE MARK ========== -->
+  <section class="mark-signature">
+    <div class="mark-signature-mark" aria-hidden="true"></div>
+    <p class="mark-signature-line">
+      <span class="mark-signature-name">Stit'Claude</span>
+      &nbsp;·&nbsp;
+      <span class="mark-signature-year">MMXXVI</span>
+    </p>
   </section>
 
 </main>

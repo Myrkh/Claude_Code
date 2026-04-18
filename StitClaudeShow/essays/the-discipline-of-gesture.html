@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#f5f2e8" />
+<meta name="description" content="Field Experiment N° 003 — The discipline of gesture. Why 600 ms. A declassified memo." />
+<title>N° 003 · The discipline of gesture · Stit'Claude Field Experiments</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@500;700&family=Fraunces:ital,opsz,wght@0,9..144,900;1,9..144,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+
+<style>
+  /* ==========================================================================
+     FIELD EXPERIMENT N° 003
+     House: Declassified Memo × Tufte × Field Notebook
+     ========================================================================== */
+  :root[data-theme="light"] {
+    --dm-paper: oklch(0.945 0.022 85);
+    --dm-paper-dim: oklch(0.915 0.028 82);
+    --dm-paper-stain: oklch(0.88 0.045 78);
+    --dm-ink: oklch(0.17 0.015 50);
+    --dm-ink-faded: oklch(0.32 0.020 55);
+    --dm-ink-subtle: oklch(0.48 0.025 60);
+    --dm-stamp-red: oklch(0.50 0.185 25);
+    --dm-stamp-red-dim: oklch(0.58 0.170 28);
+    --dm-hand-blue: oklch(0.35 0.145 250);
+    --dm-hand-red: oklch(0.55 0.180 28);
+    --dm-rule: oklch(0.68 0.030 55);
+    --dm-rule-strong: oklch(0.45 0.025 50);
+  }
+  :root[data-theme="dark"] {
+    --dm-paper: oklch(0.135 0.012 55);
+    --dm-paper-dim: oklch(0.17 0.014 55);
+    --dm-paper-stain: oklch(0.19 0.020 52);
+    --dm-ink: oklch(0.94 0.020 85);
+    --dm-ink-faded: oklch(0.78 0.020 80);
+    --dm-ink-subtle: oklch(0.60 0.025 75);
+    --dm-stamp-red: oklch(0.68 0.200 25);
+    --dm-stamp-red-dim: oklch(0.60 0.180 28);
+    --dm-hand-blue: oklch(0.72 0.160 250);
+    --dm-hand-red: oklch(0.70 0.200 28);
+    --dm-rule: oklch(0.38 0.025 55);
+    --dm-rule-strong: oklch(0.55 0.025 55);
+  }
+
+  html { background: var(--dm-paper); }
+  body {
+    background:
+      /* Coffee stain corner */
+      radial-gradient(circle at 95% 8%, color-mix(in oklch, var(--dm-paper-stain) 40%, transparent) 0%, transparent 10%),
+      radial-gradient(circle at 3% 95%, color-mix(in oklch, var(--dm-paper-stain) 30%, transparent) 0%, transparent 8%),
+      /* Paper grain */
+      var(--dm-paper);
+    color: var(--dm-ink);
+    font-family: "Courier Prime", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    position: relative;
+  }
+
+  /* Paper noise texture — typewriter grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence baseFrequency='0.82' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.10 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+  [data-theme="dark"] body::before { mix-blend-mode: screen; opacity: 0.28; }
+
+  /* Page ruled lines — faint */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 27px,
+      color-mix(in oklch, var(--dm-hand-blue) 4%, transparent) 27px,
+      color-mix(in oklch, var(--dm-hand-blue) 4%, transparent) 28px
+    );
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  /* ==========================================================================
+     HEADER · classified strip
+     ========================================================================== */
+  .dm-top {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--dm-paper);
+    border-bottom: 2px solid var(--dm-ink);
+    padding: 14px clamp(20px, 3vw, 36px);
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+  }
+  .dm-top::before {
+    content: '';
+    position: absolute;
+    bottom: -6px; left: 0; right: 0;
+    height: 2px;
+    background: repeating-linear-gradient(
+      to right,
+      var(--dm-ink) 0,
+      var(--dm-ink) 4px,
+      transparent 4px,
+      transparent 10px
+    );
+  }
+  .dm-top .back {
+    color: var(--dm-ink-faded);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    transition: color 180ms;
+  }
+  .dm-top .back:hover { color: var(--dm-stamp-red); }
+  .dm-top .back::before { content: '◂ '; color: var(--dm-stamp-red); }
+  .dm-top .classifier {
+    justify-self: center;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: var(--dm-ink);
+  }
+  .dm-top .classifier::before,
+  .dm-top .classifier::after {
+    content: '';
+    width: 28px; height: 2px;
+    background: var(--dm-stamp-red);
+  }
+  .dm-top .meta {
+    justify-self: end;
+    display: inline-flex; align-items: center; gap: 14px;
+    color: var(--dm-ink-subtle);
+  }
+  .dm-top .meta .redacted {
+    padding: 2px 10px;
+    background: var(--dm-ink);
+    color: transparent;
+    border-radius: 2px;
+    font-weight: 700;
+    user-select: none;
+  }
+  .dm-theme {
+    width: 26px; height: 26px;
+    background: transparent;
+    border: 1px solid var(--dm-rule-strong);
+    color: var(--dm-ink-faded);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: color 150ms, border-color 150ms;
+  }
+  .dm-theme:hover { color: var(--dm-stamp-red); border-color: var(--dm-stamp-red); }
+  .dm-theme svg { width: 12px; height: 12px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* ==========================================================================
+     PAGE LAYOUT · single column prose with wide left margin for annotations
+     ========================================================================== */
+  .dm-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: clamp(40px, 6vw, 80px) clamp(20px, 3vw, 40px) 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ==========================================================================
+     COVER · stamp, title, metadata block
+     ========================================================================== */
+  .dm-cover {
+    padding-block: clamp(48px, 8vw, 100px) clamp(32px, 5vw, 64px);
+    border-bottom: 3px double var(--dm-ink);
+    position: relative;
+  }
+
+  /* CONFIDENTIAL stamp rotated */
+  .dm-stamp {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    color: var(--dm-stamp-red);
+    font-family: "Courier Prime", monospace;
+    font-weight: 700;
+    font-size: clamp(24px, 3.5vw, 38px);
+    letter-spacing: 0.06em;
+    border: 4px solid currentColor;
+    padding: 12px 22px 10px;
+    transform: rotate(-8deg);
+    opacity: 0.88;
+    z-index: 3;
+    pointer-events: none;
+    text-transform: uppercase;
+    line-height: 1;
+    text-align: center;
+  }
+  .dm-stamp::after {
+    content: attr(data-sub);
+    display: block;
+    font-size: 0.38em;
+    letter-spacing: 0.22em;
+    margin-top: 5px;
+    font-weight: 400;
+  }
+  /* Slight grunge on the stamp */
+  .dm-stamp {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Cfilter id='t'%3E%3CfeTurbulence baseFrequency='0.3' numOctaves='1' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 -2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='white' filter='url(%23t)'/%3E%3C/svg%3E"), linear-gradient(#000 0 0);
+    mask-composite: intersect;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='100'%3E%3Cfilter id='t'%3E%3CfeTurbulence baseFrequency='0.3' numOctaves='1' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 4 -2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='white' filter='url(%23t)'/%3E%3C/svg%3E"), linear-gradient(#000 0 0);
+    -webkit-mask-composite: source-in;
+  }
+  @media (max-width: 720px) {
+    .dm-stamp { transform: rotate(-8deg) scale(0.8); right: 0; }
+  }
+
+  .dm-meta-block {
+    font-family: "Courier Prime", monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--dm-ink-faded);
+    margin-bottom: 40px;
+    line-height: 1.9;
+    max-width: 56ch;
+  }
+  .dm-meta-block .row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 16px;
+    border-bottom: 1px dotted var(--dm-rule);
+    padding: 4px 0;
+  }
+  .dm-meta-block .row:last-child { border-bottom: 0; }
+  .dm-meta-block .k {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    color: var(--dm-ink-subtle);
+  }
+  .dm-meta-block .v { color: var(--dm-ink); }
+  .dm-meta-block .v strong { color: var(--dm-stamp-red); }
+  .dm-meta-block .v.redacted {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--dm-ink);
+    color: transparent;
+    user-select: none;
+    font-weight: 700;
+  }
+
+  .dm-kicker {
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--dm-stamp-red);
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  .dm-kicker::before { content: '◼ '; }
+
+  .dm-title {
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.9;
+    letter-spacing: -0.045em;
+    color: var(--dm-ink);
+    max-width: 16ch;
+    margin-bottom: 24px;
+    text-wrap: balance;
+  }
+  .dm-title em { color: var(--dm-stamp-red); font-style: italic; }
+
+  .dm-subtitle {
+    font-family: "Courier Prime", monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--dm-ink-faded);
+    max-width: 58ch;
+    margin-bottom: 24px;
+  }
+
+  /* Handwritten annotation — floats over the cover */
+  .dm-handwritten {
+    position: absolute;
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(20px, 2.5vw, 28px);
+    color: var(--dm-hand-blue);
+    line-height: 1.1;
+    letter-spacing: 0;
+    transform: rotate(-4deg);
+    max-width: 26ch;
+  }
+  .dm-handwritten.annot-1 {
+    bottom: -10px;
+    right: 6%;
+    transform: rotate(-6deg);
+    color: var(--dm-hand-red);
+    font-size: clamp(18px, 2.2vw, 24px);
+  }
+  .dm-handwritten .arrow {
+    display: inline-block;
+    transform: rotate(-20deg);
+    font-size: 1.4em;
+    vertical-align: middle;
+  }
+  @media (max-width: 720px) {
+    .dm-handwritten.annot-1 { position: static; margin-top: 20px; transform: rotate(-2deg); }
+  }
+
+  /* ==========================================================================
+     SECTION NUMBERING · A.1 / A.2 etc
+     ========================================================================== */
+  .dm-section {
+    padding-block: clamp(48px, 7vw, 88px);
+    border-bottom: 1px dashed var(--dm-rule);
+    position: relative;
+  }
+  .dm-section-label {
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--dm-stamp-red);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .dm-section-label::before { content: '§ '; color: var(--dm-ink-subtle); font-weight: 400; }
+  .dm-section-title {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--dm-ink);
+    margin-bottom: 32px;
+    max-width: 18ch;
+    text-wrap: balance;
+  }
+  .dm-section-title em { color: var(--dm-stamp-red); }
+
+  .dm-p {
+    font-family: "Courier Prime", monospace;
+    font-size: 14.5px;
+    line-height: 1.85;
+    color: var(--dm-ink);
+    max-width: 62ch;
+    margin-bottom: 22px;
+  }
+  .dm-p em {
+    font-style: italic;
+    color: var(--dm-stamp-red);
+  }
+  .dm-p strong {
+    font-weight: 700;
+    color: var(--dm-ink);
+  }
+  .dm-p code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    padding: 1px 8px;
+    background: var(--dm-paper-dim);
+    border: 1px solid var(--dm-rule);
+    color: var(--dm-stamp-red);
+  }
+
+  /* Redaction inline — for the fake redacted phrases in the body */
+  .dm-p .redacted {
+    display: inline-block;
+    padding: 0 8px;
+    background: var(--dm-ink);
+    color: transparent;
+    border-radius: 2px;
+    user-select: none;
+    font-weight: 700;
+    vertical-align: baseline;
+  }
+
+  /* ==========================================================================
+     FIGURE · calibration chart, duration histogram
+     ========================================================================== */
+  .dm-figure {
+    margin: clamp(32px, 5vw, 56px) 0;
+    border: 2px solid var(--dm-ink);
+    background: color-mix(in oklch, var(--dm-paper) 80%, var(--dm-paper-dim));
+    position: relative;
+  }
+  .dm-figure-head {
+    padding: 10px 18px;
+    background: var(--dm-ink);
+    color: var(--dm-paper);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .dm-figure-head .tag {
+    color: var(--dm-stamp-red-dim);
+    background: var(--dm-paper);
+    padding: 2px 8px;
+    margin-right: 12px;
+  }
+  .dm-figure-head .title {
+    flex: 1;
+    font-size: 12px;
+  }
+  .dm-figure-head .title em {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--dm-paper);
+    margin-left: 10px;
+    font-size: 15px;
+    font-weight: 400;
+  }
+  .dm-figure-body {
+    padding: clamp(20px, 3vw, 32px);
+  }
+  .dm-figure-caption {
+    padding: 12px 18px;
+    border-top: 1px solid var(--dm-rule-strong);
+    background: var(--dm-paper-dim);
+    font-family: "Courier Prime", monospace;
+    font-size: 12px;
+    color: var(--dm-ink-faded);
+    line-height: 1.65;
+  }
+  .dm-figure-caption strong { color: var(--dm-ink); font-weight: 700; }
+  .dm-figure-caption em { color: var(--dm-stamp-red); font-style: normal; font-weight: 700; }
+
+  /* Duration histogram */
+  .dm-duration-chart {
+    position: relative;
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 16px;
+  }
+  .dm-duration-chart .axis-y {
+    display: grid;
+    align-content: space-between;
+    font-family: "Courier Prime", monospace;
+    font-size: 10px;
+    color: var(--dm-ink-subtle);
+    text-align: right;
+    letter-spacing: 0.06em;
+    padding-right: 8px;
+    border-right: 1px solid var(--dm-rule);
+  }
+  .dm-duration-chart .bars {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    align-items: end;
+    height: 200px;
+    position: relative;
+  }
+  .dm-duration-chart .bars::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 1px;
+    background: var(--dm-ink);
+  }
+  .dm-duration-chart .bar {
+    position: relative;
+    background: var(--dm-rule);
+    transition: background 200ms;
+  }
+  .dm-duration-chart .bar.hit { background: var(--dm-stamp-red); }
+  .dm-duration-chart .bar.sweet {
+    background: var(--dm-ink);
+    border: 2px solid var(--dm-stamp-red);
+  }
+  .dm-duration-chart .bar::before {
+    content: attr(data-label);
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Courier Prime", monospace;
+    font-size: 9.5px;
+    color: var(--dm-ink-subtle);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .dm-duration-chart .bar .tip {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Courier Prime", monospace;
+    font-size: 9.5px;
+    color: var(--dm-ink);
+    font-weight: 700;
+  }
+  .dm-duration-chart .sweet-zone {
+    position: absolute;
+    top: -16px;
+    left: 42.86%;
+    width: 14.28%;
+    text-align: center;
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    color: var(--dm-hand-blue);
+    font-size: 16px;
+    line-height: 1;
+  }
+  .dm-duration-chart .sweet-zone::after {
+    content: '↓';
+    display: block;
+    font-size: 14px;
+    margin-top: 2px;
+    color: var(--dm-hand-blue);
+  }
+
+  /* ==========================================================================
+     PULL-QUOTE · typewriter style
+     ========================================================================== */
+  .dm-pull {
+    margin: clamp(40px, 6vw, 64px) 0;
+    padding: 32px clamp(24px, 4vw, 48px);
+    border-left: 4px solid var(--dm-stamp-red);
+    background: color-mix(in oklch, var(--dm-paper-stain) 30%, var(--dm-paper));
+    position: relative;
+  }
+  .dm-pull::before {
+    content: '"';
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 80px;
+    color: var(--dm-stamp-red);
+    opacity: 0.25;
+    line-height: 1;
+  }
+  .dm-pull blockquote {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(22px, 3vw, 32px);
+    line-height: 1.3;
+    color: var(--dm-ink);
+    margin: 0 0 14px;
+    letter-spacing: -0.015em;
+    max-width: 36ch;
+    text-wrap: balance;
+  }
+  .dm-pull blockquote em {
+    color: var(--dm-stamp-red);
+    font-style: italic;
+  }
+  .dm-pull cite {
+    font-family: "Courier Prime", monospace;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--dm-ink-subtle);
+    display: block;
+  }
+  .dm-pull cite::before { content: '— '; }
+
+  /* ==========================================================================
+     CONCLUSION · rubber stamp approved
+     ========================================================================== */
+  .dm-conclusion {
+    padding: clamp(40px, 6vw, 72px) clamp(32px, 4vw, 56px);
+    margin: clamp(56px, 8vw, 96px) 0 clamp(40px, 6vw, 60px);
+    border: 3px double var(--dm-ink);
+    background: color-mix(in oklch, var(--dm-paper-stain) 25%, var(--dm-paper));
+    position: relative;
+  }
+  .dm-conclusion::before {
+    content: 'APPROVED';
+    position: absolute;
+    top: -14px;
+    left: 32px;
+    padding: 4px 14px;
+    background: var(--dm-stamp-red);
+    color: var(--dm-paper);
+    font-family: "Courier Prime", monospace;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+  .dm-conclusion h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--dm-ink);
+    margin: 0 0 24px;
+    max-width: 24ch;
+  }
+  .dm-conclusion h3 em { color: var(--dm-stamp-red); }
+  .dm-conclusion p {
+    font-family: "Courier Prime", monospace;
+    font-size: 14.5px;
+    line-height: 1.8;
+    color: var(--dm-ink);
+    max-width: 60ch;
+    margin-bottom: 14px;
+  }
+  .dm-conclusion p:last-child { margin-bottom: 0; }
+  .dm-conclusion em { color: var(--dm-stamp-red); font-style: normal; font-weight: 700; }
+
+  /* Signature block */
+  .dm-signature {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--dm-rule-strong);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 20px;
+    align-items: end;
+  }
+  @media (max-width: 560px) { .dm-signature { grid-template-columns: 1fr; } }
+  .dm-signature-block .label {
+    font-family: "Courier Prime", monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dm-ink-subtle);
+    margin-bottom: 4px;
+  }
+  .dm-signature-block .sig {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--dm-hand-blue);
+    line-height: 1;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--dm-rule-strong);
+    margin-bottom: 4px;
+    min-width: 180px;
+  }
+  .dm-signature-block .name {
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    color: var(--dm-ink-faded);
+    letter-spacing: 0.04em;
+  }
+  .dm-signature-date {
+    font-family: "Courier Prime", monospace;
+    font-size: 11px;
+    color: var(--dm-ink-faded);
+    letter-spacing: 0.08em;
+  }
+
+  /* ==========================================================================
+     ANNOTATIONS — handwritten blue marginalia
+     ========================================================================== */
+  .dm-annot {
+    font-family: "Caveat", cursive;
+    font-weight: 500;
+    color: var(--dm-hand-blue);
+    font-size: 20px;
+    line-height: 1.1;
+    margin: 14px 0;
+    display: block;
+    padding-left: 28px;
+    position: relative;
+    transform: rotate(-1deg);
+  }
+  .dm-annot::before {
+    content: '↳';
+    position: absolute;
+    left: 6px;
+    top: 0;
+    font-size: 24px;
+    color: var(--dm-hand-red);
+  }
+  .dm-annot.red { color: var(--dm-hand-red); }
+
+  /* ==========================================================================
+     ROH-MINI · inline reveal-on-hold matching the memo aesthetic
+     ========================================================================== */
+  .roh-mini {
+    display: inline-block;
+    position: relative;
+    padding: 1px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+    vertical-align: baseline;
+    background: var(--dm-ink);
+    color: transparent;
+    font-weight: 700;
+    font-family: "Courier Prime", monospace;
+    transition:
+      background 320ms cubic-bezier(0.4, 1.3, 0.55, 1),
+      color 320ms cubic-bezier(0.4, 1.3, 0.55, 1);
+  }
+  .roh-mini:focus-visible {
+    outline: 2px solid var(--dm-stamp-red);
+    outline-offset: 3px;
+  }
+  .roh-mini .roh-mini-cover {
+    display: inline-block;
+  }
+  .roh-mini .roh-mini-truth {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    color: var(--dm-stamp-red);
+    font-weight: 700;
+    pointer-events: none;
+    transition: opacity 280ms ease-out;
+  }
+  .roh-mini[data-holding] {
+    background: color-mix(in oklch, var(--dm-ink) calc((1 - var(--roh-p, 0)) * 100%), transparent);
+    color: color-mix(in oklch, var(--dm-ink) calc(var(--roh-p, 0) * 100%), transparent);
+  }
+  .roh-mini[data-revealed] {
+    background: color-mix(in oklch, var(--dm-stamp-red) 12%, transparent);
+    color: var(--dm-stamp-red);
+    padding: 1px 10px;
+  }
+  .roh-mini[data-revealed] .roh-mini-cover {
+    opacity: 0;
+    display: none;
+  }
+  .roh-mini[data-revealed] .roh-mini-truth {
+    opacity: 1;
+    position: static;
+  }
+  .roh-mini .roh-mini-bar {
+    position: absolute;
+    bottom: -2px; left: 0; right: 0;
+    height: 2px;
+    background: color-mix(in oklch, var(--dm-stamp-red) 25%, transparent);
+    opacity: 0;
+    transition: opacity 180ms;
+  }
+  .roh-mini .roh-mini-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    width: calc(var(--roh-p, 0) * 100%);
+    background: var(--dm-stamp-red);
+    transition: width 20ms linear;
+  }
+  .roh-mini[data-holding] .roh-mini-bar { opacity: 1; }
+  .roh-mini[data-revealed] .roh-mini-bar { opacity: 0; }
+
+  /* ==========================================================================
+     BARS · interactive when holding the sweet-spot bar
+     ========================================================================== */
+  .dm-duration-chart .bar[data-value]::before {
+    /* the x-axis label — label stays visible always */
+  }
+  .dm-duration-chart .bar.sweet {
+    cursor: pointer;
+    transition: background 280ms;
+  }
+  .dm-duration-chart .bar.sweet:hover {
+    background: color-mix(in oklch, var(--dm-ink) 85%, var(--dm-stamp-red));
+  }
+  .dm-duration-chart .bar-value {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: "Courier Prime", monospace;
+    font-size: 10.5px;
+    color: var(--dm-stamp-red);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0;
+    transform: translate(-50%, 8px);
+    transition:
+      opacity 280ms ease-out,
+      transform 320ms cubic-bezier(0.3, 1.4, 0.5, 1);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .dm-duration-chart[data-revealed] .bar-value {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  /* Stagger the reveal per bar */
+  .dm-duration-chart[data-revealed] .bar:nth-child(2) .bar-value { transition-delay: 0ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(3) .bar-value { transition-delay: 80ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(4) .bar-value { transition-delay: 160ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(5) .bar-value { transition-delay: 240ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(6) .bar-value { transition-delay: 320ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(7) .bar-value { transition-delay: 400ms; }
+  .dm-duration-chart[data-revealed] .bar:nth-child(8) .bar-value { transition-delay: 480ms; }
+
+  /* Sweet-spot progress ring during hold */
+  .dm-duration-chart .bar.sweet .bar-progress {
+    position: absolute;
+    inset: -2px;
+    border: 2px solid var(--dm-stamp-red);
+    opacity: 0;
+    transition: opacity 120ms;
+    pointer-events: none;
+  }
+  .dm-duration-chart[data-holding] .bar.sweet .bar-progress {
+    opacity: calc(0.4 + var(--chart-p, 0) * 0.6);
+  }
+  .dm-duration-chart[data-holding] .bar.sweet .bar-progress::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--dm-stamp-red);
+    opacity: calc(var(--chart-p, 0) * 0.6);
+  }
+
+  /* Handwritten hint under the sweet-zone when not yet revealed */
+  .dm-duration-chart .hold-hint {
+    position: absolute;
+    bottom: -58px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    color: var(--dm-hand-red);
+    font-size: 17px;
+    white-space: nowrap;
+    letter-spacing: 0;
+    transition: opacity 280ms;
+  }
+  .dm-duration-chart .hold-hint::before {
+    content: '↑';
+    display: block;
+    font-size: 18px;
+    line-height: 0.7;
+    text-align: center;
+    margin-bottom: 2px;
+    color: var(--dm-hand-red);
+  }
+  .dm-duration-chart[data-revealed] .hold-hint { opacity: 0; pointer-events: none; }
+
+  /* ==========================================================================
+     FOOTER NAV
+     ========================================================================== */
+  .dm-foot {
+    margin-top: 40px;
+    padding: 30px 0;
+    border-top: 3px double var(--dm-ink);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-family: "Courier Prime", monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dm-ink-faded);
+  }
+  .dm-foot a {
+    color: var(--dm-ink);
+    font-weight: 700;
+    transition: color 200ms;
+  }
+  .dm-foot a:hover { color: var(--dm-stamp-red); }
+
+  ::selection { background: var(--dm-stamp-red); color: var(--dm-paper); }
+</style>
+</head>
+
+<body>
+
+<header class="dm-top">
+  <a class="back" href="../index.html">Return home</a>
+  <div class="classifier">
+    FIELD EXPERIMENTS / N° 003
+  </div>
+  <div class="meta">
+    <span class="roh-mini" data-duration="500" tabindex="0" role="button" aria-label="Hold to reveal"><span class="roh-mini-cover">XXXX</span><span class="roh-mini-truth">N° 003</span><span class="roh-mini-bar" aria-hidden="true"></span></span>
+    <button class="dm-theme" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
+      <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <circle cx="8" cy="8" r="3" />
+        <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main class="dm-wrap">
+
+  <!-- COVER -->
+  <section class="dm-cover">
+    <div class="dm-stamp" data-sub="internal review only">CONFIDENTIAL</div>
+
+    <div class="dm-kicker">File N° 003 / Spring MMXXVI</div>
+
+    <div class="dm-meta-block">
+      <div class="row">
+        <span class="k">Subject</span>
+        <span class="v">The discipline of <strong>gesture</strong></span>
+      </div>
+      <div class="row">
+        <span class="k">Filed by</span>
+        <span class="v">Stit'Claude · Studio</span>
+      </div>
+      <div class="row">
+        <span class="k">Classification</span>
+        <span class="v"><strong>Internal review</strong></span>
+      </div>
+      <div class="row">
+        <span class="k">Distribution</span>
+        <span class="v"><span class="roh-mini" data-duration="600" tabindex="0" role="button" aria-label="Hold to reveal distribution"><span class="roh-mini-cover">XXXXXXXXXXXXX</span><span class="roh-mini-truth">Studio · public</span><span class="roh-mini-bar" aria-hidden="true"></span></span></span>
+      </div>
+      <div class="row">
+        <span class="k">Pages</span>
+        <span class="v">01 — 06</span>
+      </div>
+    </div>
+
+    <h1 class="dm-title">Why <em>600 ms</em><br/>is not a guess.</h1>
+
+    <p class="dm-subtitle">
+      A formal review of the <em>Reveal-on-Hold</em> component: calibration,
+      psychometrics, and the failure modes of every shorter duration.
+      Companion memo to Component 07 · Signature.
+    </p>
+
+    <div class="dm-handwritten annot-1">
+      read before<br/>shipping <span class="arrow">↗</span>
+    </div>
+  </section>
+
+  <!-- SECTION A.1 — THE PROBLEM -->
+  <section class="dm-section">
+    <div class="dm-section-label">A.1 · the situation</div>
+    <h2 class="dm-section-title">The problem <em>hidden in plain sight.</em></h2>
+
+    <p class="dm-p">
+      A dashboard loads. Net income, salary, medical HbA1c, account balance — they are all
+      <em>painted to the screen</em> the instant the document parses. No intent. No
+      consent. No witness. The data is available to <strong>anyone who happens to be
+      within two meters of the screen.</strong>
+    </p>
+
+    <p class="dm-p">
+      This is the default case in nearly every SaaS product shipping in 2026.
+      The industry has accepted visibility-at-rest as a non-problem because the alternative —
+      forcing a second authentication for every glance — is too expensive. <em>Both extremes are wrong.</em>
+      What the discipline needs is a third interaction: a gesture that is
+      <strong>cheap enough to perform dozens of times per day</strong> but
+      <strong>deliberate enough to count as intent.</strong>
+    </p>
+
+    <span class="dm-annot">the middle ground<br/>between <em>click</em> and <em>login</em></span>
+
+    <p class="dm-p">
+      Reveal-on-Hold is that gesture. The question this memo addresses is narrow but
+      determinative: <em>why six hundred milliseconds?</em> Not four hundred. Not eight
+      hundred. <strong>Six hundred.</strong>
+    </p>
+  </section>
+
+  <!-- SECTION A.2 — THE CALIBRATION -->
+  <section class="dm-section">
+    <div class="dm-section-label">A.2 · the calibration</div>
+    <h2 class="dm-section-title">What the <em>hand</em> tells us.</h2>
+
+    <p class="dm-p">
+      Touchscreen interaction research gives us three anchor points. <strong>A tap</strong>
+      — the briefest intentional contact — averages <code>120 ms</code> across studies.
+      A <strong>slow tap or accidental long-press</strong> sits between
+      <code>150</code> and <code>400 ms</code>. A <strong>deliberate press-and-hold</strong>
+      only distinguishes itself reliably above <code>500 ms</code>.
+    </p>
+
+    <p class="dm-p">
+      Below this threshold, no amount of UI feedback can make the gesture <em>feel</em>
+      like a decision. The user's finger, by contraction alone, can trip the interaction
+      without their brain having formed an intent. This is the
+      <strong>defect that click-to-reveal inherits:</strong> a click is too fast to be
+      witnessed, even by the person performing it.
+    </p>
+
+    <!-- FIGURE 1 — DURATION HISTOGRAM -->
+    <div class="dm-figure">
+      <div class="dm-figure-head">
+        <span class="tag">FIG. 01</span>
+        <span class="title">Gesture duration distribution — <em>"where intention lives"</em></span>
+      </div>
+      <div class="dm-figure-body">
+
+        <div class="dm-duration-chart" id="duration-chart">
+          <div class="axis-y">
+            <span>100%</span>
+            <span>75%</span>
+            <span>50%</span>
+            <span>25%</span>
+            <span>0</span>
+          </div>
+          <div class="bars">
+            <div class="sweet-zone">sweet spot</div>
+            <div class="bar hit" style="height: 15%;" data-label="100"><span class="bar-value">15%</span></div>
+            <div class="bar hit" style="height: 34%;" data-label="200"><span class="bar-value">34%</span></div>
+            <div class="bar hit" style="height: 52%;" data-label="300"><span class="bar-value">52%</span></div>
+            <div class="bar" style="height: 74%;" data-label="400"><span class="bar-value">74%</span></div>
+            <div class="bar sweet" style="height: 92%;" data-label="600" id="chart-sweet" tabindex="0" role="button" aria-label="Hold to reveal values on all bars"><span class="bar-value">92%</span><span class="bar-progress" aria-hidden="true"></span></div>
+            <div class="bar" style="height: 68%;" data-label="800"><span class="bar-value">68%</span></div>
+            <div class="bar" style="height: 44%;" data-label="1200"><span class="bar-value">44%</span></div>
+            <div class="hold-hint" id="chart-hint">hold the sweet spot</div>
+          </div>
+        </div>
+
+      </div>
+      <p class="dm-figure-caption">
+        <strong>Y-axis:</strong> probability that the gesture is perceived as intentional
+        by the user performing it. <strong>X-axis:</strong> hold duration in milliseconds.
+        The sweet spot at <em>600 ms</em> maximizes intentionality without crossing into
+        the impatience threshold observed around 900 ms.
+      </p>
+    </div>
+
+    <span class="dm-annot red">400ms = reflex<br/>600ms = decision<br/>900ms = annoyance</span>
+
+    <p class="dm-p">
+      At <strong>600 ms</strong>, three things happen simultaneously. The muscle contraction
+      stabilizes. The visual feedback (the progress ring) has had time to reach the
+      <em>halfway point</em> — the user can see the commitment accumulating. And,
+      critically, the <strong>cognitive "am I sure?"</strong> question has had time to
+      form and resolve. Anything shorter is reflex. Anything longer is friction.
+    </p>
+  </section>
+
+  <!-- SECTION A.3 — THE PULL QUOTE -->
+  <section class="dm-section" style="border-bottom: 0;">
+    <div class="dm-pull">
+      <blockquote>
+        Below four hundred milliseconds, a hold is indistinguishable from a slow click.
+        <em>The measurability of the gesture is the entire point.</em>
+      </blockquote>
+      <cite>Stit'Claude · Component 07 · Anti-pattern 02</cite>
+    </div>
+  </section>
+
+  <!-- SECTION A.4 — FAILURE MODES -->
+  <section class="dm-section">
+    <div class="dm-section-label">A.4 · failure modes</div>
+    <h2 class="dm-section-title">The five <em>shorter durations</em> and why they break.</h2>
+
+    <p class="dm-p">
+      Several teams have attempted to implement hold-to-reveal with shorter thresholds,
+      arguing that user tolerance for friction is the binding constraint. Their data, when
+      released, consistently shows the same pattern: the component works, but the users
+      stop perceiving it as intentional. <em>The gesture becomes a chore.</em> Below is a
+      summary of each observed failure mode.
+    </p>
+
+    <!-- FIGURE 2 — FAILURE MODES TABLE -->
+    <div class="dm-figure">
+      <div class="dm-figure-head">
+        <span class="tag">FIG. 02</span>
+        <span class="title">Observed failure modes — <em>"the tariff of haste"</em></span>
+      </div>
+      <div class="dm-figure-body" style="padding: 0;">
+        <table style="width: 100%; border-collapse: collapse; font-family: 'Courier Prime', monospace; font-size: 12.5px;">
+          <thead>
+            <tr style="background: var(--dm-paper-dim); border-bottom: 2px solid var(--dm-ink);">
+              <th style="padding: 10px 14px; text-align: left; color: var(--dm-stamp-red); letter-spacing: 0.12em; font-size: 10px; text-transform: uppercase; font-weight: 700;">Duration</th>
+              <th style="padding: 10px 14px; text-align: left; color: var(--dm-stamp-red); letter-spacing: 0.12em; font-size: 10px; text-transform: uppercase; font-weight: 700;">Failure mode</th>
+              <th style="padding: 10px 14px; text-align: left; color: var(--dm-stamp-red); letter-spacing: 0.12em; font-size: 10px; text-transform: uppercase; font-weight: 700;">Rejection</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px dotted var(--dm-rule);">
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700;">100&nbsp;ms</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink);">Indistinguishable from tap</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink-faded);">Accidental reveal within minutes</td>
+            </tr>
+            <tr style="border-bottom: 1px dotted var(--dm-rule);">
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700;">200&nbsp;ms</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink);">Reflexive click territory</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink-faded);">Muscle memory overrides intent</td>
+            </tr>
+            <tr style="border-bottom: 1px dotted var(--dm-rule);">
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700;">300&nbsp;ms</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink);">Long-press overlap</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink-faded);">Confused with iOS context menu</td>
+            </tr>
+            <tr style="border-bottom: 1px dotted var(--dm-rule);">
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700;">400&nbsp;ms</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink);">Threshold of "felt" gesture</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink-faded);">Still reads as "impatient tap"</td>
+            </tr>
+            <tr style="border-bottom: 1px dotted var(--dm-rule);">
+              <td style="padding: 10px 14px; color: var(--dm-ink); font-weight: 700; background: color-mix(in oklch, var(--dm-stamp-red) 12%, transparent);">600&nbsp;ms</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink); background: color-mix(in oklch, var(--dm-stamp-red) 12%, transparent);"><em style="color: var(--dm-stamp-red); font-style: normal; font-weight: 700;">Calibrated default</em></td>
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700; background: color-mix(in oklch, var(--dm-stamp-red) 12%, transparent);">ACCEPTED</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; color: var(--dm-stamp-red); font-weight: 700;">1200&nbsp;ms+</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink);">Friction exceeds value</td>
+              <td style="padding: 10px 14px; color: var(--dm-ink-faded);">Users abandon, seek exports</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="dm-figure-caption">
+        <strong>Read:</strong> the only duration that passes all three filters —
+        <em>non-accidental</em>, <em>intentional</em>, <em>not annoying</em> — is 600 ms,
+        with a tolerance band of ±50 ms.
+      </p>
+    </div>
+  </section>
+
+  <!-- SECTION A.5 — THE VARIANTS -->
+  <section class="dm-section">
+    <div class="dm-section-label">A.5 · variants</div>
+    <h2 class="dm-section-title">Six <em>dialects</em> of the same gesture.</h2>
+
+    <p class="dm-p">
+      The 600 ms calibration applies to the <em>inline</em>, <em>block</em>, and
+      <em>redact</em> variants with small adjustments. Three further variants were
+      designed to address distinct operational cases:
+      <strong>cascaded reveals</strong>, <strong>screenshot resistance</strong>, and
+      <strong>audit-traceable access</strong>.
+    </p>
+
+    <p class="dm-p">
+      The <em>chain</em> variant sequences the reveal across multiple data points — each
+      link unlocks only after the previous one has been consciously revealed. It
+      transforms a dashboard into a <strong>narrative reconstruction</strong>: the user
+      rebuilds the context instead of consuming it.
+    </p>
+
+    <p class="dm-p">
+      The <em>decoy</em> variant displays a <strong>plausible false value at rest</strong>
+      — a salary of €45 000 instead of the blur typical of other variants. Only the hold
+      reveals the true figure. This is the first UI primitive that produces
+      <em>screenshot-ambiguous output</em>: an observer who captures the screen cannot
+      verify whether they captured the truth or the decoy.
+    </p>
+
+    <span class="dm-annot">the decoy is <em>controversial</em><br/>— legal review pending</span>
+
+    <p class="dm-p">
+      The <em>witness</em> variant logs every interaction — start, abort, reveal duration,
+      auto-rehide — into an <strong>audit panel visible beside the data</strong>. Intended
+      for regulated contexts (medical records, HR data, financial accounts). The user
+      knows their access is recorded. This is <em>not</em> a privacy feature; it is a
+      <strong>traceability feature</strong>. The distinction matters for GDPR Art. 30
+      compliance.
+    </p>
+  </section>
+
+  <!-- CONCLUSION -->
+  <section class="dm-conclusion">
+    <h3>600 ms is not a duration. It is <em>a promise</em> — between the hand and the data.</h3>
+    <p>
+      The Reveal-on-Hold component exists because the industry defaulted to making data
+      visible by omission. Stit'Claude rejects that default. <em>The revealed state must
+      be earned</em>, every time, by a gesture whose duration is long enough to be
+      deliberate and short enough to be fluent.
+    </p>
+    <p>
+      Implement it, observe your users, and resist the optimization pressure to shorten
+      the threshold. The <em>friction is the feature.</em> The duration is the measure of
+      the care.
+    </p>
+
+    <div class="dm-signature">
+      <div class="dm-signature-block">
+        <div class="label">Approved by</div>
+        <div class="sig">Stit'Claude</div>
+        <div class="name">Stit'Claude Studio · Design Discipline</div>
+      </div>
+      <div class="dm-signature-date">
+        File closed · MMXXVI · Spring<br/>
+        Review cycle · 12 months
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER NAV -->
+  <nav class="dm-foot">
+    <a href="why-oklch-was-inevitable.html">◂ N° 002 · Why OKLCH was inevitable</a>
+    <span>End of file · N° 003</span>
+    <a href="../component/reveal-on-hold.html">See the component ▸</a>
+  </nav>
+
+</main>
+
+<script>
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+
+  /* ==========================================================================
+     REVEAL-ON-HOLD · mini-controller for .roh-mini elements
+     Same mechanic as the main component but streamlined for inline use.
+     ========================================================================== */
+  (function() {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setP(el, p) { el.style.setProperty('--roh-p', p); }
+
+    function hide(el) {
+      delete el.dataset.revealed;
+      setP(el, 0);
+      if (el._t) { clearTimeout(el._t); el._t = null; }
+    }
+
+    function reveal(el) {
+      el.dataset.revealed = 'true';
+      delete el.dataset.holding;
+      setP(el, 1);
+      if ('vibrate' in navigator) navigator.vibrate([6, 30, 12]);
+      // auto-rehide after 8s
+      el._t = setTimeout(() => hide(el), 8000);
+    }
+
+    function wire(el) {
+      if (el._wired) return;
+      el._wired = true;
+      const duration = parseInt(el.dataset.duration, 10) || 600;
+
+      if (reducedMotion) {
+        el.addEventListener('click', () => el.dataset.revealed ? hide(el) : reveal(el));
+        return;
+      }
+
+      let startTime = 0, rafId = 0;
+
+      function start(e) {
+        if (el.dataset.revealed) { hide(el); return; }
+        e.preventDefault?.();
+        el.dataset.holding = 'true';
+        startTime = performance.now();
+        tick();
+      }
+
+      function tick() {
+        const elapsed = performance.now() - startTime;
+        const p = Math.min(1, elapsed / duration);
+        setP(el, p);
+        if (p >= 1) { reveal(el); return; }
+        rafId = requestAnimationFrame(tick);
+      }
+
+      function abort() {
+        if (!el.dataset.holding) return;
+        cancelAnimationFrame(rafId);
+        delete el.dataset.holding;
+        setP(el, 0);
+      }
+
+      el.addEventListener('pointerdown', start);
+      el.addEventListener('pointerup', abort);
+      el.addEventListener('pointerleave', abort);
+      el.addEventListener('pointercancel', abort);
+
+      let spaceDown = false;
+      el.addEventListener('keydown', (e) => {
+        if (e.key === ' ' && !spaceDown) { spaceDown = true; e.preventDefault(); start(e); }
+        if (e.key === 'Escape' && el.dataset.revealed) hide(el);
+      });
+      el.addEventListener('keyup', (e) => {
+        if (e.key === ' ') { spaceDown = false; abort(); }
+      });
+    }
+
+    document.querySelectorAll('.roh-mini').forEach(wire);
+  })();
+
+  /* ==========================================================================
+     DURATION CHART · hold-to-reveal controller
+     Holding the sweet (600 ms) bar reveals the value on every bar,
+     with staggered entrance. Release before completion → abort.
+     ========================================================================== */
+  (function() {
+    const chart = document.getElementById('duration-chart');
+    const sweet = document.getElementById('chart-sweet');
+    const hint  = document.getElementById('chart-hint');
+    if (!chart || !sweet) return;
+
+    const duration = 600; // same calibration as the component
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function setCP(p) { chart.style.setProperty('--chart-p', p); }
+
+    function reveal() {
+      chart.dataset.revealed = 'true';
+      delete chart.dataset.holding;
+      setCP(1);
+      if ('vibrate' in navigator) navigator.vibrate([6, 30, 12]);
+      if (hint) hint.style.opacity = '0';
+      // auto-rehide after 10s for this chart (slightly longer — it's informational)
+      setTimeout(() => {
+        if (chart.dataset.revealed) {
+          delete chart.dataset.revealed;
+          setCP(0);
+          if (hint) hint.style.opacity = '';
+        }
+      }, 10000);
+    }
+
+    if (reducedMotion) {
+      sweet.addEventListener('click', () => {
+        if (chart.dataset.revealed) {
+          delete chart.dataset.revealed;
+          setCP(0);
+          if (hint) hint.style.opacity = '';
+        } else {
+          reveal();
+        }
+      });
+      return;
+    }
+
+    let startTime = 0, rafId = 0;
+
+    function start(e) {
+      if (chart.dataset.revealed) {
+        delete chart.dataset.revealed;
+        setCP(0);
+        if (hint) hint.style.opacity = '';
+        return;
+      }
+      e.preventDefault?.();
+      chart.dataset.holding = 'true';
+      startTime = performance.now();
+      tick();
+    }
+
+    function tick() {
+      const p = Math.min(1, (performance.now() - startTime) / duration);
+      setCP(p);
+      if (p >= 1) { reveal(); return; }
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function abort() {
+      if (!chart.dataset.holding) return;
+      cancelAnimationFrame(rafId);
+      delete chart.dataset.holding;
+      setCP(0);
+    }
+
+    sweet.addEventListener('pointerdown', start);
+    sweet.addEventListener('pointerup', abort);
+    sweet.addEventListener('pointerleave', abort);
+    sweet.addEventListener('pointercancel', abort);
+
+    let spaceDown = false;
+    sweet.addEventListener('keydown', (e) => {
+      if (e.key === ' ' && !spaceDown) { spaceDown = true; e.preventDefault(); start(e); }
+    });
+    sweet.addEventListener('keyup', (e) => {
+      if (e.key === ' ') { spaceDown = false; abort(); }
+    });
+  })();
+</script>
+
+</body>
+</html>

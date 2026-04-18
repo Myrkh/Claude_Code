@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
+<meta name="theme-color" content="#faf7f0" />
+<meta name="description" content="Hero-to-Navbar Morph · A Stit'Claude signature component. The arrival page that continuously becomes the navbar." />
+<title>Stit'Claude · Hero-to-Navbar Morph</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,900&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../assets/theme.css" />
+<link rel="stylesheet" href="../assets/comp.css" />
+
+<style>
+  /* ==========================================================================
+     HERO-TO-NAVBAR MORPH · signature component
+     Two modes:
+       - modern: CSS animation-timeline: scroll()  (Chrome 115+, Safari 26+)
+       - fallback: IntersectionObserver + requestAnimationFrame
+     ========================================================================== */
+
+  /* ==========================================================================
+     DEMO PAGE WRAPPER — a mini fictional site to host the morph
+     ========================================================================== */
+  .h2n-demo {
+    position: relative;
+    /* isolate scroll context */
+  }
+
+  /* =============================================================
+     MORPHING HEADER — this is the component
+     ============================================================= */
+
+  /* Named timeline anchor — the "scroll zone" that drives the morph */
+  .h2n-scroll-zone {
+    position: relative;
+    height: 100dvh;
+    view-timeline-name: --morph-timeline;
+  }
+
+  .h2n-header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    pointer-events: none;
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 80px 1fr 80px;
+    padding-inline: clamp(20px, 4vw, 48px);
+    background: var(--bg);
+    overflow: hidden;
+    /* Variables the animation drives; JS fallback writes into these same vars */
+    --p: 0;
+    isolation: isolate;
+  }
+  .h2n-header > * { pointer-events: auto; }
+
+  /* Background layer — subtle atmosphere that fades out as morph completes */
+  .h2n-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 20%, color-mix(in oklch, var(--accent) 7%, transparent), transparent 50%),
+      radial-gradient(ellipse 70% 50% at 80% 80%, color-mix(in oklch, var(--accent) 4%, transparent), transparent 55%);
+    opacity: calc(1 - var(--p, 0));
+    transition: opacity 20ms linear;
+  }
+
+  /* Dashed baseline — editorial signature, only shown in hero state */
+  .h2n-header::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    bottom: calc(80px + 40px);
+    height: 1px;
+    background: repeating-linear-gradient(to right,
+      color-mix(in oklch, var(--fg) 15%, transparent) 0,
+      color-mix(in oklch, var(--fg) 15%, transparent) 4px,
+      transparent 4px,
+      transparent 10px);
+    opacity: calc((1 - var(--p, 0)) * 0.8);
+    transform: scaleX(calc(1 - var(--p, 0)));
+    transform-origin: center;
+    transition: opacity 20ms linear, transform 20ms linear;
+  }
+
+  /* Top meta strip — stays in place but fades */
+  .h2n-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: calc(1 - var(--p, 0));
+    transform: translateY(calc(var(--p, 0) * -20px));
+    transition: opacity 20ms linear, transform 20ms linear;
+  }
+  .h2n-top .sign::before { content: '◈ '; color: var(--accent); }
+  .h2n-top .when { color: var(--fg-subtle); }
+
+  /* Big wordmark — the star of the hero, morphs to the top-left navbar position.
+     JS sets --brand-x (px, from left) and --brand-y (px, from top center) and --brand-scale.
+     p=0 → centered, big.   p=1 → top-left, small. */
+  .h2n-brand {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transform:
+      translate(var(--brand-x, 0px), calc(-50% + var(--brand-y, 0px)))
+      scale(var(--brand-scale, 1));
+    transform-origin: left center;
+    transition: transform 40ms linear;
+    will-change: transform;
+  }
+
+  /* Top-line · Fraunces · the name */
+  .h2n-brand-line-1 {
+    font-family: "Fraunces", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(3rem, 11vw, 9rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: var(--fg);
+    text-wrap: balance;
+    white-space: nowrap;
+  }
+  .h2n-brand-line-1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  /* Sub-line · Instrument Serif · the subtitle, fades out as morph completes */
+  .h2n-brand-line-2 {
+    font-family: "Instrument Serif", serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+    color: var(--fg-muted);
+    letter-spacing: -0.005em;
+    margin-top: 8px;
+    white-space: nowrap;
+    opacity: calc(1 - var(--p, 0) * 1.4);
+    transform: translateY(calc(var(--p, 0) * -10px));
+    transition: opacity 20ms linear, transform 20ms linear;
+  }
+
+  /* Bottom CTA — fades/shrinks as morph completes */
+  .h2n-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 24px;
+    opacity: calc(1 - var(--p, 0));
+    transform: translateY(calc(var(--p, 0) * 20px));
+    transition: opacity 20ms linear, transform 20ms linear;
+  }
+  .h2n-scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .h2n-scroll-cue .arrow {
+    display: inline-block;
+    animation: h2n-bob 1.8s ease-in-out infinite;
+  }
+  @keyframes h2n-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+  .h2n-meta-right {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.1em;
+  }
+
+  /* Navbar elements that fade IN as morph completes */
+  .h2n-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: clamp(20px, 4vw, 48px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    opacity: var(--p, 0);
+    pointer-events: auto;
+    transition: opacity 20ms linear;
+  }
+  .h2n-nav > * {
+    transform: translateX(calc((1 - var(--p, 0)) * 24px));
+    transition: transform 20ms linear;
+  }
+  .h2n-nav a {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    border-radius: 6px;
+    transition: color 180ms, background 180ms;
+  }
+  .h2n-nav a:hover {
+    color: var(--accent);
+    background: color-mix(in oklch, var(--accent) 8%, transparent);
+  }
+  .h2n-nav .cta {
+    padding: 7px 14px;
+    background: var(--fg);
+    color: var(--bg);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 6px;
+    transition: background 180ms, transform 240ms cubic-bezier(0.3, 1.5, 0.5, 1);
+  }
+  .h2n-nav .cta:hover {
+    background: var(--accent);
+    color: var(--bg);
+    transform: translateY(-1px);
+  }
+
+  /* Progress hairline at the very top (appears when morphed) */
+  .h2n-progress {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 0;
+    height: 1px;
+    background: color-mix(in oklch, var(--fg) 10%, transparent);
+    opacity: var(--p, 0);
+    transition: opacity 20ms linear;
+  }
+  .h2n-progress::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: calc(var(--scroll-p, 0) * 100%);
+    background: var(--accent);
+  }
+
+  /* ============================================================
+     NAVBAR MODE — when the morph is complete, the header
+     behaves as a 64px fixed navbar.
+     ============================================================ */
+  .h2n-header.compact {
+    /* When p >= 1 we re-align the grid and remove the hero layout */
+    height: 64px;
+    grid-template-rows: 64px;
+  }
+  .h2n-header.compact .h2n-top,
+  .h2n-header.compact .h2n-bottom,
+  .h2n-header.compact::before,
+  .h2n-header.compact::after { display: none; }
+
+  /* ============================================================
+     PAGE CONTENT under the morphing header
+     ============================================================ */
+  .h2n-content {
+    padding-top: 64px; /* matches final navbar height */
+    max-width: 720px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 4vw, 40px);
+    padding-bottom: 120px;
+  }
+  .h2n-section-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin: 40px 0 12px;
+  }
+  .h2n-section-label::before { content: '— '; color: var(--fg-subtle); }
+  .h2n-content h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    margin-bottom: 16px;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .h2n-content h2 em { color: var(--accent); }
+  .h2n-content p {
+    font-family: "Instrument Serif", serif;
+    font-size: 19px;
+    line-height: 1.65;
+    color: var(--fg-muted);
+    margin-bottom: 16px;
+    max-width: 62ch;
+  }
+  .h2n-content p strong {
+    color: var(--fg);
+    font-weight: 400;
+  }
+  .h2n-content blockquote {
+    margin: 32px 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in oklch, var(--accent) 4%, var(--surface));
+    border-radius: 0 6px 6px 0;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 20px;
+    line-height: 1.45;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+
+  /* Scroll-progress meter at top — only visible once navbar settled */
+  .h2n-page-end {
+    text-align: center;
+    padding: 80px 0 40px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--fg-subtle);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    border-top: 1px dashed var(--border);
+    margin-top: 60px;
+  }
+  .h2n-page-end::before { content: '§ '; color: var(--accent); }
+
+  /* ============================================================
+     MEASUREMENTS PANEL — visualize the four dimensions
+     ============================================================ */
+  .h2n-measure {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    z-index: 60;
+    padding: 14px 16px;
+    background: color-mix(in oklch, var(--bg) 94%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--fg-muted);
+    line-height: 1.7;
+    letter-spacing: 0.04em;
+    min-width: 220px;
+    box-shadow: 0 8px 24px color-mix(in oklch, var(--fg) 8%, transparent);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 400ms ease-out, transform 400ms cubic-bezier(0.3, 1.3, 0.5, 1);
+  }
+  .h2n-measure.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .h2n-measure .m-head {
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.14em;
+    font-size: 9.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .h2n-measure .m-row {
+    display: grid;
+    grid-template-columns: 64px 1fr 48px;
+    gap: 8px;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+  }
+  .h2n-measure .m-row .k {
+    color: var(--fg-subtle);
+    font-size: 10px;
+  }
+  .h2n-measure .m-bar {
+    height: 2px;
+    background: var(--border);
+    border-radius: 1px;
+    position: relative;
+    overflow: hidden;
+  }
+  .h2n-measure .m-bar::after {
+    content: '';
+    position: absolute; inset: 0;
+    width: calc(var(--m-val, 0) * 100%);
+    background: var(--accent);
+    transition: width 20ms linear;
+  }
+  .h2n-measure .m-row .v {
+    font-size: 10.5px;
+    color: var(--fg);
+    text-align: right;
+    font-weight: 500;
+  }
+  .h2n-measure .m-mode {
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    justify-content: space-between;
+    color: var(--fg-subtle);
+    font-size: 9.5px;
+  }
+  .h2n-measure .m-mode .tag {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  @media (max-width: 560px) {
+    .h2n-measure { bottom: 10px; right: 10px; left: 10px; min-width: auto; }
+  }
+</style>
+</head>
+
+<body class="comp-body">
+
+<!-- ========================================================================
+     TOP BAR
+     ======================================================================== -->
+<header class="comp-topbar">
+  <a class="comp-back" href="../lab.html" aria-label="Back to the lab">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10 4 L4 8 L10 12" />
+    </svg>
+    <span>Back to the Lab</span>
+  </a>
+  <span class="comp-breadcrumb">
+    Components · <span class="current">Signature / Hero-to-Navbar Morph</span>
+  </span>
+  <button class="theme-toggle-small" onclick="toggleTheme(event)" aria-label="Toggle theme">
+    <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+    </svg>
+    <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+      <circle cx="8" cy="8" r="3" />
+      <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+    </svg>
+  </button>
+</header>
+
+<!-- HEAD -->
+<header class="comp-head">
+  <div class="comp-meta">
+    <span>Signature</span>
+    <span class="chip new">new · signature</span>
+  </div>
+  <h1 class="comp-title">Hero-to-Navbar Morph.</h1>
+  <p class="comp-intro">
+    <em>The arrival page, continuously, becomes the navbar.</em> A 100dvh hero that
+    interpolates to a 64px fixed bar as the reader scrolls. No step. No snap.
+    A single orchestrated dissolve.
+  </p>
+</header>
+
+<!-- TABS -->
+<nav class="comp-tabs" id="tabs" role="tablist">
+  <div class="comp-tab-indicator" id="tab-indicator"></div>
+  <button class="comp-tab active" data-panel="preview" role="tab">Preview</button>
+  <button class="comp-tab" data-panel="code" role="tab">Code</button>
+  <button class="comp-tab" data-panel="anti" role="tab">Anti-patterns</button>
+</nav>
+
+<!-- ==========================================================================
+     PREVIEW PANEL
+     ========================================================================== -->
+<section class="comp-panel active" data-panel="preview">
+
+  <div style="padding: 24px clamp(20px, 3vw, 40px) 0; text-align: center;">
+    <p style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; color: var(--fg-muted); max-width: 60ch; margin: 0 auto;">
+      Scroll through the demonstration below. Watch the header interpolate continuously — four
+      dimensions morphing at once: <em>height, wordmark scale, secondary opacity, nav emergence.</em>
+    </p>
+  </div>
+
+  <!-- ==========================================================================
+       DEMONSTRATION FRAME — a fictional studio site
+       ========================================================================== -->
+  <div class="h2n-demo" id="h2n-demo">
+
+    <!-- The morphing header — fixed at top, drives all animations -->
+    <header class="h2n-header" id="h2n-header">
+      <!-- Top strip -->
+      <div class="h2n-top">
+        <span class="sign">Atelier · S&middot;C · est. MMXXVI</span>
+        <span class="when">Spring collection · MMXXVI</span>
+      </div>
+
+      <!-- Center wordmark block — the hero star -->
+      <div class="h2n-brand" id="h2n-brand">
+        <div class="h2n-brand-line-1">Stit'<em>Atelier.</em></div>
+        <div class="h2n-brand-line-2">A studio for considered interfaces &mdash; since MMXXVI.</div>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div class="h2n-bottom">
+        <span class="h2n-scroll-cue">
+          <span class="arrow">↓</span> Scroll to morph
+        </span>
+        <span class="h2n-meta-right">Nº 001 / 004</span>
+      </div>
+
+      <!-- Navbar items — emerge as morph completes -->
+      <nav class="h2n-nav" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#studio">Studio</a>
+        <a href="#journal">Journal</a>
+        <a class="cta" href="#contact">Contact</a>
+      </nav>
+
+      <!-- Scroll progress hairline -->
+      <div class="h2n-progress" aria-hidden="true"></div>
+    </header>
+
+    <!-- Scroll zone — the morph happens over this viewport-height region -->
+    <div class="h2n-scroll-zone" aria-hidden="true"></div>
+
+    <!-- Page content after the morph -->
+    <div class="h2n-content">
+
+      <div class="h2n-section-label">Note on restraint</div>
+      <h2>The morph is <em>invisible</em>. That is the point.</h2>
+      <p>
+        Most site headers use one of two discrete patterns: a shrink-on-scroll (a step-function that
+        snaps down to a smaller bar once a threshold is crossed), or a hide-on-scroll (the navbar
+        disappears entirely when the user scrolls down, reappears on scroll up).
+      </p>
+      <p>
+        <strong>Both are bad.</strong> The first interrupts reading with a visual pop. The second
+        loses the reader's anchor when they most need it — while searching for a menu item from deep
+        inside a long document.
+      </p>
+
+      <blockquote>
+        A good morph is not perceived as motion. It is perceived as <em>a single object</em>
+        reshaping itself across the duration of a gesture that was happening anyway.
+      </blockquote>
+
+      <div class="h2n-section-label">The four dimensions</div>
+      <h2>Four continuous interpolations, <em>one perceived motion.</em></h2>
+      <p>
+        The header drives <strong>four independent transforms</strong> from the same scroll
+        progress (0 → 1): the header's own height (100dvh → 64px), the wordmark's scale and
+        position (center → top-left), the secondary subtitle's opacity (1 → 0), and the nav items'
+        emergence (0 → 1). Each uses the same <code>--p</code> CSS custom property.
+      </p>
+      <p>
+        On modern browsers, <strong>CSS scroll-driven animations</strong> (<code>animation-timeline: view()</code>)
+        drive the property natively. On older engines, a single <code>IntersectionObserver</code>
+        with <code>requestAnimationFrame</code> writes the same value. The fallback is visually
+        identical.
+      </p>
+
+      <div class="h2n-section-label">Calibration</div>
+      <h2>The morph duration <em>is the hero height.</em></h2>
+      <p>
+        The scroll zone is sized at <code>100dvh</code>. This means the entire morph completes
+        exactly when the reader has scrolled past the initial viewport — the moment they've "left"
+        the arrival page. Smaller zones feel abrupt. Larger zones feel dragged-out.
+      </p>
+      <p>
+        The calibration is not arbitrary: it's tied to the reader's expectation. The hero is
+        <em>earned</em> by the scroll that carries them past it.
+      </p>
+
+      <div class="h2n-page-end">End of demonstration · scroll back up to see the morph reverse</div>
+
+    </div>
+
+  </div>
+
+  <!-- Live measurement panel -->
+  <aside class="h2n-measure" id="h2n-measure" aria-live="polite">
+    <div class="m-head">Live morph · 4 dimensions</div>
+    <div class="m-row">
+      <span class="k">Progress</span>
+      <span class="m-bar" style="--m-val: 0;" id="m-bar-p"></span>
+      <span class="v" id="m-val-p">0%</span>
+    </div>
+    <div class="m-row">
+      <span class="k">Height</span>
+      <span class="m-bar" style="--m-val: 0;" id="m-bar-h"></span>
+      <span class="v" id="m-val-h">100dvh</span>
+    </div>
+    <div class="m-row">
+      <span class="k">Scale</span>
+      <span class="m-bar" style="--m-val: 0;" id="m-bar-s"></span>
+      <span class="v" id="m-val-s">1.00x</span>
+    </div>
+    <div class="m-row">
+      <span class="k">Nav</span>
+      <span class="m-bar" style="--m-val: 0;" id="m-bar-n"></span>
+      <span class="v" id="m-val-n">0%</span>
+    </div>
+    <div class="m-mode">
+      <span>Engine</span>
+      <span class="tag" id="m-mode">detecting…</span>
+    </div>
+  </aside>
+
+</section>
+
+<!-- ==========================================================================
+     CODE PANEL
+     ========================================================================== -->
+<section class="comp-panel" data-panel="code">
+  <div style="padding: 40px clamp(20px, 3vw, 40px);">
+    <div style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px; color: var(--fg-muted); max-width: 56ch; margin: 0 auto 32px; text-align: center;">
+      The core is <em>twelve lines of CSS</em> and <em>twenty lines of JS fallback.</em>
+      No framework. Zero dependencies.
+    </div>
+
+    <div class="code-wrap">
+      <button class="copy-code" onclick="copyCode(this)">Copy</button>
+      <pre><code>&lt;!-- HTML --&gt;
+&lt;header class="h2n-header"&gt;
+  &lt;div class="h2n-brand"&gt;
+    &lt;div class="line-1"&gt;Stit'Atelier&lt;/div&gt;
+    &lt;div class="line-2"&gt;A studio for considered interfaces.&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;nav class="h2n-nav"&gt;
+    &lt;a href="#work"&gt;Work&lt;/a&gt;
+    &lt;a href="#studio"&gt;Studio&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+&lt;div class="h2n-scroll-zone"&gt;&lt;/div&gt;
+&lt;main&gt;...content...&lt;/main&gt;
+
+/* CSS — driven by a single --p custom property, 0→1 */
+.h2n-header {
+  position: fixed; inset: 0 0 auto 0;
+  height: 100dvh;
+  --p: 0;
+}
+.h2n-brand {
+  transform:
+    translate(calc((1 - var(--p)) * -50% + 0px), calc(50vh * (1 - var(--p))))
+    scale(calc(1 - var(--p) * 0.80));
+  transform-origin: left center;
+}
+.h2n-nav { opacity: var(--p); }
+.h2n-header.compact { height: 64px; }
+
+/* MODERN · native scroll-driven animation */
+@supports (animation-timeline: scroll()) {
+  .h2n-scroll-zone { view-timeline-name: --morph; }
+  .h2n-header {
+    animation: morph linear forwards;
+    animation-timeline: --morph;
+    animation-range: entry 0% cover 100%;
+  }
+  @keyframes morph { to { --p: 1; } }
+}
+
+/* JS FALLBACK — one IntersectionObserver + rAF,
+   writes the same --p variable on the header.
+   See the demo source for the 20-line controller. */</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==========================================================================
+     ANTI-PATTERNS PANEL
+     ========================================================================== -->
+<section class="comp-panel" data-panel="anti">
+  <div style="padding: 40px clamp(20px, 3vw, 40px);">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div style="font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px;">— five ways to break it —</div>
+      <h2 style="font-family: 'Fraunces', serif; font-style: italic; font-weight: 400; font-size: clamp(28px, 4vw, 42px); line-height: 1.1; letter-spacing: -0.025em; color: var(--fg); max-width: 22ch; margin: 0 auto; text-wrap: balance;">A morph that isn't invisible <em>isn't a morph.</em></h2>
+    </div>
+
+    <div style="display: grid; gap: 12px; max-width: 820px; margin: 0 auto;">
+
+      <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;">
+        <div style="font-family: var(--font-mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">01 · DO NOT</div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Use a step function.</div>
+        <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">A navbar that snaps from large to small at a scroll threshold is the canonical failure. The reader's eye registers the step as a glitch. The morph must be <em>continuous</em> — every frame of scroll produces an intermediate state.</div>
+      </div>
+
+      <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;">
+        <div style="font-family: var(--font-mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">02 · DO NOT</div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Hide the navbar while scrolling down.</div>
+        <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">Medium-style hide-on-scroll patterns penalize the reader who knows what they want. The morph preserves the navbar at all times — the reader can always navigate without scrolling up.</div>
+      </div>
+
+      <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;">
+        <div style="font-family: var(--font-mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">03 · DO NOT</div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Use JavaScript to read <code>scrollY</code> on every frame.</div>
+        <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">CSS <code>animation-timeline</code> runs on the compositor thread at 60+ fps. Polling <code>window.scrollY</code> in <code>onscroll</code> runs on the main thread and will drop frames under load. Use CSS first, JS only as fallback.</div>
+      </div>
+
+      <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;">
+        <div style="font-family: var(--font-mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">04 · DO NOT</div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Shrink the wordmark below 12px.</div>
+        <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">A wordmark that becomes illegible when morphed is not a morph — it's a disappearance. The final scale must leave the wordmark readable at <em>arm's length</em>. 16px is the floor for most serifs.</div>
+      </div>
+
+      <div style="padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px;">
+        <div style="font-family: var(--font-mono); font-size: 10.5px; color: var(--accent); letter-spacing: 0.16em; font-weight: 600; margin-bottom: 8px;">05 · DO NOT</div>
+        <div style="font-family: 'Fraunces', serif; font-style: italic; font-size: 20px; color: var(--fg); margin-bottom: 6px; letter-spacing: -0.015em;">Skip the reversal.</div>
+        <div style="font-size: 13.5px; line-height: 1.55; color: var(--fg-muted);">Scrolling back up must reverse the morph at the same rate. If the navbar stays compact once the reader scrolls back to the top, the hero is betrayed. <em>The morph must be symmetric in both directions.</em></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRINCIPLES FOOTER -->
+<footer class="comp-principles">
+  <div class="comp-principles-title">Principles applied</div>
+  <div class="comp-principles-list">
+    <span class="comp-principle"><span class="p-name">Motion has a reason</span><span class="p-how">Every interpolation is driven by the reader's own gesture — scroll. Nothing animates on its own.</span></span>
+    <span class="comp-principle"><span class="p-name">As little design as possible</span><span class="p-how">Four dimensions, one <code>--p</code> variable. Twelve lines of CSS carry the entire morph.</span></span>
+    <span class="comp-principle"><span class="p-name">Honest</span><span class="p-how">No transform trickery hides the structure. The header <em>is</em> the navbar, at a different size.</span></span>
+    <span class="comp-principle"><span class="p-name">Long-lasting</span><span class="p-how">CSS scroll-driven animation shipped in Chrome 115, Safari 26. The component will outlive its JS fallback.</span></span>
+    <span class="comp-principle"><span class="p-name">Thorough to the last detail</span><span class="p-how">The subtitle opacity uses a <code>× 1.4</code> coefficient — it completes its fade before p reaches 1, so the compact state has no leftover fog.</span></span>
+  </div>
+</footer>
+
+<!-- ==========================================================================
+     SCRIPTS
+     ========================================================================== -->
+<script>
+  /* Theme init */
+  (function initTheme() {
+    let t = 'light';
+    try {
+      const s = localStorage.getItem('stit-lab-theme');
+      if (s === 'light' || s === 'dark') t = s;
+      else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+    } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme(event) {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+
+  /* Tabs */
+  (function initTabs() {
+    const root = document.getElementById('tabs');
+    if (!root) return;
+    const indicator = document.getElementById('tab-indicator');
+    const tabs = root.querySelectorAll('.comp-tab');
+    const panels = document.querySelectorAll('.comp-panel');
+    function moveIndicator(btn) {
+      if (!btn || !indicator) return;
+      const r = btn.getBoundingClientRect();
+      const rootR = root.getBoundingClientRect();
+      indicator.style.width = r.width + 'px';
+      indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+    }
+    function setTab(name) {
+      const btn = root.querySelector(`[data-panel="${name}"]`);
+      if (!btn) return;
+      tabs.forEach(t => t.classList.toggle('active', t === btn));
+      panels.forEach(p => p.classList.toggle('active', p.dataset.panel === name));
+      moveIndicator(btn);
+    }
+    tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.panel)));
+    requestAnimationFrame(() => moveIndicator(root.querySelector('.comp-tab.active')));
+    window.addEventListener('resize', () => moveIndicator(root.querySelector('.comp-tab.active')));
+  })();
+
+  function copyCode(btn) {
+    const pre = btn.nextElementSibling?.querySelector('code') || btn.parentElement.querySelector('code');
+    if (!pre) return;
+    navigator.clipboard?.writeText(pre.textContent);
+    const orig = btn.textContent;
+    btn.classList.add('copied'); btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  }
+
+  /* ==========================================================================
+     HERO-TO-NAVBAR MORPH · controller
+     Strategy: use scroll-driven CSS animation if supported, otherwise poll
+     via rAF on scroll. Both paths write the same `--p` custom property on the
+     header element, so the CSS looks identical either way.
+     ========================================================================== */
+  (function () {
+    const header = document.getElementById('h2n-header');
+    const demo = document.getElementById('h2n-demo');
+    if (!header || !demo) return;
+
+    // Supports detection — we'll use JS always in this demo because the demo
+    // lives inside a scroll container (not the root), so CSS scroll-timeline
+    // doesn't bind to document scroll. In a real site where the morph drives
+    // document scroll, the CSS path would work natively.
+    const supportsTimeline = false; // CSS.supports('animation-timeline: view()');
+
+    // Measurement panel elements
+    const measure = document.getElementById('h2n-measure');
+    const mBarP = document.getElementById('m-bar-p');
+    const mBarH = document.getElementById('m-bar-h');
+    const mBarS = document.getElementById('m-bar-s');
+    const mBarN = document.getElementById('m-bar-n');
+    const mValP = document.getElementById('m-val-p');
+    const mValH = document.getElementById('m-val-h');
+    const mValS = document.getElementById('m-val-s');
+    const mValN = document.getElementById('m-val-n');
+    const mMode = document.getElementById('m-mode');
+
+    if (mMode) mMode.textContent = supportsTimeline ? 'CSS native' : 'JS fallback';
+
+    function update() {
+      // Calculate scroll progress relative to the demo's scroll zone
+      const demoRect = demo.getBoundingClientRect();
+      const scrollZone = window.innerHeight; // matches the 100dvh scroll-zone
+      // The demo starts at demoRect.top (could be negative once scrolled).
+      // We want p=0 when demo top is at viewport top, p=1 when scrolled one vh further.
+      const scrolled = -demoRect.top;
+      const p = Math.max(0, Math.min(1, scrolled / scrollZone));
+
+      header.style.setProperty('--p', p.toFixed(4));
+
+      // Also set compact class when fully morphed (for display:none on extra elements)
+      if (p >= 0.995) header.classList.add('compact');
+      else header.classList.remove('compact');
+
+      // === Brand position calculation ===
+      // We need to move the brand from (center, center of hero) → (left padding, center of 64px navbar)
+      // At p=0: brand-x = (headerWidth - brandWidth) / 2, brand-y = 0, scale = 1
+      // At p=1: brand-x = leftPadding, brand-y = -(heroHeight/2 - 32px), scale = 0.20
+      const brand = document.getElementById('h2n-brand');
+      if (brand) {
+        const headerWidth = header.offsetWidth;
+        const heroHeight = window.innerHeight;
+        const navHeight = 64;
+        const padX = Math.max(20, Math.min(48, window.innerWidth * 0.04));
+        const brandRect = brand.getBoundingClientRect();
+        // Un-transformed width is approximated by the current width / current scale
+        const currentScale = parseFloat(brand.style.getPropertyValue('--brand-scale')) || 1;
+        const brandWidth = brandRect.width / currentScale;
+
+        // Centered X when p=0: (headerWidth / 2) - (brandWidth / 2)
+        // Left X when p=1: padX
+        const centeredX = (headerWidth - brandWidth) / 2;
+        const leftX = padX;
+        const brandX = centeredX + (leftX - centeredX) * p;
+
+        // Vertical: at p=0 the brand sits at the header's top:50% (= heroHeight/2).
+        // At p=1 the header shrinks to 64px, its top:50% = 32px.
+        // Fixed header already compensates for this height change — but we still have
+        // extra space due to FIXED position: top:50% means center of HEADER, not viewport.
+        // When header height changes from heroHeight to navHeight, top:50% auto-tracks.
+        // So actually brand-y should stay at 0. Scale handles the size change.
+        const brandY = 0;
+
+        const brandScale = 1 - p * 0.80;
+
+        brand.style.setProperty('--brand-x', brandX.toFixed(1) + 'px');
+        brand.style.setProperty('--brand-y', brandY.toFixed(1) + 'px');
+        brand.style.setProperty('--brand-scale', brandScale.toFixed(3));
+      }
+
+      // === Shrink header height ===
+      header.style.height = (window.innerHeight - (window.innerHeight - 64) * p) + 'px';
+
+      // Update measurement panel
+      if (measure) {
+        const height = Math.round(100 - p * (100 - (64 / window.innerHeight * 100)));
+        const scale = (1 - p * 0.80).toFixed(2);
+        const navPercent = Math.round(p * 100);
+
+        if (mBarP) mBarP.style.setProperty('--m-val', p);
+        if (mBarH) mBarH.style.setProperty('--m-val', p);
+        if (mBarS) mBarS.style.setProperty('--m-val', p);
+        if (mBarN) mBarN.style.setProperty('--m-val', p);
+
+        if (mValP) mValP.textContent = Math.round(p * 100) + '%';
+        if (mValH) mValH.textContent = p < 0.995 ? height + 'dvh' : '64px';
+        if (mValS) mValS.textContent = scale + 'x';
+        if (mValN) mValN.textContent = navPercent + '%';
+
+        // Show the panel once user is inside the demo
+        if (demoRect.top < window.innerHeight * 0.5 && demoRect.bottom > 0) {
+          measure.classList.add('visible');
+        } else {
+          measure.classList.remove('visible');
+        }
+      }
+    }
+
+    // Throttle via rAF
+    let rafId = 0;
+    function schedule() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => { rafId = 0; update(); });
+    }
+
+    document.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    schedule();
+  })();
+</script>
+
+</body>
+</html>

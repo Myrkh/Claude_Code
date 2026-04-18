@@ -4,28 +4,492 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="icon" href="../assets/logo-mark.svg" type="image/svg+xml">
-<meta name="theme-color" content="#faf7f0" />
+<meta name="theme-color" content="#ffffff" />
 <title>Stit'Claude · Houses · Swiss-Quiet</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
 
 <link rel="stylesheet" href="../assets/theme.css" />
-<link rel="stylesheet" href="../assets/house.css" />
+
+<style>
+  /* ==========================================================================
+     HOUSE · SWISS-QUIET — the discipline
+     Müller-Brockmann · Rams · Linear · Lufthansa 1962
+     ========================================================================== */
+  :root[data-theme="light"] {
+    --sq-white: oklch(0.998 0 0);
+    --sq-grey-95: oklch(0.95 0 0);
+    --sq-grey-80: oklch(0.80 0 0);
+    --sq-grey-60: oklch(0.58 0 0);
+    --sq-grey-40: oklch(0.38 0 0);
+    --sq-black: oklch(0.08 0 0);
+    --sq-red: oklch(0.56 0.195 28);
+  }
+  :root[data-theme="dark"] {
+    --sq-white: oklch(0.10 0 0);
+    --sq-grey-95: oklch(0.14 0 0);
+    --sq-grey-80: oklch(0.22 0 0);
+    --sq-grey-60: oklch(0.45 0 0);
+    --sq-grey-40: oklch(0.70 0 0);
+    --sq-black: oklch(0.96 0 0);
+    --sq-red: oklch(0.65 0.200 28);
+  }
+  html { background: var(--sq-white); }
+  body {
+    background: var(--sq-white);
+    color: var(--sq-black);
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    font-feature-settings: "ss01", "cv11";
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+  }
+
+  /* Grid overlay — visible, Müller-Brockmann */
+  .sq-grid-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--sq-black) 4%, transparent) 1px, transparent 1px);
+    background-size: calc(100% / 12) 100%;
+    background-position: 0 0;
+    max-width: 1280px;
+    margin-inline: auto;
+  }
+
+  /* Top bar — Swiss discipline, minimal */
+  .sq-top {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--sq-white);
+    border-bottom: 1px solid var(--sq-black);
+    padding: 16px clamp(24px, 3vw, 40px);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .sq-top .back {
+    color: var(--sq-grey-40);
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 200ms;
+  }
+  .sq-top .back:hover { color: var(--sq-red); }
+  .sq-top .back::before { content: '←  '; }
+  .sq-top .logo {
+    justify-self: center;
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 700; font-size: 14px;
+    color: var(--sq-black);
+    letter-spacing: -0.01em;
+  }
+  .sq-top .logo .mark {
+    width: 20px; height: 24px;
+    background: var(--sq-black);
+    mask-image: url('../assets/logo-mark.svg');
+    -webkit-mask-image: url('../assets/logo-mark.svg');
+    mask-size: contain; -webkit-mask-size: contain;
+    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+    mask-position: center; -webkit-mask-position: center;
+  }
+  .sq-top .meta {
+    justify-self: end;
+    font-size: 11px;
+    color: var(--sq-grey-60);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .sq-top .meta .num { color: var(--sq-red); }
+
+  /* Theme toggle */
+  .sq-theme {
+    margin-left: 12px;
+    width: 28px; height: 28px;
+    border: 1px solid var(--sq-grey-80);
+    background: transparent;
+    color: var(--sq-grey-60);
+    cursor: pointer;
+    display: inline-grid; place-items: center;
+    transition: border-color 150ms, color 150ms;
+  }
+  .sq-theme:hover { border-color: var(--sq-red); color: var(--sq-red); }
+  .sq-theme svg { width: 13px; height: 13px; }
+  [data-theme="light"] .moon-icon { display: block; }
+  [data-theme="light"] .sun-icon { display: none; }
+  [data-theme="dark"] .moon-icon { display: none; }
+  [data-theme="dark"] .sun-icon { display: block; }
+
+  /* Main container, 12-column grid */
+  .sq-wrap {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding: 0 clamp(24px, 3vw, 40px) 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .sq-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+  }
+
+  /* Masthead — giant number, asymmetric Müller-Brockmann layout */
+  .sq-masthead {
+    padding-top: clamp(60px, 10vw, 140px);
+    padding-bottom: clamp(60px, 8vw, 120px);
+    border-bottom: 1px solid var(--sq-black);
+  }
+  .sq-meta-row {
+    grid-column: span 12;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--sq-grey-60);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--sq-grey-80);
+    margin-bottom: clamp(40px, 8vw, 100px);
+  }
+  .sq-meta-row .sq-kind { color: var(--sq-red); }
+  .sq-number {
+    grid-column: 1 / 4;
+    font-weight: 900;
+    font-size: clamp(120px, 22vw, 280px);
+    line-height: 0.85;
+    letter-spacing: -0.06em;
+    color: var(--sq-black);
+    font-feature-settings: "ss01";
+  }
+  .sq-title-block {
+    grid-column: 5 / 13;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .sq-title {
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    color: var(--sq-black);
+    margin-bottom: 32px;
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+  .sq-title .stroke {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--sq-black);
+    text-stroke: 2px var(--sq-black);
+  }
+  .sq-deck {
+    font-size: clamp(16px, 1.5vw, 19px);
+    line-height: 1.4;
+    color: var(--sq-grey-40);
+    max-width: 42ch;
+    font-weight: 400;
+  }
+  @media (max-width: 720px) {
+    .sq-number { grid-column: span 12; font-size: 140px; }
+    .sq-title-block { grid-column: span 12; }
+  }
+
+  /* Section — 12-col aware */
+  .sq-section {
+    padding-block: clamp(60px, 8vw, 100px);
+    border-bottom: 1px solid var(--sq-grey-80);
+  }
+  .sq-section-head {
+    grid-column: 1 / 5;
+    padding-right: 24px;
+  }
+  .sq-section-body {
+    grid-column: 5 / 13;
+  }
+  @media (max-width: 720px) {
+    .sq-section-head,
+    .sq-section-body { grid-column: span 12; padding-right: 0; }
+  }
+  .sq-sec-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--sq-red);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .sq-sec-num::before { content: '— '; }
+  .sq-sec-title {
+    font-weight: 700;
+    font-size: clamp(24px, 2.5vw, 36px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--sq-black);
+    margin-bottom: 16px;
+    text-wrap: balance;
+  }
+  .sq-sec-caption {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--sq-grey-40);
+    max-width: 32ch;
+  }
+
+  /* Palette — stark blocks */
+  .sq-palette {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--sq-black);
+    border: 1px solid var(--sq-black);
+  }
+  @media (max-width: 720px) {
+    .sq-palette { grid-template-columns: repeat(3, 1fr); }
+  }
+  .sq-sw {
+    height: 160px;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: transform 200ms;
+  }
+  .sq-sw:hover { transform: translateY(-2px); }
+  .sq-sw .n {
+    position: absolute; top: 10px; left: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    opacity: 0.65;
+  }
+  .sq-sw .tok {
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .sq-sw .val {
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+    font-feature-settings: "tnum";
+  }
+
+  /* Motion rules — list, no decoration */
+  .sq-rules {
+    list-style: none;
+    padding: 0; margin: 0;
+    border-top: 1px solid var(--sq-grey-80);
+  }
+  .sq-rule {
+    display: grid;
+    grid-template-columns: 60px 1fr 140px;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--sq-grey-80);
+    align-items: baseline;
+  }
+  .sq-rule .idx {
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--sq-red);
+    letter-spacing: 0.14em;
+  }
+  .sq-rule .body {
+    font-size: 15px;
+    color: var(--sq-black);
+    line-height: 1.5;
+  }
+  .sq-rule .body strong {
+    font-weight: 700;
+  }
+  .sq-rule .verdict {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .sq-rule .verdict.yes { color: var(--sq-black); }
+  .sq-rule .verdict.no { color: var(--sq-red); }
+
+  /* Do/Don't as paired blocks with red divider */
+  .sq-dd {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+  @media (max-width: 720px) { .sq-dd { grid-template-columns: 1fr; gap: 20px; } }
+  .sq-dd-divider {
+    width: 1px;
+    background: var(--sq-red);
+    align-self: stretch;
+  }
+  @media (max-width: 720px) { .sq-dd-divider { display: none; } }
+  .sq-dd-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .sq-dd-col .head {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--sq-black);
+  }
+  .sq-dd-col.no .head { color: var(--sq-red); border-color: var(--sq-red); }
+  .sq-dd-col p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--sq-black);
+    margin: 0;
+  }
+  .sq-dd-col p + p {
+    color: var(--sq-grey-40);
+    font-size: 13px;
+  }
+
+  /* Canon as a structured list */
+  .sq-canon {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-top: 1px solid var(--sq-grey-80);
+  }
+  @media (max-width: 720px) { .sq-canon { grid-template-columns: 1fr; } }
+  .sq-canon-item {
+    padding: 24px;
+    border-right: 1px solid var(--sq-grey-80);
+    border-bottom: 1px solid var(--sq-grey-80);
+    transition: background 180ms;
+  }
+  .sq-canon-item:nth-child(even) { border-right: 0; }
+  @media (max-width: 720px) {
+    .sq-canon-item { border-right: 0; }
+  }
+  .sq-canon-item:hover { background: var(--sq-grey-95); }
+  .sq-canon-item .era {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--sq-red);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .sq-canon-item .nm {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--sq-black);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .sq-canon-item .desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--sq-grey-40);
+    max-width: 45ch;
+  }
+
+  /* Quote — centered, massive */
+  .sq-quote {
+    padding-block: clamp(60px, 10vw, 140px);
+    text-align: center;
+    border-bottom: 1px solid var(--sq-black);
+  }
+  .sq-quote blockquote {
+    font-size: clamp(24px, 3.5vw, 44px);
+    font-weight: 400;
+    line-height: 1.25;
+    color: var(--sq-black);
+    letter-spacing: -0.02em;
+    max-width: 24ch;
+    margin: 0 auto;
+    text-wrap: balance;
+  }
+  .sq-quote blockquote em {
+    font-style: normal;
+    color: var(--sq-red);
+  }
+  .sq-quote cite {
+    display: block;
+    margin-top: 24px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--sq-grey-60);
+    text-transform: uppercase;
+    font-style: normal;
+  }
+
+  /* Nav footer — dense, Swiss */
+  .sq-nav {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 2px solid var(--sq-black);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .sq-nav a {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--sq-grey-40);
+    transition: background 150ms, color 150ms;
+    border-right: 1px solid var(--sq-grey-80);
+  }
+  .sq-nav a:last-child { border-right: 0; text-align: right; align-items: flex-end; }
+  .sq-nav a:hover { background: var(--sq-grey-95); color: var(--sq-red); }
+  .sq-nav a .dir {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sq-grey-60);
+  }
+  .sq-nav a .target {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--sq-black);
+  }
+  .sq-nav a:hover .target { color: var(--sq-red); }
+
+  ::selection { background: var(--sq-red); color: var(--sq-white); }
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="topbar-inner">
-    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4 L4 8 L10 12" /></svg>
-      <span>Stit'Claude</span>
-    </a>
-    <span class="brand-mark">Houses · 03 · Swiss-Quiet</span>
-    <button class="theme-toggle-btn" onclick="toggleTheme(event)" aria-label="Toggle theme">
-      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" /></svg>
+<div class="sq-grid-overlay" aria-hidden="true"></div>
+
+<header class="sq-top">
+  <a class="back" href="../lab.html">Back to Lab</a>
+  <a class="logo" href="../index.html">
+    <span class="mark" aria-hidden="true"></span>
+    <span>Stit'Claude</span>
+  </a>
+  <div class="meta">
+    House <span class="num">03 / 08</span>
+    <button class="sq-theme" onclick="toggleTheme(event)" aria-label="Toggle theme">
+      <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+        <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+      </svg>
       <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
         <circle cx="8" cy="8" r="3" />
         <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
@@ -34,82 +498,138 @@
   </div>
 </header>
 
-<main>
+<main class="sq-wrap">
 
-  <section class="masthead">
-    <div class="mast-meta">
-      <span class="num">HOUSE № 03</span>
-      <span class="sep"></span>
-      <span>of eight</span>
+  <!-- MASTHEAD — Müller-Brockmann style -->
+  <section class="sq-masthead sq-grid">
+    <div class="sq-meta-row">
+      <span class="sq-kind">House · Swiss-Quiet</span>
+      <span>International Typographic Style</span>
+      <span>03 / 08</span>
     </div>
-    <h1 class="mast-title">Swiss-<em>Quiet.</em></h1>
-    <p class="mast-subtitle">Grid, Helvetica Neue, black and white and one color. The discipline of the International Typographic Style applied to screens. Whitespace is a weapon.</p>
+    <div class="sq-number">03</div>
+    <div class="sq-title-block">
+      <h1 class="sq-title"><span class="stroke">Swiss</span><br/>Quiet.</h1>
+      <p class="sq-deck">
+        Grid, Helvetica, black and white and one color. The International Typographic Style
+        applied to screens. Whitespace is a weapon.
+      </p>
+    </div>
   </section>
 
-  <section class="quote-block">
+  <!-- QUOTE — centered, Rams -->
+  <section class="sq-quote">
     <blockquote>
-      A good design is <em>as little design as possible</em>.
+      A good design is <em>as little design as possible.</em>
       <cite>Dieter Rams · 10 Principles · 1976</cite>
     </blockquote>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">01 · Palette</span>
-      <h2 class="bloc-title">The colors that define this house.</h2>
+  <!-- PALETTE -->
+  <section class="sq-section sq-grid">
+    <div class="sq-section-head">
+      <div class="sq-sec-num">Sec. 01</div>
+      <h2 class="sq-sec-title">Palette.</h2>
+      <p class="sq-sec-caption">
+        Five greys, one black, and a single red. No gradient. No shadow. The discipline is
+        the palette.
+      </p>
     </div>
-    <p class="bloc-caption">Click any swatch or token to copy its OKLCH value. Six carefully chosen hues — no more, no less.</p>
-    <div class="bloc-body">
-      <div class="palette-row">
-        <div class="swatch" style="background: oklch(0.995 0 0); color: oklch(0.2 0.01 40);" data-val="oklch(0.995 0 0)"><span class="lbl">white</span></div>
-        <div class="swatch" style="background: oklch(0.968 0 0); color: oklch(0.2 0.01 40);" data-val="oklch(0.968 0 0)"><span class="lbl">grey-98</span></div>
-        <div class="swatch" style="background: oklch(0.880 0 0); color: oklch(0.2 0.01 40);" data-val="oklch(0.880 0 0)"><span class="lbl">grey-88</span></div>
-        <div class="swatch" style="background: oklch(0.550 0.160 270); color: oklch(0.95 0.01 85);" data-val="oklch(0.550 0.160 270)"><span class="lbl">swiss-red</span></div>
-        <div class="swatch" style="background: oklch(0.300 0 0); color: oklch(0.95 0.01 85);" data-val="oklch(0.300 0 0)"><span class="lbl">grey-30</span></div>
-        <div class="swatch" style="background: oklch(0.085 0 0); color: oklch(0.95 0.01 85);" data-val="oklch(0.085 0 0)"><span class="lbl">black</span></div>
-      </div>
-      <div class="palette-legend">
-        <button class="tok" data-val="oklch(0.995 0 0)"><span class="s" style="background: oklch(0.995 0 0)"></span><span class="n">--sq-white</span></button>
-        <button class="tok" data-val="oklch(0.968 0 0)"><span class="s" style="background: oklch(0.968 0 0)"></span><span class="n">--sq-grey-98</span></button>
-        <button class="tok" data-val="oklch(0.880 0 0)"><span class="s" style="background: oklch(0.880 0 0)"></span><span class="n">--sq-grey-88</span></button>
-        <button class="tok" data-val="oklch(0.550 0.160 270)"><span class="s" style="background: oklch(0.550 0.160 270)"></span><span class="n">--sq-red</span></button>
-        <button class="tok" data-val="oklch(0.300 0 0)"><span class="s" style="background: oklch(0.300 0 0)"></span><span class="n">--sq-grey-30</span></button>
-        <button class="tok" data-val="oklch(0.085 0 0)"><span class="s" style="background: oklch(0.085 0 0)"></span><span class="n">--sq-black</span></button>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">02 · Motion</span>
-      <h2 class="bloc-title">How this house moves.</h2>
-    </div>
-    <p class="bloc-caption">Short, standard easing. No spring. Swiss design respects the grid; motion respects the clock. 200ms for everything. No animation if a static state communicates the same thing.</p>
-    <div class="bloc-body">
-      <div style="display: grid; gap: 8px; font-family: var(--font-mono); font-size: 12px;">
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--duration-normal: 200ms</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">the only duration</span></div>
-        <div style="padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✓</span><code style="color: var(--fg);">--ease-standard</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">cubic-bezier(0.2, 0, 0, 1)</span></div>
-        <div style="padding: 12px 16px; background: color-mix(in oklch, var(--accent) 5%, var(--surface)); border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border)); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✕</span><code style="color: var(--fg);">spring</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">never used</span></div>
-        <div style="padding: 12px 16px; background: color-mix(in oklch, var(--accent) 5%, var(--surface)); border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border)); border-radius: var(--radius-sm); color: var(--fg);"><span style="color: var(--accent); margin-right: 16px;">✕</span><code style="color: var(--fg);">micro-interactions</code> &nbsp;·&nbsp; <span style="color: var(--fg-subtle);">disabled by default</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">03 · The trap</span>
-      <h2 class="bloc-title">Do one thing, refuse another.</h2>
-    </div>
-    <p class="bloc-caption">Every house has a characteristic failure mode. These are the traps to avoid.</p>
-    <div class="bloc-body">
-      <div class="do-dont">
-        <div class="dd-card do">
-          <div class="dd-label">Do</div>
-          <p>Align everything to the grid. 8pt grid if you must choose. Every edge aligned is a vote for coherence.</p>
-          <p>Pick one color and commit. Swiss-Quiet is monochrome plus one, not palette exploration.</p>
+    <div class="sq-section-body">
+      <div class="sq-palette">
+        <div class="sq-sw" style="background: oklch(0.998 0 0); color: oklch(0.12 0 0);" data-val="oklch(0.998 0 0)">
+          <span class="n">3.1</span>
+          <span class="tok">White</span>
+          <span class="val">oklch(0.998 0 0)</span>
         </div>
-        <div class="dd-card dont">
-          <div class="dd-label">Don't</div>
+        <div class="sq-sw" style="background: oklch(0.95 0 0); color: oklch(0.12 0 0);" data-val="oklch(0.95 0 0)">
+          <span class="n">3.2</span>
+          <span class="tok">Grey 95</span>
+          <span class="val">oklch(0.95 0 0)</span>
+        </div>
+        <div class="sq-sw" style="background: oklch(0.80 0 0); color: oklch(0.12 0 0);" data-val="oklch(0.80 0 0)">
+          <span class="n">3.3</span>
+          <span class="tok">Grey 80</span>
+          <span class="val">oklch(0.80 0 0)</span>
+        </div>
+        <div class="sq-sw" style="background: oklch(0.38 0 0); color: oklch(0.95 0 0);" data-val="oklch(0.38 0 0)">
+          <span class="n">3.4</span>
+          <span class="tok">Grey 40</span>
+          <span class="val">oklch(0.38 0 0)</span>
+        </div>
+        <div class="sq-sw" style="background: oklch(0.08 0 0); color: oklch(0.95 0 0);" data-val="oklch(0.08 0 0)">
+          <span class="n">3.5</span>
+          <span class="tok">Black</span>
+          <span class="val">oklch(0.08 0 0)</span>
+        </div>
+        <div class="sq-sw" style="background: oklch(0.56 0.195 28); color: oklch(0.99 0 0);" data-val="oklch(0.56 0.195 28)">
+          <span class="n">3.6</span>
+          <span class="tok">Red</span>
+          <span class="val">oklch(0.56 0.195 28)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOTION -->
+  <section class="sq-section sq-grid">
+    <div class="sq-section-head">
+      <div class="sq-sec-num">Sec. 02</div>
+      <h2 class="sq-sec-title">Motion.</h2>
+      <p class="sq-sec-caption">
+        Short, standard easing. No spring. Swiss design respects the grid; motion respects the clock.
+      </p>
+    </div>
+    <div class="sq-section-body">
+      <ul class="sq-rules">
+        <li class="sq-rule">
+          <span class="idx">01</span>
+          <span class="body"><strong>Duration</strong> &nbsp;— 200ms for everything. The only duration.</span>
+          <span class="verdict yes">Allowed</span>
+        </li>
+        <li class="sq-rule">
+          <span class="idx">02</span>
+          <span class="body"><strong>Easing</strong> &nbsp;— cubic-bezier(0.2, 0, 0, 1). Standard, one only.</span>
+          <span class="verdict yes">Allowed</span>
+        </li>
+        <li class="sq-rule">
+          <span class="idx">03</span>
+          <span class="body"><strong>Spring</strong> &nbsp;— never used. Springs are a Pacific invention.</span>
+          <span class="verdict no">Banned</span>
+        </li>
+        <li class="sq-rule">
+          <span class="idx">04</span>
+          <span class="body"><strong>Micro-interactions</strong> &nbsp;— disabled by default. Enable only for feedback.</span>
+          <span class="verdict no">Banned</span>
+        </li>
+        <li class="sq-rule">
+          <span class="idx">05</span>
+          <span class="body"><strong>Decorative animation</strong> &nbsp;— if static communicates it, use static.</span>
+          <span class="verdict no">Banned</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- DO / DONT -->
+  <section class="sq-section sq-grid">
+    <div class="sq-section-head">
+      <div class="sq-sec-num">Sec. 03</div>
+      <h2 class="sq-sec-title">The trap.</h2>
+      <p class="sq-sec-caption">
+        Swiss-Quiet fails at the first ornament. Keep the discipline, or you've built a bootstrap admin.
+      </p>
+    </div>
+    <div class="sq-section-body">
+      <div class="sq-dd">
+        <div class="sq-dd-col yes">
+          <div class="head">Do</div>
+          <p>Align everything to the grid. 8pt if you must choose. Every edge aligned is a vote for coherence.</p>
+          <p>Pick one color and commit. Swiss-Quiet is monochrome plus one accent, not palette exploration.</p>
+        </div>
+        <div class="sq-dd-divider" aria-hidden="true"></div>
+        <div class="sq-dd-col no">
+          <div class="head">Don't</div>
           <p>Break the grid for creative effect. If the grid is right, it doesn't need breaking.</p>
           <p>Use drop shadows to create hierarchy. Use weight, size, and position. Shadows are a crutch.</p>
         </div>
@@ -117,30 +637,49 @@
     </div>
   </section>
 
-  <section class="bloc">
-    <div class="bloc-head">
-      <span class="bloc-num">04 · In the world</span>
-      <h2 class="bloc-title">Where this house lives, outside the lab.</h2>
+  <!-- CANON -->
+  <section class="sq-section sq-grid">
+    <div class="sq-section-head">
+      <div class="sq-sec-num">Sec. 04</div>
+      <h2 class="sq-sec-title">Canon.</h2>
+      <p class="sq-sec-caption">
+        The reference bodies of work — studied, taught, and still unmatched.
+      </p>
     </div>
-    <p class="bloc-caption">The proof is in the products. These are the references to study when you want to understand this house deeply.</p>
-    <div class="bloc-body">
-      <div class="canon-grid">
-        <article class="canon-card"><div class="era">1957 — 2013</div><div class="name">Lufthansa identity</div><div class="desc">Otl Aicher's systems thinking applied to an airline. Still taught in every design school.</div></article>
-        <article class="canon-card"><div class="era">1970s — ongoing</div><div class="name">Braun product design</div><div class="desc">Dieter Rams's radios, shavers, calculators. Physical products with the same discipline.</div></article>
-        <article class="canon-card"><div class="era">2016 — ongoing</div><div class="name">Linear</div><div class="desc">A Swiss-Quiet SaaS. One accent color, grid-aligned everything, typography doing the work.</div></article>
-        <article class="canon-card"><div class="era">1991 — ongoing</div><div class="name">Massimo Vignelli studio</div><div class="desc">NYC subway map, American Airlines, Knoll. A career-long argument for the canon.</div></article>
+    <div class="sq-section-body">
+      <div class="sq-canon">
+        <article class="sq-canon-item">
+          <div class="era">1962 &mdash; Present</div>
+          <div class="nm">Lufthansa identity</div>
+          <div class="desc">Otl Aicher &amp; Tomas Gonda's systems thinking applied to an airline. Still taught in every design school.</div>
+        </article>
+        <article class="sq-canon-item">
+          <div class="era">1955 &mdash; Present</div>
+          <div class="nm">Braun product design</div>
+          <div class="desc">Dieter Rams's radios, shavers, calculators. Physical products governed by the same discipline.</div>
+        </article>
+        <article class="sq-canon-item">
+          <div class="era">2019 &mdash; Present</div>
+          <div class="nm">Linear</div>
+          <div class="desc">A Swiss-Quiet SaaS. One accent, grid-aligned everything, typography doing the work.</div>
+        </article>
+        <article class="sq-canon-item">
+          <div class="era">1966 &mdash; 2004</div>
+          <div class="nm">Vignelli Associates</div>
+          <div class="desc">NYC subway map, American Airlines, Knoll. A career-long argument for the canon.</div>
+        </article>
       </div>
     </div>
   </section>
 
-  <nav class="house-nav" aria-label="House navigation">
-    <a class="house-nav-link" href="industrial-pro.html">
-      <span class="dir">← Previous · 02</span>
-      <span class="target"><em>Industrial-Pro</em></span>
+  <nav class="sq-nav">
+    <a href="industrial-pro.html">
+      <span class="dir">Previous · House 02</span>
+      <span class="target">Industrial-Pro</span>
     </a>
-    <a class="house-nav-link next" href="playful-warm.html">
-      <span class="dir">Next · 04 →</span>
-      <span class="target"><em>Playful-Warm</em></span>
+    <a href="playful-warm.html">
+      <span class="dir">Next · House 04</span>
+      <span class="target">Playful-Warm</span>
     </a>
   </nav>
 
@@ -157,25 +696,15 @@
     document.documentElement.setAttribute('data-theme', t);
   })();
   function toggleTheme(event) {
-    const cx = event?.clientX ?? window.innerWidth / 2;
-    const cy = event?.clientY ?? window.innerHeight / 2;
-    document.documentElement.style.setProperty('--cx', cx + 'px');
-    document.documentElement.style.setProperty('--cy', cy + 'px');
     const current = document.documentElement.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
-    function apply() {
-      document.documentElement.setAttribute('data-theme', next);
-      try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
-    }
-    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) apply();
-    else document.startViewTransition(() => apply());
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
   }
-  document.querySelectorAll('[data-val]').forEach(el => {
+
+  document.querySelectorAll('.sq-sw[data-val]').forEach(el => {
     el.addEventListener('click', () => {
-      const v = el.getAttribute('data-val');
-      navigator.clipboard?.writeText(v);
-      el.classList.add('copied');
-      setTimeout(() => el.classList.remove('copied'), 1200);
+      navigator.clipboard?.writeText(el.getAttribute('data-val'));
     });
   });
 </script>

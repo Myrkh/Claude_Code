@@ -543,6 +543,108 @@
   .fn-ref:hover { text-decoration: underline; }
 
   /* ============================================================
+     ESSAY CONTINUE — next field experiment card
+     ============================================================ */
+  .essay-continue {
+    max-width: var(--essay-w);
+    margin: clamp(4rem, 8vw, 7rem) auto 0;
+    padding: 0 var(--gutter);
+  }
+  .essay-continue a {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 6px 32px;
+    padding: clamp(24px, 4vw, 40px) clamp(20px, 3vw, 32px);
+    background: color-mix(in oklch, var(--accent) 4%, var(--surface));
+    border: 1px solid color-mix(in oklch, var(--accent) 25%, var(--border));
+    border-radius: var(--radius-md);
+    color: var(--fg);
+    position: relative;
+    transition:
+      background var(--duration-normal) var(--ease-standard),
+      border-color var(--duration-normal) var(--ease-standard),
+      transform var(--duration-moderate) var(--ease-spring-smooth);
+  }
+  .essay-continue a:hover {
+    background: color-mix(in oklch, var(--accent) 8%, var(--surface));
+    border-color: color-mix(in oklch, var(--accent) 50%, var(--border));
+    transform: translateY(-2px);
+  }
+  .essay-continue .lbl {
+    grid-column: 1;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 500;
+    align-self: center;
+  }
+  .essay-continue .num {
+    grid-column: 1;
+    grid-row: 2;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    align-self: start;
+  }
+  .essay-continue .ttl {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    text-wrap: balance;
+  }
+  .essay-continue .ttl em {
+    font-style: italic;
+    color: var(--fg);
+  }
+  .essay-continue .deck {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: start;
+    margin-top: 6px;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: var(--step-0);
+    color: var(--fg-muted);
+    line-height: 1.5;
+  }
+  .essay-continue .arrow {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    color: var(--accent);
+    transition: transform var(--duration-moderate) var(--ease-spring-smooth);
+  }
+  .essay-continue a:hover .arrow { transform: translateX(8px); }
+  @media (max-width: 720px) {
+    .essay-continue a {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .essay-continue .lbl,
+    .essay-continue .num,
+    .essay-continue .ttl,
+    .essay-continue .deck {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .essay-continue .arrow { display: none; }
+  }
+
+  /* ============================================================
      COLOPHON — closing editorial signature
      ============================================================ */
   .colophon {
@@ -613,7 +715,7 @@
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="back-link" href="../lab.html" aria-label="Back to the Lab">
+    <a class="back-link" href="../index.html" aria-label="Back to Stit'Claude">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M10 4 L4 8 L10 12" />
       </svg>
@@ -840,6 +942,17 @@
   <!-- =========================================================
        COLOPHON
        ========================================================= -->
+  <!-- NEXT EXPERIMENT — editorial cross-reference -->
+  <nav class="essay-continue" aria-label="Next experiment">
+    <a href="why-oklch-was-inevitable.html">
+      <span class="lbl">Field Experiment · continue</span>
+      <span class="num">N° 002</span>
+      <span class="ttl"><em>Why OKLCH was inevitable.</em></span>
+      <span class="deck">A technical demonstration, in four live figures.</span>
+      <span class="arrow">→</span>
+    </a>
+  </nav>
+
   <footer class="colophon">
     <span class="colophon-mark"></span>
     <p class="colophon-text">

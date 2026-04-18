@@ -1,0 +1,4 @@
+# Stit'Claude routing
+# Any URL not matching a real file serves 404.html with 404 status
+
+/* /404.html 404
