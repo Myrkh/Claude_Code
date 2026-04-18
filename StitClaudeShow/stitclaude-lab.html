@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Stit'Claude Design Lab — living demonstrations of what the skill can do. Built in a single HTML file." />
+<meta name="theme-color" content="#faf7f0" />
+<title>Stit'Claude · the lab</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;450;500;550;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="stitclaude-theme.css" />
+
+</head>
+
+<body>
+
+<!-- scroll progress -->
+<div class="scroll-progress"><div class="scroll-progress-bar"></div></div>
+
+<!-- =============================================================================
+     NAV (with mega-menus)
+     ============================================================================= -->
+<header class="nav" id="nav-root">
+  <div class="container nav-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M4 20 L12 4 L20 20" stroke-linejoin="round" />
+          <path d="M12 4 L12 20" opacity="0.4" />
+          <path d="M7 14 L17 14" opacity="0.4" />
+        </svg>
+      </span>
+      <span>Stit'Claude</span>
+    </a>
+
+    <ul class="mega-links" id="mega-links">
+      <li data-menu="components">
+        <button class="mega-trigger" aria-haspopup="true" aria-expanded="false">
+          Components
+          <svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4 L5 7 L8 4"/></svg>
+        </button>
+      </li>
+      <li data-menu="houses">
+        <button class="mega-trigger" aria-haspopup="true" aria-expanded="false">
+          Houses
+          <svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4 L5 7 L8 4"/></svg>
+        </button>
+      </li>
+      <li data-menu="philosophy">
+        <button class="mega-trigger" aria-haspopup="true" aria-expanded="false">
+          Philosophy
+          <svg class="caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4 L5 7 L8 4"/></svg>
+        </button>
+      </li>
+      <li><a href="#docs">Docs</a></li>
+      <li><a href="#github">GitHub</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="cmdk-trigger" onclick="openCmdk()" aria-label="Open command palette">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="7" cy="7" r="5" />
+          <path d="M11 11 L14 14" stroke-linecap="round" />
+        </svg>
+        <span class="space">Search the lab…</span>
+        <span class="kbd">⌘K</span>
+      </button>
+      <button class="theme-toggle" aria-label="Toggle theme" onclick="morphTheme(event)">
+        <svg class="moon-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z" />
+        </svg>
+        <svg class="sun-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+          <circle cx="8" cy="8" r="3" />
+          <path d="M8 1 V3 M8 13 V15 M1 8 H3 M13 8 H15 M3.2 3.2 L4.6 4.6 M11.4 11.4 L12.8 12.8 M3.2 12.8 L4.6 11.4 M11.4 4.6 L12.8 3.2" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== MEGA PANELS ========== -->
+  <div class="mega-wrap" id="mega-wrap">
+
+    <!-- Components panel -->
+    <div class="mega-panel" data-panel="components">
+      <div class="mp-head stagger">
+        <h3>Components</h3>
+        <span class="hint">80+ primitives · all live</span>
+      </div>
+
+      <div class="mp-components">
+
+        <!-- Featured card (live magnetic button preview) -->
+        <div class="mp-feature stagger" id="mp-feature-demo-container">
+          <span class="mp-feature-tag">Featured · Magnetic button</span>
+          <h4 class="mp-feature-title">Springs, <em style="font-style: italic; color: var(--accent)">everywhere</em> they matter.</h4>
+          <p class="mp-feature-body">
+            Stit'Claude ships with spring physics tuned for gesture-driven
+            UI. Move your cursor into the demo below.
+          </p>
+          <div class="mp-feature-demo" id="mp-mini-magnet">
+            <button class="mini-btn" id="mp-mini-btn">Catch me</button>
+          </div>
+        </div>
+
+        <!-- Grid of 12 components -->
+        <div class="mp-grid">
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none">
+                <rect x="2" y="2" width="56" height="26" rx="13" fill="currentColor" opacity="0.15"/>
+                <rect x="2" y="2" width="56" height="26" rx="13" fill="none" stroke="currentColor" stroke-width="1"/>
+                <text x="30" y="19" text-anchor="middle" font-family="Inter" font-size="10" fill="currentColor" font-weight="500">Button</text>
+              </svg>
+            </div>
+            <div class="name">Button</div>
+            <div class="meta"><span>3 variants</span><span>primitive</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="2" y="4" width="56" height="22" rx="4"/>
+                <line x1="10" y1="15" x2="30" y2="15" stroke-linecap="round"/>
+                <line x1="32" y1="10" x2="32" y2="20" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="name">Input</div>
+            <div class="meta"><span>text · search</span><span>form</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="6" y="4" width="48" height="22" rx="4"/>
+                <path d="M46 12 L50 16 L46 20" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="name">Select</div>
+            <div class="meta"><span>searchable</span><span>form</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="4" y="4" width="52" height="22" rx="4"/>
+                <path d="M10 10 L22 10 M10 15 L26 15 M10 20 L18 20" stroke-linecap="round"/>
+                <rect x="42" y="9" width="10" height="5" rx="1" fill="currentColor" opacity="0.2"/>
+              </svg>
+            </div>
+            <div class="name">Command</div>
+            <div class="meta"><span>⌘K</span><span class="badge">featured</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="8" y="6" width="44" height="18" rx="3"/>
+                <circle cx="15" cy="15" r="2" fill="currentColor"/>
+                <path d="M22 15 L42 15" stroke-linecap="round"/>
+                <path d="M44 11 L46 15 L44 19" stroke-linejoin="round" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="name">Toast</div>
+            <div class="meta"><span>stack · spring</span><span>feedback</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="2" y="2" width="56" height="26" rx="3" opacity="0.35"/>
+                <rect x="12" y="8" width="36" height="14" rx="2" fill="currentColor" opacity="0.12"/>
+                <rect x="12" y="8" width="36" height="14" rx="2"/>
+              </svg>
+            </div>
+            <div class="name">Modal</div>
+            <div class="meta"><span>@starting-style</span><span>overlay</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <line x1="4" y1="10" x2="56" y2="10" opacity="0.5"/>
+                <text x="12" y="8" font-family="Inter" font-size="7" fill="currentColor">Phil</text>
+                <text x="27" y="8" font-family="Inter" font-size="7" fill="currentColor" font-weight="600">Tokens</text>
+                <text x="46" y="8" font-family="Inter" font-size="7" fill="currentColor">Mot</text>
+                <rect x="24" y="8" width="20" height="2" fill="currentColor"/>
+                <path d="M10 18 L50 18" stroke="currentColor" opacity="0.2"/>
+                <path d="M10 23 L30 23" stroke="currentColor" opacity="0.15"/>
+              </svg>
+            </div>
+            <div class="name">Tabs</div>
+            <div class="meta"><span>animated</span><span>nav</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="4" y="5" width="52" height="7" rx="2"/>
+                <path d="M48 8 L50 10 L52 8" stroke-linejoin="round"/>
+                <rect x="4" y="14" width="52" height="7" rx="2" opacity="0.6"/>
+                <rect x="4" y="23" width="52" height="4" rx="2" opacity="0.3"/>
+              </svg>
+            </div>
+            <div class="name">Accordion</div>
+            <div class="meta"><span>smooth open</span><span>disclosure</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <rect x="10" y="20" width="6" height="8" fill="currentColor" opacity="0.35"/>
+                <rect x="18" y="14" width="6" height="14" fill="currentColor" opacity="0.5"/>
+                <rect x="26" y="18" width="6" height="10" fill="currentColor" opacity="0.4"/>
+                <rect x="34" y="8" width="6" height="20" fill="currentColor"/>
+                <rect x="42" y="12" width="6" height="16" fill="currentColor" opacity="0.6"/>
+              </svg>
+            </div>
+            <div class="name">Chart</div>
+            <div class="meta"><span>bar · area · line</span><span>data</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <line x1="4" y1="10" x2="56" y2="10"/>
+                <line x1="4" y1="18" x2="56" y2="18" opacity="0.4"/>
+                <line x1="4" y1="26" x2="56" y2="26" opacity="0.2"/>
+                <text x="8" y="7" font-size="5" fill="currentColor" opacity="0.7">Name</text>
+                <text x="30" y="7" font-size="5" fill="currentColor" opacity="0.7">Angle</text>
+                <text x="48" y="7" font-size="5" fill="currentColor" opacity="0.7">APCA</text>
+              </svg>
+            </div>
+            <div class="name">Table</div>
+            <div class="meta"><span>sortable · live</span><span>data</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none">
+                <rect x="4" y="4" width="24" height="11" rx="2" fill="currentColor" opacity="0.2"/>
+                <rect x="30" y="4" width="26" height="11" rx="2" fill="currentColor" opacity="0.35"/>
+                <rect x="4" y="17" width="22" height="11" rx="2" fill="currentColor" opacity="0.4"/>
+                <rect x="28" y="17" width="14" height="11" rx="2" fill="currentColor" opacity="0.25"/>
+                <rect x="44" y="17" width="12" height="11" rx="2" fill="currentColor" opacity="0.5"/>
+              </svg>
+            </div>
+            <div class="name">Bento</div>
+            <div class="meta"><span>hierarchical</span><span>layout</span></div>
+          </div>
+
+          <div class="mp-item stagger">
+            <div class="thumb">
+              <svg viewBox="0 0 60 30" fill="none" stroke="currentColor" stroke-width="1">
+                <circle cx="15" cy="15" r="8"/>
+                <path d="M15 7 A 8 8 0 0 1 23 15 L15 15 Z" fill="currentColor"/>
+                <rect x="28" y="10" width="6" height="10" fill="currentColor" opacity="0.7"/>
+                <rect x="38" y="6" width="6" height="14" fill="currentColor" opacity="0.5"/>
+                <rect x="48" y="13" width="6" height="7" fill="currentColor" opacity="0.3"/>
+              </svg>
+            </div>
+            <div class="name">Stats</div>
+            <div class="meta"><span>kpi · scroll-driven</span><span>data</span></div>
+          </div>
+        </div>
+
+        <div class="mp-footer stagger">
+          <span>Ready to fork · MIT licensed · <code style="color: var(--fg); font-family: var(--font-mono);">tokens.css</code> inside</span>
+          <a href="#components">Browse all 80+ components
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path d="M3 8 L13 8 M9 4 L13 8 L9 12"/>
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Houses panel -->
+    <div class="mega-panel" data-panel="houses">
+      <div class="mp-head stagger">
+        <h3>Houses</h3>
+        <span class="hint">8 voices · 1 skill</span>
+      </div>
+
+      <div class="mp-houses">
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">01</span>
+          <span class="mp-house-name">Editorial</span>
+          <span class="mp-house-sample">Aa · Serif</span>
+          <p class="mp-house-desc">Long-form restraint. Stripe docs, Medium, NYT interactive.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.97 0.01 80)"></span>
+            <span class="sw" style="background: oklch(0.35 0.08 30)"></span>
+            <span class="sw" style="background: oklch(0.65 0.19 35)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">02</span>
+          <span class="mp-house-name">Industrial-Pro</span>
+          <span class="mp-house-sample">Aa · IBM Plex Mono</span>
+          <p class="mp-house-desc">Bloomberg lineage. Tabular nums, signal colours reserved.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.17 0.02 260)"></span>
+            <span class="sw" style="background: oklch(0.58 0.14 200)"></span>
+            <span class="sw" style="background: oklch(0.72 0.17 85)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">03</span>
+          <span class="mp-house-name">Swiss-Quiet</span>
+          <span class="mp-house-sample">Aa · Inter</span>
+          <p class="mp-house-desc">Linear discipline. Grid, one quiet accent, motion ≤200ms.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.97 0 0)"></span>
+            <span class="sw" style="background: oklch(0.55 0.16 270)"></span>
+            <span class="sw" style="background: oklch(0.2 0 0)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">04</span>
+          <span class="mp-house-name">Apple-Craft</span>
+          <span class="mp-house-sample">Aa · SF Pro</span>
+          <p class="mp-house-desc">Squircle concentricity. Haptics, spring physics, restraint.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.95 0.012 245)"></span>
+            <span class="sw" style="background: oklch(0.92 0.02 280)"></span>
+            <span class="sw" style="background: oklch(0.62 0.15 145)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">05</span>
+          <span class="mp-house-name">Playful-Warm</span>
+          <span class="mp-house-sample">Aa · Display</span>
+          <p class="mp-house-desc">Primary colours decided, not pastel. Spring with character.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.92 0.08 60)"></span>
+            <span class="sw" style="background: oklch(0.65 0.2 20)"></span>
+            <span class="sw" style="background: oklch(0.55 0.15 200)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">06</span>
+          <span class="mp-house-name">Japanese-Ma</span>
+          <span class="mp-house-sample">Aa · Neutral</span>
+          <p class="mp-house-desc">Emptiness as vase. Kore-de-ii over kore-ga-ii.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.99 0.002 80)"></span>
+            <span class="sw" style="background: oklch(0.15 0 0)"></span>
+            <span class="sw" style="background: oklch(0.55 0.18 25)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">07</span>
+          <span class="mp-house-name">Power-Dense</span>
+          <span class="mp-house-sample">Aa · Geist Mono</span>
+          <p class="mp-house-desc">Cmd-K obligatoire. Dense, keyboard-first, ≤150ms.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.17 0 0)"></span>
+            <span class="sw" style="background: oklch(0.55 0.16 270)"></span>
+            <span class="sw" style="background: oklch(0.85 0 0)"></span>
+          </div>
+        </div>
+
+        <div class="mp-house stagger">
+          <span class="mp-house-num">08</span>
+          <span class="mp-house-name">Editorial-Display</span>
+          <span class="mp-house-sample">Aa · Wood-type</span>
+          <p class="mp-house-desc">Type as image. Confident typography needs no decoration.</p>
+          <div class="mp-house-swatches">
+            <span class="sw" style="background: oklch(0.98 0.01 85)"></span>
+            <span class="sw" style="background: oklch(0.2 0.05 30)"></span>
+            <span class="sw" style="background: oklch(0.55 0.18 25)"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Philosophy panel -->
+    <div class="mega-panel" data-panel="philosophy">
+      <div class="mp-head stagger">
+        <h3>Philosophy</h3>
+        <span class="hint">inherited · not invented</span>
+      </div>
+
+      <div class="mp-philosophy">
+        <ol class="mp-principles stagger">
+          <li>Good design is innovative.</li>
+          <li>Good design makes a product useful.</li>
+          <li>Good design is aesthetic.</li>
+          <li>Good design makes a product understandable.</li>
+          <li>Good design is unobtrusive.</li>
+          <li>Good design is honest.</li>
+          <li>Good design is long-lasting.</li>
+          <li>Good design is thorough down to the last detail.</li>
+          <li>Good design is environmentally-friendly.</li>
+          <li>Good design is as little design as possible.</li>
+        </ol>
+
+        <div class="mp-right">
+          <div class="mp-quote stagger">
+            <blockquote>If I'm building a house, I don't want my tools to be fun. I want them to be good.</blockquote>
+            <cite>Karri Saarinen · Linear</cite>
+          </div>
+
+          <div class="mp-phases stagger">
+            <h4>The four phases</h4>
+            <div class="mp-phase-row">
+              <span class="step">01 · EXPLORE</span>
+              <span class="label">Write the brief of intention.</span>
+              <span class="meta">5 lines min.</span>
+            </div>
+            <div class="mp-phase-row">
+              <span class="step">02 · DISTILL</span>
+              <span class="label">Detect or create the token system.</span>
+              <span class="meta">OKLCH · 12 steps</span>
+            </div>
+            <div class="mp-phase-row">
+              <span class="step">03 · POLISH</span>
+              <span class="label">Micro-typography. Concentricity. APCA.</span>
+              <span class="meta">Lc ≥ 75</span>
+            </div>
+            <div class="mp-phase-row">
+              <span class="step">04 · SHIP</span>
+              <span class="label">Run the 12-point checklist.</span>
+              <span class="meta">Rams · Vignelli · Saarinen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+<!-- =============================================================================
+     HERO
+     ============================================================================= -->
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero-eyebrow">STIT'CLAUDE · THE&nbsp;LAB · MMXXVI</div>
+    <h1 class="hero-title" id="hero-title">
+      <span class="word" data-word="Moins,"></span>
+      <span class="word" data-word="mais"></span>
+      <span class="word" data-word="mieux."></span>
+      <span class="line2">
+        <span class="word" data-word="Vraiment."></span>
+      </span>
+    </h1>
+    <p class="hero-sub">
+      Every component below is <em>live</em>. No framework, no build step, no dependencies &mdash;
+      just the skill applied. <em>Hover the title.</em> Play with the sliders. Press <code style="color: var(--accent)">⌘K</code>.
+    </p>
+    <div class="hero-hint">
+      <span class="pulse"></span>
+      <span>10 interactive components &middot; single HTML file</span>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================================
+     THE LAB
+     ============================================================================= -->
+<section class="lab container">
+
+  <div class="lab-header">
+    <div class="section-marker">the lab</div>
+    <h2 class="section-title">Ten components, <em>all alive.</em></h2>
+    <p class="section-lede">
+      Each card below is a real implementation of a Stit'Claude principle &mdash; motion tokenised, OKLCH tokens, spring physics, keyboard-complete, reduced-motion aware.
+    </p>
+  </div>
+
+  <div class="lab-grid">
+
+    <!-- 01 · OKLCH LAB — span 6 -->
+    <article class="lab-card span-6">
+      <div class="lab-card-head">
+        <h3>01 · OKLCH color lab</h3>
+        <span class="badge">live · drag</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="oklch-lab">
+          <div class="oklch-preview" id="oklch-preview">
+            <span class="formula" id="oklch-formula">oklch(0.70 0.18 142)</span>
+          </div>
+
+          <div class="oklch-sliders">
+            <div class="slider-row">
+              <span class="label">L</span>
+              <input type="range" id="slider-l" min="0" max="100" value="70" step="1" />
+              <span class="value" id="val-l">0.70</span>
+            </div>
+            <div class="slider-row">
+              <span class="label">C</span>
+              <input type="range" id="slider-c" min="0" max="40" value="18" step="1" />
+              <span class="value" id="val-c">0.18</span>
+            </div>
+            <div class="slider-row">
+              <span class="label">H</span>
+              <input type="range" id="slider-h" min="0" max="360" value="142" step="1" />
+              <span class="value" id="val-h">142</span>
+            </div>
+          </div>
+
+          <div class="palette-derived" id="palette-derived"></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 · SPRING — span 6 -->
+    <article class="lab-card span-6">
+      <div class="lab-card-head">
+        <h3>02 · spring physics</h3>
+        <span class="badge">click</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="spring-lab">
+          <div class="spring-stage">
+            <div class="spring-ball" id="spring-ball"></div>
+          </div>
+          <div class="spring-controls">
+            <button class="spring-btn" onclick="dropBall('smooth')">
+              <span class="name">Smooth</span>
+              <span class="params">response 0.5 · damping 1.0</span>
+            </button>
+            <button class="spring-btn" onclick="dropBall('snappy')">
+              <span class="name">Snappy</span>
+              <span class="params">response 0.3 · damping 0.85</span>
+            </button>
+            <button class="spring-btn" onclick="dropBall('bouncy')">
+              <span class="name">Bouncy</span>
+              <span class="params">response 0.5 · damping 0.7</span>
+            </button>
+          </div>
+          <div class="spring-caption">SwiftUI-grade springs, in CSS cubic-bezier approximations</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 · VARIABLE FONT — span 8 -->
+    <article class="lab-card span-8">
+      <div class="lab-card-head">
+        <h3>03 · variable font playground</h3>
+        <span class="badge">drag</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="varfont-lab">
+          <div class="varfont-display">
+            <div class="varfont-word" id="varfont-word">Moins</div>
+          </div>
+          <div class="varfont-controls">
+            <div class="slider-row">
+              <span class="label">wght</span>
+              <input type="range" id="slider-wght" min="100" max="900" value="400" step="10" />
+              <span class="value" id="val-wght">400</span>
+            </div>
+            <div class="slider-row">
+              <span class="label">accent</span>
+              <input type="range" id="slider-accent" min="0" max="100" value="60" step="1" />
+              <span class="value" id="val-accent">60%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04 · MAGNET — span 4 -->
+    <article class="lab-card span-4">
+      <div class="lab-card-head">
+        <h3>04 · magnetic button</h3>
+        <span class="badge">move</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="magnet-lab">
+          <div class="magnet-stage" id="magnet-stage">
+            <button class="magnet-btn" id="magnet-btn">
+              <span class="inner">Catch me</span>
+            </button>
+          </div>
+          <div class="magnet-caption">spring · 600ms · stiffness 1.6</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05 · TABS — span 6 -->
+    <article class="lab-card span-6">
+      <div class="lab-card-head">
+        <h3>05 · animated tabs</h3>
+        <span class="badge">click</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="tabs-lab">
+          <div class="tabs" id="tabs-root">
+            <div class="tabs-indicator" id="tabs-indicator"></div>
+            <button class="tab-btn active" data-tab="philosophy">Philosophy</button>
+            <button class="tab-btn" data-tab="tokens">Tokens</button>
+            <button class="tab-btn" data-tab="houses">Houses</button>
+            <button class="tab-btn" data-tab="motion">Motion</button>
+          </div>
+          <div class="tab-content" id="tab-content">
+            <h4 id="tab-title">The pantheon is the foundation.</h4>
+            <p id="tab-body">Stit'Claude inherits from Rams, Vignelli, Ive, Hara, Müller-Brockmann. The skill doesn't invent taste &mdash; it passes it down.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 06 · TOASTS — span 6 -->
+    <article class="lab-card span-6">
+      <div class="lab-card-head">
+        <h3>06 · toast stack</h3>
+        <span class="badge">click</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="toast-lab">
+          <div class="toast-triggers">
+            <button class="btn btn-outline success" onclick="showToast('success','Migration applied','SIF-017 recomputed')">Success</button>
+            <button class="btn btn-outline warning" onclick="showToast('warning','Proof test overdue','PT-102 last verified 8 months ago')">Warning</button>
+            <button class="btn btn-outline danger" onclick="showToast('danger','Bug #11 detected','GRIF formula would underestimate PFD')">Danger</button>
+          </div>
+          <div class="toast-stage empty" id="toast-stage">
+            <div class="toast-stage-empty">Trigger a notification →</div>
+            <div class="toast-stack" id="toast-stack"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 07 · CHART — span 8 -->
+    <article class="lab-card span-8">
+      <div class="lab-card-head">
+        <h3>07 · interactive chart</h3>
+        <span class="badge">hover · click</span>
+      </div>
+      <div class="lab-card-body">
+        <div class="chart-lab">
+          <div class="chart-head">
+            <span class="title">Proof tests per month</span>
+            <span class="total" id="chart-total">1 247</span>
+          </div>
+          <div class="chart-bars" id="chart-bars">
+            <!-- generated by JS -->
+          </div>
+          <div class="chart-axis" id="chart-axis">
+            <!-- generated by JS -->
+          </div>
+          <div class="chart-footer">
+            <div class="field">
+              <span class="label">selected</span>
+              <span class="value" id="chart-selected">—</span>
+            </div>
+            <div class="field" style="text-align: right;">
+              <span class="label">delta vs mean</span>
+              <span class="value" id="chart-delta">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 08 · TABLE — span 4 -->
+    <article class="lab-card span-4">
+      <div class="lab-card-head">
+        <h3>08 · sortable data</h3>
+        <span class="badge">click header</span>
+      </div>
+      <div class="lab-card-body">
+        <table class="data-table" id="data-table">
+          <thead>
+            <tr>
+              <th data-col="name">Hue <span class="arrow">↓</span></th>
+              <th data-col="angle" data-numeric>° <span class="arrow">↓</span></th>
+              <th data-col="lc" data-numeric>APCA <span class="arrow">↓</span></th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <!-- generated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+  </div>
+
+</section>
+
+<!-- =============================================================================
+     SCROLL-DRIVEN STORY
+     ============================================================================= -->
+<section class="scroll-story">
+  <div class="container">
+    <div class="big reveal-on-scroll">
+      It's not <em>sparkles.</em><br/>
+      It's <em>craft.</em>
+    </div>
+    <div class="stats">
+      <div class="reveal-on-scroll">
+        <div class="stat-value" data-numeric>11</div>
+        <div class="stat-label">Files in the skill</div>
+      </div>
+      <div class="reveal-on-scroll">
+        <div class="stat-value" data-numeric>4&nbsp;343</div>
+        <div class="stat-label">Lines of guidance</div>
+      </div>
+      <div class="reveal-on-scroll">
+        <div class="stat-value" data-numeric>30</div>
+        <div class="stat-label">Anti-slop patterns banned</div>
+      </div>
+      <div class="reveal-on-scroll">
+        <div class="stat-value" data-numeric>∞</div>
+        <div class="stat-label">Forks encouraged</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================================
+     CTA
+     ============================================================================= -->
+<section class="cta-final">
+  <div class="container">
+    <h2 class="cta-title">Now go build something <em>worth</em> building.</h2>
+    <p class="cta-lede">One file. Copy into your project. Never ship generic again.</p>
+    <div class="install-cmd">
+      <span class="prompt">$</span>
+      <span class="cmd" id="install-cmd-text">git clone github.com/yoann/stitclaude ~/.claude/skills/stitclaude</span>
+      <button class="copy" onclick="copyInstall(this)">Copy</button>
+    </div>
+    <div class="cta-actions">
+      <a class="btn btn-accent" href="#github">
+        View on GitHub
+        <svg class="btn-arrow" width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path d="M3 8 L13 8 M9 4 L13 8 L9 12" />
+        </svg>
+      </a>
+      <a class="btn btn-outline" href="#docs">Read the docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================================
+     FOOTER
+     ============================================================================= -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="left">
+      <span class="brand-mark" aria-hidden="true" style="width: 16px; height: 16px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M4 20 L12 4 L20 20" stroke-linejoin="round" />
+          <path d="M12 4 L12 20" opacity="0.4" />
+        </svg>
+      </span>
+      <span>Stit'Claude · <em>on ne fait plus de designers comme ça aujourd'hui.</em></span>
+    </div>
+    <div class="right">
+      <a href="#github">github</a> &middot;
+      <a href="#docs">docs</a> &middot;
+      v2.0 · MIT
+    </div>
+  </div>
+</footer>
+
+<!-- =============================================================================
+     COMMAND PALETTE (hidden until triggered)
+     ============================================================================= -->
+<div id="cmdk-root"></div>
+
+<script>
+/* ============================================================================
+   INIT — persisted theme, letter wrap for hero
+   ============================================================================ */
+(function initTheme() {
+  let t = 'light';
+  try {
+    const s = localStorage.getItem('stit-lab-theme');
+    if (s === 'light' || s === 'dark') t = s;
+    else if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) t = 'dark';
+  } catch (e) {}
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
+// Wrap each letter in a span for the hero title hover wave
+(function splitHeroLetters() {
+  const words = document.querySelectorAll('#hero-title .word');
+  words.forEach(w => {
+    const text = w.dataset.word;
+    w.innerHTML = '';
+    [...text].forEach(ch => {
+      const span = document.createElement('span');
+      span.className = 'ch';
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      w.appendChild(span);
+    });
+  });
+})();
+
+/* ============================================================================
+   THEME MORPH — View Transitions API with radial expand from cursor
+   ============================================================================ */
+function morphTheme(event) {
+  const cx = event?.clientX ?? window.innerWidth / 2;
+  const cy = event?.clientY ?? window.innerHeight / 2;
+  document.documentElement.style.setProperty('--cx', cx + 'px');
+  document.documentElement.style.setProperty('--cy', cy + 'px');
+
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+
+  function apply() {
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('stit-lab-theme', next); } catch (e) {}
+  }
+
+  if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    apply();
+  } else {
+    document.startViewTransition(() => apply());
+  }
+}
+
+/* ============================================================================
+   MEGA-NAV — hover-triggered panels with delay grace period, spotlight cursor
+   ============================================================================ */
+(function megaNav() {
+  const navRoot = document.getElementById('nav-root');
+  const links = document.getElementById('mega-links');
+  const wrap = document.getElementById('mega-wrap');
+  if (!navRoot || !links || !wrap) return;
+
+  const panels = wrap.querySelectorAll('.mega-panel');
+  const items = links.querySelectorAll('li[data-menu]');
+
+  let openMenu = null;
+  let openTimer = null;
+  let closeTimer = null;
+  const OPEN_DELAY = 90;
+  const CLOSE_DELAY = 180;
+
+  function setOpen(name) {
+    if (openMenu === name) return;
+    openMenu = name;
+
+    items.forEach(li => {
+      const match = li.dataset.menu === name;
+      li.classList.toggle('open', match);
+      const btn = li.querySelector('.mega-trigger');
+      if (btn) btn.setAttribute('aria-expanded', match ? 'true' : 'false');
+    });
+
+    panels.forEach(p => {
+      p.classList.toggle('active', p.dataset.panel === name);
+    });
+  }
+
+  function setClosed() {
+    openMenu = null;
+    items.forEach(li => {
+      li.classList.remove('open');
+      const btn = li.querySelector('.mega-trigger');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    });
+    panels.forEach(p => p.classList.remove('active'));
+  }
+
+  function scheduleOpen(name) {
+    clearTimeout(closeTimer);
+    clearTimeout(openTimer);
+    // If a panel is already open, switch instantly (no delay) — Apple-like UX
+    if (openMenu) {
+      setOpen(name);
+    } else {
+      openTimer = setTimeout(() => setOpen(name), OPEN_DELAY);
+    }
+  }
+
+  function scheduleClose() {
+    clearTimeout(openTimer);
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(setClosed, CLOSE_DELAY);
+  }
+
+  // Hover triggers on each li
+  items.forEach(li => {
+    const name = li.dataset.menu;
+    li.addEventListener('pointerenter', () => scheduleOpen(name));
+    li.addEventListener('pointerleave', scheduleClose);
+
+    // Click fallback (especially mobile / a11y)
+    const btn = li.querySelector('.mega-trigger');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (openMenu === name) {
+          setClosed();
+        } else {
+          clearTimeout(openTimer);
+          setOpen(name);
+        }
+      });
+    }
+  });
+
+  // Keep panel open while cursor is inside
+  wrap.addEventListener('pointerenter', () => clearTimeout(closeTimer));
+  wrap.addEventListener('pointerleave', scheduleClose);
+
+  // Cursor spotlight inside each panel — scroll-aware
+  panels.forEach(panel => {
+    panel.addEventListener('pointermove', (e) => {
+      const rect = panel.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      // Account for scrollTop so the spotlight stays under the cursor
+      // even when the panel content is scrolled.
+      const y = ((e.clientY - rect.top + panel.scrollTop) / panel.scrollHeight) * 100;
+      panel.style.setProperty('--spot-x', x + '%');
+      panel.style.setProperty('--spot-y', y + '%');
+    });
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && openMenu) setClosed();
+  });
+
+  // Close when clicking outside the nav
+  document.addEventListener('pointerdown', (e) => {
+    if (openMenu && !navRoot.contains(e.target)) setClosed();
+  });
+
+  // Mini magnetic button inside Components featured panel
+  const miniStage = document.getElementById('mp-mini-magnet');
+  const miniBtn = document.getElementById('mp-mini-btn');
+  if (miniStage && miniBtn) {
+    miniStage.addEventListener('pointermove', (e) => {
+      const rect = miniBtn.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const dist = Math.hypot(dx, dy);
+      if (dist < 140) {
+        const pull = (1 - dist / 140) * 0.35;
+        miniBtn.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+      }
+    });
+    miniStage.addEventListener('pointerleave', () => {
+      miniBtn.style.transform = '';
+    });
+  }
+})();
+
+/* ============================================================================
+   COMPONENT 01 — OKLCH LAB
+   ============================================================================ */
+(function oklchLab() {
+  const sL = document.getElementById('slider-l');
+  const sC = document.getElementById('slider-c');
+  const sH = document.getElementById('slider-h');
+  const vL = document.getElementById('val-l');
+  const vC = document.getElementById('val-c');
+  const vH = document.getElementById('val-h');
+  const preview = document.getElementById('oklch-preview');
+  const formula = document.getElementById('oklch-formula');
+  const palette = document.getElementById('palette-derived');
+
+  // Build 12 step palette placeholders
+  for (let i = 1; i <= 12; i++) {
+    const d = document.createElement('div');
+    d.className = 'step';
+    const s = document.createElement('span');
+    d.appendChild(s);
+    palette.appendChild(d);
+  }
+
+  function update() {
+    const L = parseInt(sL.value, 10);
+    const C = parseInt(sC.value, 10);
+    const H = parseInt(sH.value, 10);
+
+    const Lf = (L / 100).toFixed(2);
+    const Cf = (C / 100).toFixed(2);
+
+    vL.textContent = Lf;
+    vC.textContent = Cf;
+    vH.textContent = H;
+
+    const color = `oklch(${Lf} ${Cf} ${H})`;
+    preview.style.setProperty('--color-preview', color);
+    formula.textContent = color;
+
+    // Generate 12-step Radix-like scale from current hue
+    const steps = palette.querySelectorAll('.step');
+    const LStepsFn = [0.99, 0.975, 0.95, 0.91, 0.86, 0.78, 0.68, 0.56, 0.45, 0.38, 0.28, 0.18];
+    const CStepsFn = [0.008, 0.02, 0.045, 0.07, 0.09, 0.11, 0.13, 0.15, 0.16, 0.15, 0.13, 0.08];
+
+    steps.forEach((step, i) => {
+      const Lstep = LStepsFn[i];
+      // Chroma scales with current slider value
+      const cBase = CStepsFn[i];
+      const Cstep = (cBase * (C / 20)).toFixed(3);
+      const stepColor = `oklch(${Lstep.toFixed(3)} ${Cstep} ${H})`;
+      step.style.background = stepColor;
+      step.querySelector('span').textContent = (i + 1).toString().padStart(2, '0');
+    });
+  }
+
+  sL.addEventListener('input', update);
+  sC.addEventListener('input', update);
+  sH.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================================
+   COMPONENT 02 — SPRING PHYSICS
+   ============================================================================ */
+let ballTimeout;
+function dropBall(type) {
+  const ball = document.getElementById('spring-ball');
+  ball.className = 'spring-ball';
+  // force reflow
+  void ball.offsetWidth;
+  ball.classList.add('animating-' + type);
+
+  clearTimeout(ballTimeout);
+  ballTimeout = setTimeout(() => {
+    ball.className = 'spring-ball';
+  }, 1400);
+}
+
+/* ============================================================================
+   COMPONENT 03 — VARIABLE FONT
+   ============================================================================ */
+(function varFontLab() {
+  const sW = document.getElementById('slider-wght');
+  const sA = document.getElementById('slider-accent');
+  const vW = document.getElementById('val-wght');
+  const vA = document.getElementById('val-accent');
+  const word = document.getElementById('varfont-word');
+
+  function update() {
+    const w = parseInt(sW.value, 10);
+    const a = parseInt(sA.value, 10);
+    word.style.setProperty('--wght', w);
+    word.style.setProperty('--accent-stop', a + '%');
+    vW.textContent = w;
+    vA.textContent = a + '%';
+  }
+  sW.addEventListener('input', update);
+  sA.addEventListener('input', update);
+  update();
+})();
+
+/* ============================================================================
+   COMPONENT 04 — MAGNETIC BUTTON
+   ============================================================================ */
+(function magnet() {
+  const stage = document.getElementById('magnet-stage');
+  const btn = document.getElementById('magnet-btn');
+  const inner = btn.querySelector('.inner');
+
+  stage.addEventListener('pointermove', (e) => {
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist < 160) {
+      const pull = (1 - dist / 160) * 0.35;
+      btn.style.transform = `translate(${dx * pull}px, ${dy * pull}px)`;
+      inner.style.transform = `translate(${dx * pull * 0.5}px, ${dy * pull * 0.5}px)`;
+    }
+  });
+
+  stage.addEventListener('pointerleave', () => {
+    btn.style.transform = '';
+    inner.style.transform = '';
+  });
+})();
+
+/* ============================================================================
+   COMPONENT 05 — ANIMATED TABS
+   ============================================================================ */
+(function tabs() {
+  const root = document.getElementById('tabs-root');
+  const indicator = document.getElementById('tabs-indicator');
+  const content = document.getElementById('tab-content');
+
+  const DATA = {
+    philosophy: {
+      title: 'The pantheon is the foundation.',
+      body: 'Stit\'Claude inherits from Rams, Vignelli, Ive, Hara, Müller-Brockmann. The skill doesn\'t invent taste — it passes it down.'
+    },
+    tokens: {
+      title: 'Tokens or nothing.',
+      body: 'Every color, every radius, every duration is a CSS custom property. Ship a tokens.css that you actually maintain.',
+      code: `:root {
+  --accent: oklch(0.645 0.190 35);
+  --duration-normal: 200ms;
+  --ease-spring: cubic-bezier(0.5, 1.5, 0.5, 1);
+}`
+    },
+    houses: {
+      title: 'Eight houses, one skill.',
+      body: 'Editorial · Industrial-Pro · Swiss-Quiet · Apple-Craft · Playful-Warm · Japanese-Ma · Power-Dense · Editorial-Display.'
+    },
+    motion: {
+      title: 'Motion has a reason.',
+      body: 'Rauno Freiberg: “There must be a reason.” Every animation answers why. Spring physics for gestures, bezier for scripts.',
+      code: `/* 3 springs, Apple-grade */
+.smooth { cubic-bezier(0.45, 1.4, 0.55, 1); }
+.snappy { cubic-bezier(0.3, 1.6, 0.5, 1);  }
+.bouncy { cubic-bezier(0.25, 1.9, 0.35, 1);}`
+    }
+  };
+
+  function moveIndicator(btn) {
+    const r = btn.getBoundingClientRect();
+    const rootR = root.getBoundingClientRect();
+    indicator.style.width = r.width + 'px';
+    indicator.style.transform = `translateX(${r.left - rootR.left - 4}px)`;
+  }
+
+  function highlightCode(raw) {
+    return raw
+      .replace(/\/\*[\s\S]*?\*\//g, m => `<span class="c-com">${m}</span>`)
+      .replace(/\/\/[^\n]*/g, m => `<span class="c-com">${m}</span>`)
+      .replace(/(\b\d+\.?\d*(?:ms|%|em|px)?\b)/g, '<span class="c-num">$1</span>')
+      .replace(/"([^"]*)"/g, '<span class="c-str">"$1"</span>');
+  }
+
+  function setTab(name) {
+    const btn = root.querySelector(`[data-tab="${name}"]`);
+    if (!btn) return;
+    root.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+    moveIndicator(btn);
+
+    // Fade out → swap content → fade back in. No view transition.
+    content.classList.add('fading');
+    setTimeout(() => {
+      const d = DATA[name];
+      let html = `<h4>${d.title}</h4><p>${d.body}</p>`;
+      if (d.code) {
+        html += `<pre><code>${highlightCode(d.code)}</code></pre>`;
+      }
+      content.innerHTML = html;
+      content.scrollTop = 0;
+      content.classList.remove('fading');
+    }, 120);
+  }
+
+  root.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if (btn) setTab(btn.dataset.tab);
+  });
+
+  // Initialise indicator on load + resize
+  requestAnimationFrame(() => moveIndicator(root.querySelector('.tab-btn.active')));
+  window.addEventListener('resize', () => {
+    moveIndicator(root.querySelector('.tab-btn.active'));
+  });
+})();
+
+/* ============================================================================
+   COMPONENT 06 — TOASTS
+   ============================================================================ */
+let toastId = 0;
+function showToast(type, title, body) {
+  const stack = document.getElementById('toast-stack');
+  const stage = document.getElementById('toast-stage');
+  stage.classList.remove('empty');
+
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const id = ++toastId;
+  t.id = 'toast-' + id;
+  const icons = {
+    success: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8 L7 12 L13 4"/></svg>',
+    warning: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2 L14 13 L2 13 Z"/><path d="M8 7 L8 10"/><circle cx="8" cy="11.5" r="0.6" fill="currentColor"/></svg>',
+    danger: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M5 5 L11 11 M11 5 L5 11"/></svg>'
+  };
+  t.innerHTML = `
+    <span class="ico">${icons[type] || ''}</span>
+    <div style="flex:1">
+      <div style="color: var(--fg); font-weight: 500; font-size: var(--step--1);">${title}</div>
+      <div style="color: var(--fg-muted); font-size: var(--step--2); margin-top: 2px;">${body}</div>
+    </div>
+  `;
+  stack.appendChild(t);
+
+  setTimeout(() => {
+    t.classList.add('out');
+    setTimeout(() => {
+      t.remove();
+      if (stack.children.length === 0) stage.classList.add('empty');
+    }, 400);
+  }, 3500);
+}
+
+/* ============================================================================
+   COMPONENT 07 — INTERACTIVE CHART
+   ============================================================================ */
+(function chart() {
+  const container = document.getElementById('chart-bars');
+  const axis = document.getElementById('chart-axis');
+  const totalEl = document.getElementById('chart-total');
+  const selectedEl = document.getElementById('chart-selected');
+  const deltaEl = document.getElementById('chart-delta');
+
+  const data = [
+    { m: 'Jan', v: 78 },
+    { m: 'Feb', v: 92 },
+    { m: 'Mar', v: 115 },
+    { m: 'Apr', v: 88 },
+    { m: 'May', v: 124 },
+    { m: 'Jun', v: 142 },
+    { m: 'Jul', v: 108 },
+    { m: 'Aug', v: 97 },
+    { m: 'Sep', v: 131 },
+    { m: 'Oct', v: 155 },
+    { m: 'Nov', v: 112 },
+    { m: 'Dec', v: 105 },
+  ];
+  const max = Math.max(...data.map(d => d.v));
+  const total = data.reduce((s, d) => s + d.v, 0);
+  const mean = total / data.length;
+  totalEl.textContent = total.toLocaleString('en-US').replace(/,/g, ' ');
+
+  data.forEach((d, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'bar';
+    bar.style.height = (d.v / max * 100) + '%';
+    bar.innerHTML = `<span class="tip">${d.v}</span>`;
+    bar.addEventListener('click', () => {
+      container.querySelectorAll('.bar').forEach(b => b.classList.remove('active'));
+      bar.classList.add('active');
+      selectedEl.textContent = `${d.m} · ${d.v}`;
+      const delta = d.v - mean;
+      const sign = delta >= 0 ? '+' : '';
+      deltaEl.textContent = `${sign}${delta.toFixed(1)}`;
+    });
+    container.appendChild(bar);
+
+    const lbl = document.createElement('div');
+    lbl.textContent = d.m;
+    axis.appendChild(lbl);
+  });
+})();
+
+/* ============================================================================
+   COMPONENT 08 — SORTABLE TABLE
+   ============================================================================ */
+(function table() {
+  const body = document.getElementById('table-body');
+  const ths = document.querySelectorAll('#data-table th');
+
+  const data = [
+    { name: 'Red',    angle: 25,  lc: 68 },
+    { name: 'Orange', angle: 55,  lc: 72 },
+    { name: 'Yellow', angle: 92,  lc: 81 },
+    { name: 'Green',  angle: 142, lc: 85 },
+    { name: 'Cyan',   angle: 195, lc: 74 },
+    { name: 'Blue',   angle: 245, lc: 58 },
+    { name: 'Purple', angle: 290, lc: 52 },
+    { name: 'Pink',   angle: 345, lc: 65 },
+  ];
+
+  let sortCol = 'angle', sortDesc = false;
+
+  function render() {
+    body.innerHTML = '';
+    data.sort((a, b) => {
+      const av = a[sortCol], bv = b[sortCol];
+      if (typeof av === 'string') return sortDesc ? bv.localeCompare(av) : av.localeCompare(bv);
+      return sortDesc ? bv - av : av - bv;
+    });
+
+    data.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="name"><span class="chroma-pill" style="background: oklch(0.65 0.18 ${d.angle})"></span>${d.name}</td>
+        <td data-numeric>${d.angle}</td>
+        <td data-numeric>${d.lc}</td>
+      `;
+      body.appendChild(tr);
+    });
+
+    ths.forEach(th => {
+      th.classList.remove('sorted', 'desc');
+      if (th.dataset.col === sortCol) {
+        th.classList.add('sorted');
+        if (sortDesc) th.classList.add('desc');
+      }
+    });
+  }
+
+  ths.forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (col === sortCol) sortDesc = !sortDesc;
+      else { sortCol = col; sortDesc = false; }
+      if (document.startViewTransition) {
+        document.startViewTransition(render);
+      } else {
+        render();
+      }
+    });
+  });
+
+  render();
+})();
+
+/* ============================================================================
+   COMMAND PALETTE
+   ============================================================================ */
+const CMD_ITEMS = [
+  { group: 'Theme',      icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5 A6 6 0 1 1 6.5 2.5 A5 5 0 0 0 13.5 9.5 Z"/></svg>', label: 'Toggle light / dark mode', kbd: ['⌘', 'J'], action: () => morphTheme() },
+  { group: 'Components', icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="3"/><circle cx="11" cy="11" r="3"/></svg>',     label: 'Jump to OKLCH color lab',  kbd: ['⌘', '1'], action: () => document.querySelector('.span-6').scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+  { group: 'Components', icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 V8 L12 12"/></svg>',                                           label: 'Jump to spring physics',   kbd: ['⌘', '2'], action: () => document.querySelectorAll('.span-6')[1]?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+  { group: 'Components', icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13 L8 3 L13 13"/><path d="M5 10 L11 10"/></svg>',               label: 'Jump to variable font',    kbd: ['⌘', '3'], action: () => document.querySelector('.span-8').scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+  { group: 'Components', icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><circle cx="10" cy="10" r="2"/></svg>', label: 'Jump to magnetic button',  kbd: ['⌘', '4'], action: () => document.querySelectorAll('.span-4')[0]?.scrollIntoView({ behavior: 'smooth', block: 'center' }) },
+  { group: 'Demo',       icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8 L7 12 L13 4"/></svg>',                                       label: 'Trigger success toast',     kbd: ['⌘', 'S'], action: () => showToast('success', 'Triggered from palette', 'You ran the command successfully.') },
+  { group: 'Demo',       icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2 L14 13 L2 13 Z"/></svg>',                                    label: 'Trigger warning toast',     kbd: ['⌘', 'W'], action: () => showToast('warning', 'Heads up', 'This is a warning from the command palette.') },
+  { group: 'Demo',       icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M5 5 L11 11"/></svg>',              label: 'Trigger danger toast',      kbd: ['⌘', 'D'], action: () => showToast('danger', 'Something broke', 'This is a danger notification.') },
+  { group: 'Physics',    icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="2"/><path d="M8 6 L8 14"/></svg>',                label: 'Drop a smooth ball',        kbd: ['B', 'S'], action: () => dropBall('smooth') },
+  { group: 'Physics',    icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="2"/><path d="M8 6 L8 14"/></svg>',                label: 'Drop a snappy ball',        kbd: ['B', 'N'], action: () => dropBall('snappy') },
+  { group: 'Physics',    icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="4" r="2"/><path d="M8 6 L8 14"/></svg>',                label: 'Drop a bouncy ball',        kbd: ['B', 'B'], action: () => dropBall('bouncy') },
+  { group: 'Navigate',   icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 L14 8 M8 2 L8 14"/></svg>',                                  label: 'Go to install section',     kbd: ['G', 'I'], action: () => document.querySelector('.cta-final').scrollIntoView({ behavior: 'smooth' }) },
+  { group: 'Navigate',   icon: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 L14 8 M8 2 L8 14"/></svg>',                                  label: 'Go to top',                 kbd: ['G', 'T'], action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+];
+
+let cmdkOpen = false;
+let cmdkSelected = 0;
+let cmdkFiltered = CMD_ITEMS;
+
+function openCmdk() {
+  if (cmdkOpen) return;
+  cmdkOpen = true;
+  cmdkSelected = 0;
+  const root = document.getElementById('cmdk-root');
+  root.innerHTML = `
+    <div class="cmdk-overlay" id="cmdk-overlay" onclick="cmdkBackdropClick(event)">
+      <div class="cmdk-box" onclick="event.stopPropagation()">
+        <div class="cmdk-search">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="7" cy="7" r="5"/>
+            <path d="M11 11 L14 14" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="cmdk-input" placeholder="Type a command or search…" autocomplete="off" />
+          <span class="esc">esc</span>
+        </div>
+        <div class="cmdk-list" id="cmdk-list"></div>
+        <div class="cmdk-footer">
+          <div class="hints">
+            <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+            <span><kbd>↵</kbd> select</span>
+            <span><kbd>esc</kbd> close</span>
+          </div>
+          <span>stit'claude · the lab</span>
+        </div>
+      </div>
+    </div>
+  `;
+  cmdkRender();
+  const input = document.getElementById('cmdk-input');
+  input.focus();
+  input.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    cmdkFiltered = q
+      ? CMD_ITEMS.filter(i => i.label.toLowerCase().includes(q) || i.group.toLowerCase().includes(q))
+      : CMD_ITEMS;
+    cmdkSelected = 0;
+    cmdkRender();
+  });
+}
+
+function cmdkBackdropClick(e) {
+  if (e.target.id === 'cmdk-overlay') closeCmdk();
+}
+
+function closeCmdk() {
+  if (!cmdkOpen) return;
+  const overlay = document.getElementById('cmdk-overlay');
+  if (overlay) {
+    overlay.classList.add('closing');
+    setTimeout(() => {
+      document.getElementById('cmdk-root').innerHTML = '';
+      cmdkOpen = false;
+    }, 200);
+  } else {
+    document.getElementById('cmdk-root').innerHTML = '';
+    cmdkOpen = false;
+  }
+}
+
+function cmdkRender() {
+  const list = document.getElementById('cmdk-list');
+  if (!list) return;
+  if (cmdkFiltered.length === 0) {
+    list.innerHTML = `<div class="cmdk-empty">No results. Try another query.</div>`;
+    return;
+  }
+  let currentGroup = null;
+  let html = '';
+  cmdkFiltered.forEach((item, idx) => {
+    if (item.group !== currentGroup) {
+      currentGroup = item.group;
+      html += `<div class="cmdk-group">${currentGroup}</div>`;
+    }
+    html += `
+      <div class="cmdk-item ${idx === cmdkSelected ? 'selected' : ''}" data-idx="${idx}" onmouseenter="cmdkHover(${idx})" onclick="cmdkRun(${idx})">
+        <span class="ico">${item.icon}</span>
+        <span class="label">${item.label}</span>
+        <span class="kbd-group">${item.kbd.map(k => `<span>${k}</span>`).join('')}</span>
+      </div>
+    `;
+  });
+  list.innerHTML = html;
+
+  // Scroll selected into view
+  const sel = list.querySelector('.selected');
+  if (sel) sel.scrollIntoView({ block: 'nearest' });
+}
+
+function cmdkHover(idx) {
+  cmdkSelected = idx;
+  document.querySelectorAll('.cmdk-item').forEach((el, i) => {
+    el.classList.toggle('selected', i === idx);
+  });
+}
+
+function cmdkRun(idx) {
+  const item = cmdkFiltered[idx];
+  if (!item) return;
+  closeCmdk();
+  setTimeout(() => item.action(), 120);
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Cmd/Ctrl+K to open
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    cmdkOpen ? closeCmdk() : openCmdk();
+    return;
+  }
+  if (!cmdkOpen) return;
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeCmdk();
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    cmdkSelected = Math.min(cmdkSelected + 1, cmdkFiltered.length - 1);
+    cmdkRender();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    cmdkSelected = Math.max(cmdkSelected - 1, 0);
+    cmdkRender();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    cmdkRun(cmdkSelected);
+  }
+});
+
+/* ============================================================================
+   COPY INSTALL
+   ============================================================================ */
+function copyInstall(btn) {
+  const text = document.getElementById('install-cmd-text').textContent;
+  navigator.clipboard?.writeText(text);
+  const orig = btn.textContent;
+  btn.textContent = 'Copied';
+  setTimeout(() => { btn.textContent = orig; }, 1500);
+}
+</script>
+
+</body>
+</html>
