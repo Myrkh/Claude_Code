@@ -1,4 +1,3 @@
-<style>
 /* ============================================================================
    STIT'CLAUDE · THE LAB — interactive design showcase
    Forked from stitclaude/examples/tokens.css
@@ -2104,4 +2103,3 @@ code, .mono, [data-numeric] {
   transition: color var(--duration-fast);
 }
 .footer-inner .right a:hover { color: var(--fg); }
-</style>
